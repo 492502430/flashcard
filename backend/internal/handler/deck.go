@@ -2,8 +2,10 @@ package handler
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
+	"github.com/492502430/flashcard/backend/internal/ai"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -13,7 +15,7 @@ type CreateDeckRequest struct {
 	Text  string `json:"text"`
 }
 
-// CreateDeck creates a new deck.
+// CreateDeck creates a new deck. If text is provided, AI generates cards.
 func (h *Handler) CreateDeck(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value("user_id").(string)
 
@@ -23,6 +25,7 @@ func (h *Handler) CreateDeck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// 1. Create deck
 	var deck struct {
 		ID        string `json:"id"`
 		Title     string `json:"title"`
@@ -39,7 +42,38 @@ func (h *Handler) CreateDeck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// 2. If text provided, generate cards via AI
+	if req.Text != "" {
+		go h.generateCardsAsync(deck.ID, req.Text)
+	}
+
 	writeJSON(w, 201, deck)
+}
+
+// generateCardsAsync calls the AI service and inserts cards into the deck.
+func (h *Handler) generateCardsAsync(deckID, text string) {
+	aiClient := ai.NewClient("http://localhost:8001")
+
+	result, err := aiClient.GenerateCards(text, deckID)
+	if err != nil {
+		log.Printf("AI generation failed for deck %s: %v", deckID, err)
+		return
+	}
+
+	// Insert each card
+	for _, card := range result.Cards {
+		tags, _ := json.Marshal(card.Tags)
+		h.DB.Exec(`
+			INSERT INTO cards (deck_id, question, answer, tags, next_review_at)
+			VALUES (?, ?, ?, ?, NOW())
+		`, deckID, card.Question, card.Answer, string(tags))
+	}
+
+	// Update card count
+	h.DB.Exec(`UPDATE decks SET card_count = ?, updated_at = NOW() WHERE id = ?`,
+		result.Count, deckID)
+
+	log.Printf("AI generated %d cards for deck %s", result.Count, deckID)
 }
 
 // ListDecks returns all decks for the current user.

@@ -26,6 +26,11 @@ Page({
           ? (file.size / 1024 / 1024).toFixed(1) + ' MB'
           : (file.size / 1024).toFixed(0) + ' KB';
 
+        if (!this.data.title) {
+          const name = file.name.replace(/\.(pdf|docx?|txt)$/i, '');
+          this.setData({ title: name });
+        }
+
         this.setData({
           filePath: file.path,
           fileName: file.name,
@@ -33,13 +38,6 @@ Page({
           text: ''
         });
 
-        // Auto-set deck name from filename
-        if (!this.data.title) {
-          const name = file.name.replace(/\.(pdf|docx?|txt)$/i, '');
-          this.setData({ title: name });
-        }
-
-        // Auto-upload and extract text
         this.uploadAndExtract(file.path);
       }
     });
@@ -57,42 +55,48 @@ Page({
         this.setData({ uploadProgress: 100 });
         try {
           const data = JSON.parse(res.data);
-          if (data.text) {
+          const extracted = (data.text || '').trim();
+          if (extracted) {
             this.setData({
-              text: data.text.substring(0, 5000),
+              text: extracted.substring(0, 5000),
               uploading: false
             });
-            wx.showToast({ title: '文件解析成功', icon: 'success' });
+            wx.showToast({ title: `已解析 ${extracted.length} 字`, icon: 'success' });
+          } else {
+            wx.showToast({ title: '文件没有可识别的文字', icon: 'none' });
+            this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
           }
         } catch (e) {
           wx.showToast({ title: '文件解析失败', icon: 'none' });
-          this.setData({ uploading: false });
+          this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
         }
       },
-      fail: () => {
-        wx.showToast({ title: '上传失败', icon: 'none' });
-        this.setData({ uploading: false });
+      fail: (err) => {
+        console.error('Upload failed:', err);
+        wx.showToast({ title: '上传失败，请检查网络', icon: 'none' });
+        this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
       }
     });
   },
 
   removeFile() {
-    this.setData({
-      filePath: '',
-      fileName: '',
-      fileSize: '',
-      text: ''
-    });
+    this.setData({ filePath: '', fileName: '', fileSize: '', text: '' });
   },
 
   submit() {
-    if (this.data.text.length < 50 && !this.data.uploading) {
-      wx.showToast({ title: '文本至少50字', icon: 'none' });
+    // Still uploading — wait
+    if (this.data.uploading) {
+      wx.showToast({ title: '文件正在解析中...', icon: 'none' });
       return;
     }
 
-    if (this.data.uploading) {
-      wx.showToast({ title: '文件正在上传中...', icon: 'none' });
+    // No content at all
+    if (!this.data.text || this.data.text.trim().length < 50) {
+      if (this.data.filePath) {
+        wx.showToast({ title: '文件解析结果太短，请手动粘贴文本', icon: 'none' });
+      } else {
+        wx.showToast({ title: '请输入至少 50 字内容', icon: 'none' });
+      }
       return;
     }
 
@@ -106,10 +110,15 @@ Page({
       data: { title: deckTitle, text: this.data.text },
       success: (res) => {
         this.setData({ generating: false });
-        wx.showToast({ title: '创建成功！', icon: 'success' });
-        setTimeout(() => wx.navigateBack(), 1000);
+        if (res.data && res.data.id) {
+          wx.showToast({ title: `已生成 ${res.data.card_count || ''} 张卡片`, icon: 'success' });
+        } else {
+          wx.showToast({ title: '创建成功！', icon: 'success' });
+        }
+        setTimeout(() => wx.navigateBack(), 1200);
       },
-      fail: () => {
+      fail: (err) => {
+        console.error('Create deck failed:', err);
         this.setData({ generating: false });
         wx.showToast({ title: '创建失败，请重试', icon: 'none' });
       }
