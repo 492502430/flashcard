@@ -111,6 +111,7 @@
   font-size: 22rpx;
   font-weight: 600;
   color: rgba(255,255,255,0.85);
+  white-space: nowrap;
 }
 .streak-flame {
   position: relative;

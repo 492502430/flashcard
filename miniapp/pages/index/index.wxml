@@ -19,7 +19,7 @@
         <text class="hero-greeting">今日复习</text>
         <view class="streak-pill" wx:if="{{streak > 0}}">
           <view class="streak-flame"><view class="streak-flame-core"></view></view>
-          <text class="streak-pill-text">{{streak}} 天</text>
+          <text class="streak-pill-text">已连续 {{streak}} 天</text>
         </view>
       </view>
       <view class="hero-count-wrap">
