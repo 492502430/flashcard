@@ -22,7 +22,7 @@ Page({
     // Fetch today's review count
     wx.request({
       url: app.globalData.apiBase + '/api/review/today',
-      header: { Authorization: 'Bearer ' + app.globalData.token },
+      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
       success: (res) => {
         const data = res.data || {};
         this.setData({
@@ -39,7 +39,7 @@ Page({
     // Fetch decks for totals
     wx.request({
       url: app.globalData.apiBase + '/api/decks',
-      header: { Authorization: 'Bearer ' + app.globalData.token },
+      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
       success: (res) => {
         const decks = Array.isArray(res.data) ? res.data : [];
         this.setData({
@@ -110,7 +110,7 @@ Page({
 
     wx.request({
       url: app.globalData.apiBase + '/api/cards/search?q=' + encodeURIComponent(keyword),
-      header: { Authorization: 'Bearer ' + app.globalData.token },
+      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
       success: (res) => {
         this.setData({
           searchResults: Array.isArray(res.data) ? res.data : [],
