@@ -1,104 +1,60 @@
-<!-- ============================================
-     create.wxml — Create Deck | UI UX Pro Max
-     ============================================ -->
+<!-- create.wxml — 新建牌组 | UI UX Pro Max -->
 <view class="page">
-
-  <!-- Header -->
   <view class="header">
     <view class="back-btn tappable" bindtap="goBack">
       <view class="geo-chevron-left" style="color:#7C3AED;"></view>
     </view>
-    <text class="header-title">New Deck</text>
+    <text class="header-title">新建牌组</text>
     <view class="header-spacer"></view>
   </view>
 
-  <!-- Form -->
   <view class="form fade-in">
-
-    <!-- Title Input -->
     <view class="form-group">
-      <text class="form-label">Deck Name</text>
+      <text class="form-label">牌组名称</text>
       <view class="input-wrap">
         <view class="input-geo">
           <view class="geo-square" style="width:24rpx;height:24rpx;background:#059669;border-radius:5rpx;"></view>
         </view>
-        <input
-          class="form-input"
-          placeholder="e.g. Organic Chemistry, GRE Vocabulary"
-          placeholder-class="input-placeholder"
-          value="{{title}}"
-          bindinput="onTitle"
-          maxlength="50"
-        />
+        <input class="form-input" placeholder="如：考研政治、英语单词" placeholder-class="input-placeholder" value="{{title}}" bindinput="onTitle" maxlength="50"/>
       </view>
     </view>
 
-    <!-- Textarea -->
     <view class="form-group">
-      <text class="form-label">Paste Content</text>
+      <text class="form-label">粘贴内容</text>
       <view class="textarea-wrap">
-        <textarea
-          class="form-textarea"
-          placeholder="Paste text to memorize (at least 50 characters)&#10;&#10;AI will analyze and generate flashcards..."
-          placeholder-class="textarea-placeholder"
-          value="{{text}}"
-          bindinput="onText"
-          maxlength="5000"
-          auto-height="{{false}}"
-        />
+        <textarea class="form-textarea" placeholder="粘贴要记忆的文本（至少50字）&#10;&#10;AI 将自动分析并生成问答闪卡..." placeholder-class="textarea-placeholder" value="{{text}}" bindinput="onText" maxlength="5000" auto-height="{{false}}"/>
         <view class="char-count">
-          <view class="char-count-bar">
-            <view class="char-count-fill {{text.length >= 50 ? 'fill-ready' : ''}}" style="width:{{Math.min(text.length / 50 * 100, 100)}}%"></view>
-          </view>
-          <text class="char-count-text {{text.length >= 50 ? 'count-ready' : ''}}">
-            {{text.length}}<text class="char-min"> / 50 min</text>
-          </text>
+          <view class="char-count-bar"><view class="char-count-fill {{text.length >= 50 ? 'fill-ready' : ''}}" style="width:{{Math.min(text.length / 50 * 100, 100)}}%"></view></view>
+          <text class="char-count-text {{text.length >= 50 ? 'count-ready' : ''}}">{{text.length}}<text class="char-min"> / 50 字</text></text>
         </view>
       </view>
     </view>
 
-    <!-- Tips Card — geometric lightbulb -->
     <view class="tips-card" wx:if="{{text.length < 50}}">
       <view class="tips-header">
-        <view class="tips-geo-bulb">
-          <view class="tips-bulb-circle"></view>
-          <view class="tips-bulb-base"></view>
-        </view>
-        <text class="tips-title">Tips</text>
+        <view class="tips-geo-bulb"><view class="tips-bulb-circle"></view><view class="tips-bulb-base"></view></view>
+        <text class="tips-title">小提示</text>
       </view>
       <view class="tips-list">
-        <text class="tip-item">Paste lecture notes, AI extracts key concepts</text>
-        <text class="tip-item">Supports mixed Chinese and English text</text>
-        <text class="tip-item">Longer text produces more accurate cards</text>
+        <text class="tip-item">粘贴课堂笔记，AI 提取关键知识点</text>
+        <text class="tip-item">支持中英文混合文本</text>
+        <text class="tip-item">文本越长，卡片质量越高</text>
       </view>
     </view>
 
-    <!-- Submit Button -->
-    <button
-      class="btn-submit {{text.length >= 50 ? 'btn-ready' : ''}}"
-      bindtap="submit"
-      disabled="{{text.length < 50}}"
-    >
-      <view class="btn-submit-geo">
-        <view class="geo-star" style="width:40rpx;height:40rpx;background:{{text.length >= 50 ? 'rgba(255,255,255,0.3)' : '#CBD5E1'}};"></view>
-      </view>
+    <button class="btn-submit {{text.length >= 50 ? 'btn-ready' : ''}}" bindtap="submit" disabled="{{text.length < 50}}">
+      <view class="btn-submit-geo"><view class="geo-star" style="width:40rpx;height:40rpx;background:{{text.length >= 50 ? 'rgba(255,255,255,0.3)' : '#CBD5E1'}};"></view></view>
       <view class="btn-submit-content">
-        <text class="btn-submit-title">AI Generate Cards</text>
-        <text class="btn-submit-sub" wx:if="{{text.length >= 50}}">Analyze text and generate intelligently</text>
-        <text class="btn-submit-sub" wx:else>Enter 50+ characters to enable</text>
+        <text class="btn-submit-title">AI 生成闪卡</text>
+        <text class="btn-submit-sub" wx:if="{{text.length >= 50}}">智能分析文本并生成卡片</text>
+        <text class="btn-submit-sub" wx:else>输入 50 字以上启用</text>
       </view>
     </button>
 
-    <!-- Loading State -->
     <view class="generating" wx:if="{{generating}}">
-      <view class="gen-dots">
-        <view class="gen-dot"></view>
-        <view class="gen-dot"></view>
-        <view class="gen-dot"></view>
-      </view>
-      <text class="gen-text">AI is analyzing text and generating cards...</text>
+      <view class="gen-dots"><view class="gen-dot"></view><view class="gen-dot"></view><view class="gen-dot"></view></view>
+      <text class="gen-text">AI 正在分析文本并生成卡片...</text>
     </view>
   </view>
-
   <view class="bottom-spacer"></view>
 </view>

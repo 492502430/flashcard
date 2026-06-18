@@ -2,51 +2,11 @@ const app = getApp();
 
 Page({
   data: {
-    nickname: 'User',
-    email: '',
-    userInitial: 'U',
+    nickname: '闪卡用户',
+    userInitial: '闪',
     totalDecks: 0,
     totalCards: 0,
-    reviewedTotal: 0,
-    accountMenus: [
-      {
-        title: 'My Subscription',
-        desc: 'Manage plan',
-        geoStyle: 'geo-diamond',
-        color: 'cyan',
-        action: 'subscribe'
-      },
-      {
-        title: 'Study History',
-        desc: 'View review log',
-        geoStyle: 'geo-bars',
-        color: 'green',
-        action: 'history'
-      }
-    ],
-    generalMenus: [
-      {
-        title: 'Notifications',
-        desc: 'Review reminders',
-        geoStyle: 'geo-bell',
-        color: 'purple',
-        action: 'notifications'
-      },
-      {
-        title: 'About FlashCard',
-        desc: 'v1.0.0',
-        geoStyle: 'geo-info',
-        color: 'blue',
-        action: 'about'
-      },
-      {
-        title: 'Feedback',
-        desc: 'Help us improve',
-        geoStyle: 'geo-chat',
-        color: 'orange',
-        action: 'feedback'
-      }
-    ]
+    reviewedTotal: 0
   },
 
   onShow() {
@@ -54,34 +14,40 @@ Page({
   },
 
   loadUserData() {
+    // Load from local storage
     const userInfo = wx.getStorageSync('userInfo');
-    if (userInfo) {
+    if (userInfo && userInfo.nickName) {
+      const name = userInfo.nickName;
       this.setData({
-        nickname: userInfo.nickName || 'User',
-        email: userInfo.email || '',
-        userInitial: (userInfo.nickName || 'U')[0]
+        nickname: name,
+        userInitial: name[0] || '闪'
       });
     }
 
+    // Load deck stats
     wx.request({
       url: app.globalData.apiBase + '/api/decks',
       header: { Authorization: 'Bearer ' + app.globalData.token },
       success: (res) => {
         const decks = res.data || [];
-        this.setData({
-          totalDecks: decks.length,
-          totalCards: decks.reduce((s, d) => s + (d.card_count || 0), 0)
-        });
+        const cards = decks.reduce((s, d) => s + (d.card_count || 0), 0);
+        this.setData({ totalDecks: decks.length, totalCards: cards });
+      },
+      fail: () => {
+        // Offline — show cached data
+        const cachedDecks = wx.getStorageSync('cachedDecks') || [];
+        const cachedCards = cachedDecks.reduce((s, d) => s + (d.card_count || 0), 0);
+        this.setData({ totalDecks: cachedDecks.length, totalCards: cachedCards });
       }
     });
 
+    // Load review stats
     wx.request({
       url: app.globalData.apiBase + '/api/review/today',
       header: { Authorization: 'Bearer ' + app.globalData.token },
       success: (res) => {
-        this.setData({
-          reviewedTotal: res.data.reviewed_total || 0
-        });
+        const total = res.data.reviewed_total || res.data.total || 0;
+        this.setData({ reviewedTotal: total });
       }
     });
   },
@@ -91,20 +57,22 @@ Page({
     switch (action) {
       case 'about':
         wx.showModal({
-          title: 'FlashCard',
-          content: 'AI-powered smart memory tool. Upload text, and AI analyzes and generates flashcards based on spaced repetition algorithms.',
-          showCancel: false
+          title: '关于闪卡记忆',
+          content: 'AI 驱动的智能记忆工具。上传文本，AI 自动生成问答闪卡，基于间隔重复算法安排每日复习，帮助你高效记忆任何内容。',
+          showCancel: false,
+          confirmText: '知道了'
         });
         break;
       case 'feedback':
         wx.showModal({
-          title: 'Feedback',
-          content: 'Email us at feedback@flashcard.app',
-          showCancel: false
+          title: '意见反馈',
+          content: '感谢你的反馈！请发送邮件至：feedback@flashcard.app',
+          showCancel: false,
+          confirmText: '好的'
         });
         break;
       default:
-        wx.showToast({ title: 'Coming soon', icon: 'none' });
+        wx.showToast({ title: '即将上线', icon: 'none' });
     }
   }
 });

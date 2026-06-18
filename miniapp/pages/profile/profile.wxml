@@ -1,75 +1,86 @@
 <!-- ============================================
-     profile.wxml — Profile Page | UI UX Pro Max
+     profile.wxml — 个人中心 | UI UX Pro Max
      ============================================ -->
 <view class="page">
 
-  <!-- User Hero -->
+  <!-- 用户卡片 -->
   <view class="user-hero">
     <view class="user-hero-glow"></view>
     <view class="user-avatar-wrap">
       <view class="user-avatar">
         <text class="user-avatar-text">{{userInitial}}</text>
       </view>
-      <view class="user-status-dot"></view>
     </view>
     <text class="user-name">{{nickname}}</text>
-    <text class="user-email" wx:if="{{email}}">{{email}}</text>
 
-    <!-- Stats -->
+    <!-- 统计 -->
     <view class="user-stats">
       <view class="user-stat">
         <text class="user-stat-num">{{totalDecks}}</text>
-        <text class="user-stat-label">Decks</text>
+        <text class="user-stat-label">牌组</text>
       </view>
       <view class="user-stat-divider"></view>
       <view class="user-stat">
         <text class="user-stat-num">{{totalCards}}</text>
-        <text class="user-stat-label">Cards</text>
+        <text class="user-stat-label">卡片</text>
       </view>
       <view class="user-stat-divider"></view>
       <view class="user-stat">
         <text class="user-stat-num">{{reviewedTotal}}</text>
-        <text class="user-stat-label">Reviewed</text>
+        <text class="user-stat-label">已复习</text>
       </view>
     </view>
   </view>
 
-  <!-- Account Menu -->
-  <view class="menu-section">
-    <text class="menu-section-title">Account</text>
-    <view class="menu-card">
-      <view class="menu-item tappable" wx:for="{{accountMenus}}" wx:key="title" bindtap="onMenuTap" data-action="{{item.action}}">
-        <view class="menu-icon-wrap menu-icon-{{item.color}}">
-          <view class="menu-geo {{item.geoStyle}}"></view>
-        </view>
-        <view class="menu-item-body">
-          <text class="menu-item-title">{{item.title}}</text>
-          <text class="menu-item-desc" wx:if="{{item.desc}}">{{item.desc}}</text>
-        </view>
-        <view class="geo-chevron-right" style="color:#CBD5E1;"></view>
+  <!-- 菜单 -->
+  <view class="menu-card">
+    <view class="menu-item tappable" bindtap="onMenuTap" data-action="subscribe">
+      <view class="menu-icon-wrap menu-icon-purple">
+        <view class="menu-geo geo-diamond"></view>
       </view>
+      <view class="menu-item-body">
+        <text class="menu-item-title">我的订阅</text>
+        <text class="menu-item-desc">管理订阅计划</text>
+      </view>
+      <view class="geo-chevron-right"></view>
+    </view>
+
+    <view class="menu-item tappable" bindtap="onMenuTap" data-action="history">
+      <view class="menu-icon-wrap menu-icon-green">
+        <view class="menu-geo geo-bars"></view>
+      </view>
+      <view class="menu-item-body">
+        <text class="menu-item-title">学习记录</text>
+        <text class="menu-item-desc">查看复习历史</text>
+      </view>
+      <view class="geo-chevron-right"></view>
     </view>
   </view>
 
-  <!-- General Menu -->
-  <view class="menu-section">
-    <text class="menu-section-title">General</text>
-    <view class="menu-card">
-      <view class="menu-item tappable" wx:for="{{generalMenus}}" wx:key="title" bindtap="onMenuTap" data-action="{{item.action}}">
-        <view class="menu-icon-wrap menu-icon-{{item.color}}">
-          <view class="menu-geo {{item.geoStyle}}"></view>
-        </view>
-        <view class="menu-item-body">
-          <text class="menu-item-title">{{item.title}}</text>
-          <text class="menu-item-desc" wx:if="{{item.desc}}">{{item.desc}}</text>
-        </view>
-        <view class="geo-chevron-right" style="color:#CBD5E1;"></view>
+  <view class="menu-card" style="margin-top: 24rpx;">
+    <view class="menu-item tappable" bindtap="onMenuTap" data-action="about">
+      <view class="menu-icon-wrap menu-icon-blue">
+        <view class="menu-geo geo-info"></view>
       </view>
+      <view class="menu-item-body">
+        <text class="menu-item-title">关于闪卡记忆</text>
+        <text class="menu-item-desc">v1.0.0</text>
+      </view>
+      <view class="geo-chevron-right"></view>
+    </view>
+
+    <view class="menu-item tappable" bindtap="onMenuTap" data-action="feedback">
+      <view class="menu-icon-wrap menu-icon-orange">
+        <view class="menu-geo geo-chat"></view>
+      </view>
+      <view class="menu-item-body">
+        <text class="menu-item-title">意见反馈</text>
+        <text class="menu-item-desc">帮助我们改进</text>
+      </view>
+      <view class="geo-chevron-right"></view>
     </view>
   </view>
 
-  <!-- Version -->
-  <text class="version-text">FlashCard v1.0.0</text>
-
+  <text class="version-text">闪卡记忆 v1.0.0</text>
   <view class="bottom-spacer"></view>
 </view>

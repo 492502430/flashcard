@@ -1,9 +1,5 @@
-<!-- ============================================
-     deck-detail.wxml — Deck Detail | UI UX Pro Max
-     ============================================ -->
+<!-- deck-detail.wxml — 牌组详情 | UI UX Pro Max -->
 <view class="page">
-
-  <!-- Deck Header -->
   <view class="deck-header">
     <view class="deck-header-glow"></view>
     <view class="deck-header-shape"></view>
@@ -15,38 +11,32 @@
         <view class="deck-header-geo {{deck.geoStyle || 'geo-a'}}"></view>
       </view>
       <text class="deck-header-title">{{deck.title}}</text>
-
-      <!-- Stats -->
       <view class="deck-header-meta">
         <view class="meta-item">
           <text class="meta-num">{{deck.card_count || cards.length}}</text>
-          <text class="meta-label">Cards</text>
+          <text class="meta-label">卡片</text>
         </view>
         <view class="meta-divider"></view>
         <view class="meta-item">
           <text class="meta-num meta-new">{{newCount}}</text>
-          <text class="meta-label">New</text>
+          <text class="meta-label">新增</text>
         </view>
         <view class="meta-divider"></view>
         <view class="meta-item">
           <text class="meta-num meta-due">{{dueCount}}</text>
-          <text class="meta-label">Due</text>
+          <text class="meta-label">待复习</text>
         </view>
       </view>
-
       <button class="btn-start-review" bindtap="startReview" wx:if="{{dueCount > 0}}">
-        <view class="btn-start-icon-circle">
-          <view class="geo-play"></view>
-        </view>
-        <text>Start Review</text>
+        <view class="btn-start-icon-circle"><view class="geo-play"></view></view>
+        <text>开始复习</text>
       </button>
     </view>
   </view>
 
-  <!-- Card List -->
   <view class="card-list-header">
-    <text class="card-list-title">All Cards</text>
-    <text class="card-list-count">{{cards.length}} cards</text>
+    <text class="card-list-title">所有卡片</text>
+    <text class="card-list-count">{{cards.length}} 张</text>
   </view>
 
   <view class="card-list" wx:if="{{cards.length > 0}}">
@@ -58,23 +48,18 @@
       </view>
       <view class="card-item-badge">
         <text class="card-state-label {{item.state === 'new' ? 'state-label-new' : item.state === 'learning' ? 'state-label-learning' : 'state-label-review'}}">
-          {{item.state === 'new' ? 'New' : item.state === 'learning' ? 'Learning' : 'Review'}}
+          {{item.state === 'new' ? '新' : item.state === 'learning' ? '学习中' : '已掌握'}}
         </text>
       </view>
     </view>
   </view>
 
-  <!-- Empty State -->
   <view class="empty-state fade-in" wx:else>
     <view class="empty-state-geo">
-      <view class="geo-rect-stack">
-        <view class="geo-rect"></view>
-        <view class="geo-rect"></view>
-      </view>
+      <view class="geo-rect-stack"><view class="geo-rect"></view><view class="geo-rect"></view></view>
     </view>
-    <text class="empty-state-title">No Cards</text>
-    <text class="empty-state-desc">This deck has no cards yet</text>
+    <text class="empty-state-title">没有卡片</text>
+    <text class="empty-state-desc">这个牌组还没有生成卡片</text>
   </view>
-
   <view class="bottom-spacer"></view>
 </view>
