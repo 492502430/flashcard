@@ -238,7 +238,7 @@
 .ratings-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14rpx;
+  gap: 20rpx;
 }
 
 /* Rate buttons base */
@@ -247,11 +247,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 28rpx 16rpx;
-  border-radius: 20rpx;
+  padding: 36rpx 20rpx;
+  border-radius: 24rpx;
   border: 2rpx solid transparent;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-height: 140rpx;
+  min-height: 160rpx;
   background: var(--color-surface);
   box-shadow: var(--shadow-card);
 }
@@ -261,44 +261,44 @@
 
 /* Again — Red */
 .rate-again { border-color: #FECACA; background: #FFF5F5; }
-.rate-again:active { background: #FEE2E2; border-color: #FCA5A5; transform: scale(0.96); }
+.rate-again:active { background: #FECACA; border-color: #EF4444; transform: scale(0.96); }
 
 /* Hard — Amber */
 .rate-hard { border-color: #FDE68A; background: #FFFBEB; }
-.rate-hard:active { background: #FEF3C7; border-color: #FCD34D; transform: scale(0.96); }
+.rate-hard:active { background: #FDE68A; border-color: #F59E0B; transform: scale(0.96); }
 
 /* Good — Green */
 .rate-good { border-color: #A7F3D0; background: #ECFDF5; }
-.rate-good:active { background: #D1FAE5; border-color: #6EE7B7; transform: scale(0.96); }
+.rate-good:active { background: #A7F3D0; border-color: #10B981; transform: scale(0.96); }
 
 /* Easy — Blue */
 .rate-easy { border-color: #BFDBFE; background: #EFF6FF; }
-.rate-easy:active { background: #DBEAFE; border-color: #93C5FD; transform: scale(0.96); }
+.rate-easy:active { background: #BFDBFE; border-color: #3B82F6; transform: scale(0.96); }
 
-/* Geometric rating icons — NO emoji */
+/* Geometric rating icons */
 .rate-geo {
-  width: 44rpx;
-  height: 44rpx;
+  width: 56rpx;
+  height: 56rpx;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10rpx;
+  margin-bottom: 14rpx;
   position: relative;
 }
-.rate-geo-red   { background: rgba(220,38,38,0.1); }
-.rate-geo-amber { background: rgba(217,119,6,0.1); }
-.rate-geo-green { background: rgba(5,150,105,0.1); }
-.rate-geo-blue  { background: rgba(139,92,246,0.1); }
+.rate-geo-red   { background: rgba(220,38,38,0.12); }
+.rate-geo-amber { background: rgba(217,119,6,0.12); }
+.rate-geo-green { background: rgba(5,150,105,0.12); }
+.rate-geo-blue  { background: rgba(59,130,246,0.12); }
 
 .rate-title {
-  font-size: 26rpx;
+  font-size: 30rpx;
   font-weight: 700;
   color: var(--color-text-primary);
-  margin-bottom: 4rpx;
+  margin-bottom: 6rpx;
 }
 .rate-sub {
-  font-size: 20rpx;
+  font-size: 22rpx;
   color: var(--color-text-muted);
 }
 
