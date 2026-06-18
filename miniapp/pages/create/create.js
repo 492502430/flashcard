@@ -153,11 +153,14 @@ Page({
       success: (res) => {
         this.setData({ generating: false });
         if (res.data && res.data.id) {
-          wx.showToast({ title: `已生成 ${res.data.card_count || ''} 张卡片`, icon: 'success' });
+          wx.showToast({ title: 'AI 正在生成卡片...', icon: 'none' });
+          setTimeout(() => {
+            wx.navigateTo({ url: '/pages/deck-detail/deck-detail?id=' + res.data.id });
+          }, 500);
         } else {
           wx.showToast({ title: '创建成功！', icon: 'success' });
+          setTimeout(() => wx.navigateBack(), 800);
         }
-        setTimeout(() => wx.navigateBack(), 1200);
       },
       fail: (err) => {
         console.error('Create deck failed:', err);

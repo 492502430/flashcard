@@ -162,6 +162,10 @@
   color: var(--color-text-secondary);
   font-weight: 500;
 }
+.deck-badge-text.generating {
+  color: #7C3AED;
+  font-weight: 600;
+}
 .deck-due {
   font-size: 22rpx;
   color: var(--color-secondary);

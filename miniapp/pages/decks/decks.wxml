@@ -20,7 +20,8 @@
         <text class="deck-title">{{item.title}}</text>
         <view class="deck-meta">
           <view class="deck-badge">
-            <text class="deck-badge-text">{{item.card_count}} 张</text>
+            <text class="deck-badge-text" wx:if="{{item.card_count > 0}}">{{item.card_count}} 张</text>
+            <text class="deck-badge-text generating" wx:else>AI 生成中...</text>
           </view>
           <text class="deck-due" wx:if="{{item.due_count > 0}}">{{item.due_count}} 待复习</text>
         </view>
