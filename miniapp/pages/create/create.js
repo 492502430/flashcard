@@ -44,7 +44,16 @@ Page({
   },
 
   uploadAndExtract(filePath) {
+    // Check token
+    if (!app.globalData.token) {
+      wx.showToast({ title: '未登录，请重新打开小程序', icon: 'none' });
+      this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
+      return;
+    }
+
     this.setData({ uploading: true, uploadProgress: 20 });
+    console.log('Uploading to:', app.globalData.apiBase + '/api/upload');
+    console.log('Token:', app.globalData.token ? 'OK' : 'MISSING');
 
     wx.uploadFile({
       url: app.globalData.apiBase + '/api/upload',
@@ -72,8 +81,8 @@ Page({
         }
       },
       fail: (err) => {
-        console.error('Upload failed:', err);
-        wx.showToast({ title: '上传失败，请检查网络', icon: 'none' });
+        console.error('Upload HTTP error:', JSON.stringify(err));
+        wx.showToast({ title: '上传失败: ' + (err.errMsg || '网络错误'), icon: 'none' });
         this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
       }
     });
