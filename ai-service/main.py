@@ -28,10 +28,10 @@ client = OpenAI(
 PROMPT = """你是一个教育专家。请根据以下文本生成闪卡（问答题卡片）。
 
 规则：
-1. 每张卡一个知识点
-2. 问题简洁明确，答案详细完整（尽量详细，至少20字）
-3. 只基于给定文本，不添加文本中没有的内容
-4. 根据文本长度生成适量卡片：约每50字1张，最少10张，最多50张
+1. 只提取文本中的核心知识点和关键概念，忽略铺垫和废话
+2. 每张卡一个问题，答案简洁但完整
+3. 如果知识点之间有逻辑关联，可以适当分组
+4. 一般生成 8-20 张卡片即可，质量优先，不要凑数
 
 文本：
 {text}
@@ -74,7 +74,7 @@ def generate(req: GenerateRequest):
                 {"role": "user", "content": PROMPT.format(text=req.text)},
             ],
             temperature=0.3,
-            max_tokens=4000,
+            max_tokens=2000,
         )
         content = response.choices[0].message.content
         cards = json.loads(content)
