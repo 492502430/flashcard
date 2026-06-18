@@ -236,24 +236,23 @@
   font-weight: 500;
 }
 .ratings-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 20rpx;
-  align-items: stretch;
 }
 
-/* Rate buttons base */
 .rate-btn {
+  flex: 0 0 calc(50% - 10rpx);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 36rpx 20rpx;
+  padding: 36rpx 12rpx;
   border-radius: 24rpx;
   border: 2rpx solid transparent;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 160rpx;
-  height: 100%;
   background: var(--color-surface);
   box-shadow: var(--shadow-card);
 }
@@ -302,6 +301,7 @@
 .rate-sub {
   font-size: 22rpx;
   color: var(--color-text-muted);
+  white-space: nowrap;
 }
 
 /* ============================================
