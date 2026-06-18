@@ -58,7 +58,13 @@ Page({
   },
 
   goBack() {
-    wx.switchTab({ url: '/pages/index/index' });
+    // Standard back — goes to wherever user came from
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.switchTab({ url: '/pages/index/index' });
+    }
   },
 
   confirmDelete() {

@@ -35,9 +35,33 @@ func (h *Handler) GetDueCards(w http.ResponseWriter, r *http.Request) {
 		ORDER BY c.next_review_at ASC LIMIT 50
 	`, userID, time.Now()).Scan(&cards)
 
+	// Count today's reviews
+	var reviewedToday int
+	h.DB.Raw(`
+		SELECT COUNT(*) FROM review_records
+		WHERE user_id = ? AND created_at::date = CURRENT_DATE
+	`, userID).Scan(&reviewedToday)
+
+	// Count streak (consecutive days with reviews)
+	var streak int
+	h.DB.Raw(`
+		WITH RECURSIVE dates AS (
+			SELECT DISTINCT created_at::date AS review_date
+			FROM review_records WHERE user_id = ?
+		), streak AS (
+			SELECT review_date, 1 AS n FROM dates WHERE review_date = CURRENT_DATE
+			UNION ALL
+			SELECT d.review_date, s.n + 1
+			FROM dates d JOIN streak s ON d.review_date = s.review_date - 1
+		)
+		SELECT COALESCE(MAX(n), 0) FROM streak
+	`, userID).Scan(&streak)
+
 	writeJSON(w, 200, map[string]interface{}{
-		"cards": cards,
-		"total": len(cards),
+		"cards":          cards,
+		"total":          len(cards),
+		"reviewed_today": reviewedToday,
+		"streak":         streak,
 	})
 }
 
