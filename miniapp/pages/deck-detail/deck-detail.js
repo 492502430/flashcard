@@ -58,7 +58,7 @@ Page({
   },
 
   goBack() {
-    wx.navigateBack();
+    wx.switchTab({ url: '/pages/index/index' });
   },
 
   confirmDelete() {
