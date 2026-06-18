@@ -51,8 +51,7 @@
       </button>
       <button class="rate-btn rate-easy" bindtap="rate" data-r="4">
         <view class="rate-geo rate-geo-blue">
-          <view class="geo-triangle-up" style="color:#059669;position:absolute;top:4rpx;"></view>
-          <view class="geo-triangle-up" style="color:#10B981;position:absolute;bottom:4rpx;"></view>
+          <view class="geo-triangle-up" style="color:#3B82F6;"></view>
         </view>
         <text class="rate-title">简单</text>
         <text class="rate-sub">4天后复习</text>
