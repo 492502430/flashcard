@@ -20,5 +20,9 @@ func (h *Handler) GetStats(w http.ResponseWriter, r *http.Request) {
 		ORDER BY date
 	`, userID).Scan(&stats)
 
+	if stats == nil {
+		stats = []dayStat{}
+	}
+
 	writeJSON(w, 200, stats)
 }

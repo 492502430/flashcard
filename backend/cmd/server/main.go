@@ -72,6 +72,7 @@ func main() {
 		r.Put("/api/cards/{id}", h.UpdateCard)
 		r.Get("/api/cards/search", h.SearchCards)
 		r.Get("/api/export", h.ExportAll)
+		r.Get("/api/stats", h.GetStats)
 		r.Post("/api/upload", h.Upload)
 		r.Get("/api/review/today", h.GetDueCards)
 		r.Post("/api/review", h.SubmitReview)
