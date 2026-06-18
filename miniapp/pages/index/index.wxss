@@ -234,23 +234,24 @@
   flex: 1;
   background: var(--color-surface);
   border-radius: 20rpx;
-  padding: 24rpx 10rpx;
+  padding: 20rpx 6rpx;
   text-align: center;
   box-shadow: var(--shadow-card);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
 }
 .stat-card:active {
   transform: scale(0.96);
   box-shadow: var(--shadow-elevated);
 }
 .stat-icon-box {
-  width: 52rpx;
-  height: 52rpx;
-  border-radius: 14rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 12rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 12rpx;
+  margin: 0 auto 10rpx;
   position: relative;
 }
 .stat-icon-box-cards {
@@ -280,17 +281,21 @@
 .geo-stack-card:nth-child(3) { top: 12rpx; left: 8rpx; opacity: 0.3; }
 .stat-num {
   display: block;
-  font-size: 36rpx;
+  font-size: 32rpx;
   font-weight: 800;
   color: var(--color-text-primary);
   line-height: 1.2;
   font-feature-settings: "tnum";
+  white-space: nowrap;
 }
 .stat-label {
   display: block;
-  font-size: 22rpx;
+  font-size: 20rpx;
   color: var(--color-text-muted);
-  margin-top: 6rpx;
+  margin-top: 4rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ============================================
