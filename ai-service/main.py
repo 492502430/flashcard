@@ -4,7 +4,8 @@ POST /generate  →  text, deck_id  →  structured flashcard array
 """
 import json
 import os
-from fastapi import FastAPI, HTTPException
+import io
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from pydantic import BaseModel
 from openai import OpenAI
 
@@ -74,3 +75,40 @@ def generate(req: GenerateRequest):
         raise HTTPException(500, "AI returned invalid JSON")
     except Exception as e:
         raise HTTPException(500, f"AI generation failed: {str(e)}")
+
+
+@app.post("/extract")
+async def extract_text(file: UploadFile = File(...)):
+    """Extract text from uploaded file (PDF, TXT, DOCX)."""
+    content = await file.read()
+    filename = file.filename or ""
+
+    # TXT — direct read
+    if filename.lower().endswith(".txt"):
+        text = content.decode("utf-8", errors="ignore")
+        return {"text": text, "filename": filename, "size": len(text)}
+
+    # PDF — PyMuPDF
+    if filename.lower().endswith(".pdf"):
+        try:
+            import fitz  # PyMuPDF
+            doc = fitz.open(stream=content, filetype="pdf")
+            text = ""
+            for page in doc:
+                text += page.get_text()
+            doc.close()
+            return {"text": text, "filename": filename, "size": len(text)}
+        except ImportError:
+            raise HTTPException(500, "PDF support requires PyMuPDF: pip install PyMuPDF")
+
+    # DOCX — python-docx
+    if filename.lower().endswith(".docx"):
+        try:
+            from docx import Document
+            doc = Document(io.BytesIO(content))
+            text = "\n".join(p.text for p in doc.paragraphs)
+            return {"text": text, "filename": filename, "size": len(text)}
+        except ImportError:
+            raise HTTPException(500, "DOCX support requires python-docx: pip install python-docx")
+
+    raise HTTPException(400, f"unsupported format: {filename}")

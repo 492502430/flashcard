@@ -1,14 +1,16 @@
-<!-- create.wxml — 新建牌组 | UI UX Pro Max -->
+<!-- create.wxml — 导入资料 | UI UX Pro Max -->
 <view class="page">
   <view class="header">
     <view class="back-btn tappable" bindtap="goBack">
       <view class="geo-chevron-left" style="color:#7C3AED;"></view>
     </view>
-    <text class="header-title">新建牌组</text>
+    <text class="header-title">导入资料</text>
     <view class="header-spacer"></view>
   </view>
 
   <view class="form fade-in">
+
+    <!-- 牌组名称 -->
     <view class="form-group">
       <text class="form-label">牌组名称</text>
       <view class="input-wrap">
@@ -19,6 +21,45 @@
       </view>
     </view>
 
+    <!-- 上传文件 -->
+    <view class="form-group">
+      <text class="form-label">上传文件</text>
+      <view class="upload-area tappable" bindtap="chooseFile">
+        <block wx:if="{{!filePath}}">
+          <view class="upload-icon-wrap">
+            <view class="geo-upload-arrow"></view>
+          </view>
+          <text class="upload-title">点击选择文件</text>
+          <text class="upload-desc">支持 PDF、Word、TXT 格式</text>
+        </block>
+        <block wx:else>
+          <view class="file-preview">
+            <view class="file-icon-box">
+              <view class="geo-doc"></view>
+            </view>
+            <view class="file-info">
+              <text class="file-name">{{fileName}}</text>
+              <text class="file-size">{{fileSize}}</text>
+            </view>
+            <view class="file-remove tappable" catchtap="removeFile">
+              <view class="geo-close" style="width:20rpx;height:20rpx;color:#94A3B8;"></view>
+            </view>
+          </view>
+          <view class="upload-progress" wx:if="{{uploading}}">
+            <view class="upload-progress-fill" style="width:{{uploadProgress}}%"></view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 分割线 -->
+    <view class="divider-row">
+      <view class="divider-line"></view>
+      <text class="divider-text">或直接粘贴文本</text>
+      <view class="divider-line"></view>
+    </view>
+
+    <!-- 文本输入 -->
     <view class="form-group">
       <text class="form-label">粘贴内容</text>
       <view class="textarea-wrap">
@@ -30,30 +71,32 @@
       </view>
     </view>
 
-    <view class="tips-card" wx:if="{{text.length < 50}}">
+    <!-- 提示 -->
+    <view class="tips-card" wx:if="{{text.length < 50 && !filePath}}">
       <view class="tips-header">
         <view class="tips-geo-bulb"><view class="tips-bulb-circle"></view><view class="tips-bulb-base"></view></view>
         <text class="tips-title">小提示</text>
       </view>
       <view class="tips-list">
-        <text class="tip-item">粘贴课堂笔记，AI 提取关键知识点</text>
+        <text class="tip-item">上传 PDF/Word/TXT 文件，自动提取文字</text>
+        <text class="tip-item">或直接粘贴课堂笔记、讲义内容</text>
         <text class="tip-item">支持中英文混合文本</text>
-        <text class="tip-item">文本越长，卡片质量越高</text>
       </view>
     </view>
 
-    <button class="btn-submit {{text.length >= 50 ? 'btn-ready' : ''}}" bindtap="submit" disabled="{{text.length < 50}}">
-      <view class="btn-submit-geo"><view class="geo-star" style="width:40rpx;height:40rpx;background:{{text.length >= 50 ? 'rgba(255,255,255,0.3)' : '#CBD5E1'}};"></view></view>
+    <!-- 提交按钮 -->
+    <button class="btn-submit {{(text.length >= 50 || filePath) ? 'btn-ready' : ''}}" bindtap="submit" disabled="{{text.length < 50 && !filePath}}">
+      <view class="btn-submit-geo"><view class="geo-star" style="width:40rpx;height:40rpx;background:{{(text.length >= 50 || filePath) ? 'rgba(255,255,255,0.3)' : '#CBD5E1'}};"></view></view>
       <view class="btn-submit-content">
         <text class="btn-submit-title">AI 生成闪卡</text>
-        <text class="btn-submit-sub" wx:if="{{text.length >= 50}}">智能分析文本并生成卡片</text>
-        <text class="btn-submit-sub" wx:else>输入 50 字以上启用</text>
+        <text class="btn-submit-sub" wx:if="{{text.length >= 50 || filePath}}">智能分析{{filePath ? '文件' : '文本'}}并生成卡片</text>
+        <text class="btn-submit-sub" wx:else>输入 50 字以上或上传文件</text>
       </view>
     </button>
 
     <view class="generating" wx:if="{{generating}}">
       <view class="gen-dots"><view class="gen-dot"></view><view class="gen-dot"></view><view class="gen-dot"></view></view>
-      <text class="gen-text">AI 正在分析文本并生成卡片...</text>
+      <text class="gen-text">{{filePath ? 'AI 正在解析文件并生成卡片...' : 'AI 正在分析文本并生成卡片...'}}</text>
     </view>
   </view>
   <view class="bottom-spacer"></view>

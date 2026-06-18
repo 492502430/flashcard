@@ -67,6 +67,7 @@ func main() {
 		r.Get("/api/decks", h.ListDecks)
 		r.Get("/api/decks/{id}", h.GetDeck)
 		r.Delete("/api/decks/{id}", h.DeleteDeck)
+		r.Post("/api/upload", h.Upload)
 		r.Get("/api/review/today", h.GetDueCards)
 		r.Post("/api/review", h.SubmitReview)
 	})
