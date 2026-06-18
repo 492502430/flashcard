@@ -2,20 +2,26 @@ const app = getApp();
 
 Page({
   data: {
-    decks: []
+    decks: [],
+    refreshing: false
   },
 
   onShow() {
     this.loadDecks();
+    // Auto-refresh for 30s after creating deck (cards generate async)
+    this.startAutoRefresh();
+  },
+
+  onHide() {
+    this.stopAutoRefresh();
   },
 
   loadDecks() {
     wx.request({
       url: app.globalData.apiBase + '/api/decks',
-      header: { Authorization: 'Bearer ' + app.globalData.token },
+      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
       success: (res) => {
         const decks = res.data || [];
-        /* Geometric icon style classes — NO emoji */
         const geoStyles = ['geo-a','geo-b','geo-c','geo-d','geo-e','geo-f','geo-g','geo-h','geo-i'];
         const enriched = decks.map((d, i) => ({
           ...d,
@@ -24,6 +30,23 @@ Page({
         this.setData({ decks: enriched });
       }
     });
+  },
+
+  startAutoRefresh() {
+    this.stopAutoRefresh();
+    let count = 0;
+    this._refreshTimer = setInterval(() => {
+      this.loadDecks();
+      count++;
+      if (count > 10) this.stopAutoRefresh(); // Stop after 30s
+    }, 3000);
+  },
+
+  stopAutoRefresh() {
+    if (this._refreshTimer) {
+      clearInterval(this._refreshTimer);
+      this._refreshTimer = null;
+    }
   },
 
   openDeck(e) {
