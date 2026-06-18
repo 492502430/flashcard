@@ -46,6 +46,7 @@
 .deck-header-top {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 20rpx;
 }
 .back-btn {
@@ -58,6 +59,7 @@
   justify-content: center;
   margin-right: 20rpx;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
 }
 .back-btn:active {
   background: rgba(255,255,255,0.22);
