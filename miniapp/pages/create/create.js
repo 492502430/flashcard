@@ -44,16 +44,17 @@ Page({
   },
 
   uploadAndExtract(filePath) {
-    // Check token
-    if (!app.globalData.token) {
-      wx.showToast({ title: '未登录，请重新打开小程序', icon: 'none' });
+    // Get token from storage if globalData is empty
+    let token = app.globalData.token || wx.getStorageSync('token');
+    if (!token) {
+      wx.showToast({ title: '未登录，请关闭小程序重试', icon: 'none' });
       this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
       return;
     }
+    // Also save to globalData
+    app.globalData.token = token;
 
     this.setData({ uploading: true, uploadProgress: 20 });
-    console.log('Uploading to:', app.globalData.apiBase + '/api/upload');
-    console.log('Token:', app.globalData.token ? 'OK' : 'MISSING');
 
     wx.uploadFile({
       url: app.globalData.apiBase + '/api/upload',
