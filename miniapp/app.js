@@ -2,7 +2,7 @@ App({
   globalData: {
     token: '',
     userInfo: null,
-    apiBase: 'http://127.0.0.1:8080'
+    apiBase: 'http://127.0.0.1:8088'
   },
 
   onLaunch() {

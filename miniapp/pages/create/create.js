@@ -73,35 +73,49 @@ Page({
   },
 
   doUpload(filePath, token) {
+    const fs = wx.getFileSystemManager();
+    const ext = (this.data.fileName || '').split('.').pop().toLowerCase();
 
-    wx.uploadFile({
-      url: app.globalData.apiBase + '/api/upload',
+    // Read file as base64
+    fs.readFile({
       filePath: filePath,
-      name: 'file',
-      header: { Authorization: 'Bearer ' + token },
+      encoding: 'base64',
       success: (res) => {
-        this.setData({ uploadProgress: 100 });
-        try {
-          const data = JSON.parse(res.data);
-          const extracted = (data.text || '').trim();
-          if (extracted) {
-            this.setData({
-              text: extracted.substring(0, 5000),
-              uploading: false
-            });
-            wx.showToast({ title: `已解析 ${extracted.length} 字`, icon: 'success' });
-          } else {
-            wx.showToast({ title: '文件没有可识别的文字', icon: 'none' });
+        console.log('[upload] File read, sending via wx.request...');
+        wx.request({
+          url: app.globalData.apiBase + '/api/upload',
+          method: 'POST',
+          header: { 
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          },
+          data: {
+            filename: this.data.fileName,
+            content: res.data,
+            encoding: 'base64'
+          },
+          success: (resp) => {
+            this.setData({ uploadProgress: 100 });
+            const data = resp.data || {};
+            const extracted = (data.text || '').trim();
+            if (extracted) {
+              this.setData({ text: extracted.substring(0, 5000), uploading: false });
+              wx.showToast({ title: `已解析 ${extracted.length} 字`, icon: 'success' });
+            } else {
+              wx.showToast({ title: '文件没有可识别的文字', icon: 'none' });
+              this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
+            }
+          },
+          fail: (err) => {
+            console.error('[upload] HTTP error:', JSON.stringify(err));
+            wx.showToast({ title: '上传失败: ' + (err.errMsg || '网络错误'), icon: 'none' });
             this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
           }
-        } catch (e) {
-          wx.showToast({ title: '文件解析失败', icon: 'none' });
-          this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
-        }
+        });
       },
       fail: (err) => {
-        console.error('Upload HTTP error:', JSON.stringify(err));
-        wx.showToast({ title: '上传失败: ' + (err.errMsg || '网络错误'), icon: 'none' });
+        console.error('[upload] ReadFile error:', JSON.stringify(err));
+        wx.showToast({ title: '读取文件失败', icon: 'none' });
         this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
       }
     });
