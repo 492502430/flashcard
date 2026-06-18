@@ -97,15 +97,24 @@
   font-weight: 400;
 }
 
-/* Streak Badge — geometric flame */
-.streak-badge {
+/* Streak Pill — right-aligned */
+.streak-pill-container {
+  display: flex;
+  justify-content: flex-end;
+  margin: -8rpx 0 20rpx;
+}
+.streak-pill {
   display: inline-flex;
   align-items: center;
-  margin-top: 28rpx;
   padding: 10rpx 24rpx;
-  background: rgba(255,255,255,0.08);
-  border-radius: 20rpx;
-  border: 1rpx solid rgba(255,255,255,0.12);
+  background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(251,191,36,0.08));
+  border-radius: 24rpx;
+  border: 1rpx solid rgba(245,158,11,0.2);
+}
+.streak-pill-text {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #D97706;
 }
 .streak-flame {
   position: relative;
@@ -136,11 +145,6 @@
   border-right: 8rpx solid transparent;
   border-bottom: 18rpx solid #FBBF24;
   z-index: 1;
-}
-.streak-text {
-  font-size: 24rpx;
-  color: rgba(255,255,255,0.8);
-  font-weight: 500;
 }
 
 /* ============================================
