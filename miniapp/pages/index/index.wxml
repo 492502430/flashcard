@@ -21,10 +21,10 @@
       <view class="hero-count-wrap">
         <text class="hero-count">{{count}}</text>
         <text class="hero-unit">张</text>
-        <view class="streak-pill" wx:if="{{streak > 0}}">
-          <view class="streak-flame"><view class="streak-flame-core"></view></view>
-          <text class="streak-pill-text">已连续 {{streak}} 天</text>
-        </view>
+      </view>
+      <view class="streak-pill" wx:if="{{streak > 0}}">
+        <view class="streak-flame"><view class="streak-flame-core"></view></view>
+        <text class="streak-pill-text">已连续 {{streak}} 天</text>
       </view>
       <text class="hero-sub">待复习卡片</text>
     </view>
