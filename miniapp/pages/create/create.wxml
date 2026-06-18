@@ -30,7 +30,7 @@
             <view class="geo-upload-arrow"></view>
           </view>
           <text class="upload-title">点击选择文件</text>
-          <text class="upload-desc">支持 PDF、Word、TXT 格式</text>
+          <text class="upload-desc">支持 PDF、Word、TXT、图片</text>
         </block>
         <block wx:else>
           <view class="file-preview">

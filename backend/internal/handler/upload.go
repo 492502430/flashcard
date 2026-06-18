@@ -100,10 +100,10 @@ func extractText(content []byte, filename string) string {
 	switch ext {
 	case ".txt":
 		return string(content)
-	case ".pdf", ".docx":
+	case ".pdf", ".docx", ".png", ".jpg", ".jpeg":
 		return extractViaAI(content, filename)
 	default:
-		return string(content) // Treat unknown as text
+		return string(content)
 	}
 }
 

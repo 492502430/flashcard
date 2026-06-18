@@ -19,7 +19,7 @@ Page({
     wx.chooseMessageFile({
       count: 1,
       type: 'file',
-      extension: ['pdf', 'doc', 'docx', 'txt'],
+      extension: ['pdf', 'doc', 'docx', 'txt', 'png', 'jpg', 'jpeg'],
       success: (res) => {
         const file = res.tempFiles[0];
         const size = file.size > 1024 * 1024

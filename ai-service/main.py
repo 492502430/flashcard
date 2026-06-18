@@ -120,4 +120,17 @@ async def extract_text(file: UploadFile = File(...)):
         except ImportError:
             raise HTTPException(500, "DOCX support requires python-docx: pip install python-docx")
 
+    # Image — OCR via pytesseract
+    if filename.lower().endswith((".png", ".jpg", ".jpeg")):
+        try:
+            from PIL import Image
+            import pytesseract
+            img = Image.open(io.BytesIO(content))
+            text = pytesseract.image_to_string(img, lang="chi_sim+eng")
+            return {"text": text, "filename": filename, "size": len(text)}
+        except ImportError:
+            raise HTTPException(500, "Image OCR requires: pip install pytesseract pillow")
+        except Exception as e:
+            raise HTTPException(500, f"OCR failed: {str(e)}")
+
     raise HTTPException(400, f"unsupported format: {filename}")
