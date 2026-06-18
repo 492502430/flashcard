@@ -1,10 +1,98 @@
-<view class="container">
-  <view class="form">
-    <text class="label">牌组名称</text>
-    <input class="input" placeholder="如：考研政治马原" value="{{title}}" bindinput="onTitle"/>
-    <text class="label">粘贴文本内容</text>
-    <textarea class="textarea" placeholder="粘贴你要记忆的文本内容（至少50字），AI将自动生成闪卡..." value="{{text}}" bindinput="onText"/>
-    <text class="hint">已输入 {{text.length}} 字</text>
-    <button class="btn-primary" bindtap="submit" disabled="{{text.length < 50}}">AI 生成闪卡</button>
+<!-- ============================================
+     create.wxml — Create Deck Page
+     ============================================ -->
+<view class="page">
+
+  <!-- Header -->
+  <view class="header">
+    <view class="back-btn" bindtap="goBack">
+      <text class="back-arrow">←</text>
+    </view>
+    <text class="header-title">新建牌组</text>
+    <view class="header-spacer"></view>
   </view>
+
+  <!-- Form -->
+  <view class="form fade-in">
+
+    <!-- Title Input -->
+    <view class="form-group">
+      <text class="form-label">牌组名称</text>
+      <view class="input-wrap">
+        <text class="input-icon">📝</text>
+        <input
+          class="form-input"
+          placeholder="输入牌组名称，如：考研政治马原"
+          placeholder-class="input-placeholder"
+          value="{{title}}"
+          bindinput="onTitle"
+          maxlength="50"
+        />
+      </view>
+    </view>
+
+    <!-- Textarea -->
+    <view class="form-group">
+      <text class="form-label">粘贴文本内容</text>
+      <view class="textarea-wrap">
+        <textarea
+          class="form-textarea"
+          placeholder="粘贴你要记忆的文本内容（至少50字）&#10;&#10;AI 将自动分析文本并生成闪卡..."
+          placeholder-class="textarea-placeholder"
+          value="{{text}}"
+          bindinput="onText"
+          maxlength="5000"
+          auto-height="{{false}}"
+        />
+        <!-- Character Count -->
+        <view class="char-count">
+          <view class="char-count-bar">
+            <view class="char-count-fill {{text.length >= 50 ? 'fill-ready' : ''}}" style="width: {{Math.min(text.length / 50 * 100, 100)}}%"></view>
+          </view>
+          <text class="char-count-text {{text.length >= 50 ? 'count-ready' : ''}}">
+            {{text.length}}<text class="char-min"> / 50 字最低要求</text>
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- AI Generation Tips -->
+    <view class="tips-card" wx:if="{{text.length < 50}}">
+      <view class="tips-header">
+        <text class="tips-icon">💡</text>
+        <text class="tips-title">使用技巧</text>
+      </view>
+      <view class="tips-list">
+        <text class="tip-item">• 粘贴课程笔记，AI 自动提炼知识点</text>
+        <text class="tip-item">• 支持中英文混合文本</text>
+        <text class="tip-item">• 文本越长，生成的卡片越精准</text>
+      </view>
+    </view>
+
+    <!-- Submit Button -->
+    <button
+      class="btn-submit {{text.length >= 50 ? 'btn-ready' : ''}}"
+      bindtap="submit"
+      disabled="{{text.length < 50}}"
+    >
+      <text class="btn-submit-icon">✨</text>
+      <view class="btn-submit-content">
+        <text class="btn-submit-title">AI 生成闪卡</text>
+        <text class="btn-submit-sub" wx:if="{{text.length >= 50}}">分析文本并智能生成卡片</text>
+        <text class="btn-submit-sub" wx:else>输入至少 50 字以启用</text>
+      </view>
+    </button>
+
+    <!-- Loading State -->
+    <view class="generating" wx:if="{{generating}}">
+      <view class="gen-dots">
+        <view class="gen-dot"></view>
+        <view class="gen-dot"></view>
+        <view class="gen-dot"></view>
+      </view>
+      <text class="gen-text">AI 正在分析文本生成闪卡...</text>
+    </view>
+  </view>
+
+  <view class="bottom-spacer"></view>
 </view>

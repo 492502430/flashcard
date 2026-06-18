@@ -1,25 +1,52 @@
 const app = getApp();
+
 Page({
-  data: { title: '', text: '' },
-  onTitle(e) { this.setData({ title: e.detail.value }); },
-  onText(e) { this.setData({ text: e.detail.value }); },
+  data: {
+    title: '',
+    text: '',
+    generating: false
+  },
+
+  onTitle(e) {
+    this.setData({ title: e.detail.value });
+  },
+
+  onText(e) {
+    this.setData({ text: e.detail.value });
+  },
+
   submit() {
-    if (this.data.text.length < 50) {
-      wx.showToast({ title: '文本至少50字', icon: 'none' }); return;
+    const { text, title } = this.data;
+
+    if (text.length < 50) {
+      wx.showToast({ title: '文本至少需要50字', icon: 'none' });
+      return;
     }
-    const t = this.data.title || '未命名牌组';
-    wx.showLoading({ title: 'AI 生成中...' });
+
+    const deckTitle = title.trim() || '未命名牌组';
+
+    this.setData({ generating: true });
+
     wx.request({
       url: app.globalData.apiBase + '/api/decks',
       method: 'POST',
       header: { Authorization: 'Bearer ' + app.globalData.token },
-      data: { title: t, text: this.data.text },
-      success: (res) => {
-        wx.hideLoading();
-        wx.showToast({ title: '创建成功！' });
-        setTimeout(() => wx.navigateBack(), 1000);
+      data: { title: deckTitle, text },
+      success: () => {
+        this.setData({ generating: false });
+        wx.showToast({ title: '创建成功！', icon: 'success' });
+        setTimeout(() => {
+          wx.navigateBack();
+        }, 1000);
       },
-      fail: () => { wx.hideLoading(); wx.showToast({ title: '网络错误', icon: 'none' }); }
+      fail: () => {
+        this.setData({ generating: false });
+        wx.showToast({ title: '网络错误，请重试', icon: 'none' });
+      }
     });
+  },
+
+  goBack() {
+    wx.navigateBack();
   }
 });

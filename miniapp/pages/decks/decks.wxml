@@ -1,16 +1,58 @@
-<view class="container">
+<!-- ============================================
+     decks.wxml — Deck List Page
+     ============================================ -->
+<view class="page">
+
+  <!-- Header -->
   <view class="header">
-    <text class="title">我的牌组</text>
-    <button class="btn-add" bindtap="goCreate">+ 新建</button>
-  </view>
-  <view class="deck-list">
-    <view class="card" wx:for="{{decks}}" wx:key="id" bindtap="openDeck" data-id="{{item.id}}">
-      <text class="deck-title">{{item.title}}</text>
-      <text class="deck-count">{{item.card_count}} 张卡片</text>
-      <text class="deck-arrow">›</text>
+    <text class="header-title">我的牌组</text>
+    <view class="header-action" bindtap="goCreate">
+      <text class="header-action-icon">+</text>
+      <text class="header-action-text">新建</text>
     </view>
   </view>
-  <view class="empty" wx:if="{{decks.length === 0}}">
-    <text>还没有牌组，创建一个吧</text>
+
+  <!-- Deck Grid -->
+  <view class="deck-grid" wx:if="{{decks.length > 0}}">
+    <view
+      class="deck-card fade-in {{index % 3 === 0 ? 'deck-0' : index % 3 === 1 ? 'deck-1' : 'deck-2'}}"
+      wx:for="{{decks}}"
+      wx:key="id"
+      bindtap="openDeck"
+      data-id="{{item.id}}"
+    >
+      <!-- Gradient top section -->
+      <view class="deck-cover">
+        <view class="deck-cover-pattern"></view>
+        <text class="deck-cover-icon">{{item.icon || '📝'}}</text>
+      </view>
+
+      <!-- Content -->
+      <view class="deck-body">
+        <text class="deck-title">{{item.title}}</text>
+        <view class="deck-meta">
+          <view class="deck-badge">
+            <text class="deck-badge-text">{{item.card_count}} 张</text>
+          </view>
+          <text class="deck-due" wx:if="{{item.due_count > 0}}">{{item.due_count}} 待复习</text>
+        </view>
+      </view>
+    </view>
   </view>
+
+  <!-- Empty State -->
+  <view class="empty-state fade-in" wx:else>
+    <view class="empty-state-illustration">
+      <text class="empty-emoji">📦</text>
+    </view>
+    <text class="empty-state-title">还没有牌组</text>
+    <text class="empty-state-desc">创建你的第一个牌组，<text style="display:block">AI 将自动为你生成闪卡</text></text>
+    <button class="btn-outline-empty" bindtap="goCreate">
+      <text class="btn-outline-icon">+</text>
+      <text>创建第一个牌组</text>
+    </button>
+  </view>
+
+  <!-- Bottom spacer -->
+  <view class="bottom-spacer"></view>
 </view>

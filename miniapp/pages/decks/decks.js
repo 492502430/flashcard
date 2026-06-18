@@ -1,15 +1,37 @@
 const app = getApp();
+
 Page({
-  data: { decks: [] },
+  data: {
+    decks: []
+  },
+
   onShow() {
+    this.loadDecks();
+  },
+
+  loadDecks() {
     wx.request({
       url: app.globalData.apiBase + '/api/decks',
       header: { Authorization: 'Bearer ' + app.globalData.token },
-      success: (res) => this.setData({ decks: res.data || [] })
+      success: (res) => {
+        const decks = res.data || [];
+        // Add placeholder icons based on index
+        const icons = ['📝', '🧠', '📚', '💡', '🎯', '🔬', '🌍', '📖', '✍️'];
+        const enriched = decks.map((d, i) => ({
+          ...d,
+          icon: d.icon || icons[i % icons.length]
+        }));
+        this.setData({ decks: enriched });
+      }
     });
   },
+
   openDeck(e) {
-    wx.navigateTo({ url: '/pages/deck-detail/deck-detail?id=' + e.currentTarget.dataset.id });
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: '/pages/deck-detail/deck-detail?id=' + id });
   },
-  goCreate() { wx.navigateTo({ url: '/pages/create/create' }); }
+
+  goCreate() {
+    wx.navigateTo({ url: '/pages/create/create' });
+  }
 });

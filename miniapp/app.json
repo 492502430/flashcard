@@ -19,21 +19,15 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "assets/home.png",
-        "selectedIconPath": "assets/home-active.png"
+        "text": "首页"
       },
       {
         "pagePath": "pages/decks/decks",
-        "text": "牌组",
-        "iconPath": "assets/decks.png",
-        "selectedIconPath": "assets/decks-active.png"
+        "text": "牌组"
       },
       {
         "pagePath": "pages/profile/profile",
-        "text": "我的",
-        "iconPath": "assets/profile.png",
-        "selectedIconPath": "assets/profile-active.png"
+        "text": "我的"
       }
     ]
   }

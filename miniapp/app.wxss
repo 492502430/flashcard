@@ -1,25 +1,228 @@
+/* ============================================
+   FlashCard Mini-Program — Global Styles
+   Design System: Linear/Notion-inspired
+   ============================================ */
+
 page {
-  background-color: #F8FAFC;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  --color-primary: #0F172A;
+  --color-accent: #0891B2;
+  --color-accent-light: #06B6D4;
+  --color-success: #059669;
+  --color-warning: #D97706;
+  --color-danger: #DC2626;
+  --color-bg: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-border: #E2E8F0;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94A3B8;
+  --color-text-inverse: #FFFFFF;
+  --radius-sm: 12rpx;
+  --radius-md: 16rpx;
+  --radius-lg: 20rpx;
+  --radius-xl: 24rpx;
+  --shadow-sm: 0 2rpx 8rpx rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4rpx 16rpx rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 8rpx 32rpx rgba(15, 23, 42, 0.08);
+  --shadow-xl: 0 16rpx 48rpx rgba(15, 23, 42, 0.12);
+
+  background-color: var(--color-bg);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 28rpx;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
+/* Container */
 .container {
-  padding: 20rpx 30rpx;
+  padding: 24rpx 32rpx;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
+/* ============================================
+   Shared Components
+   ============================================ */
+
+/* Primary Button */
 .btn-primary {
-  background-color: #0891B2;
-  color: white;
-  border-radius: 12rpx;
-  padding: 20rpx 40rpx;
-  text-align: center;
+  background: linear-gradient(135deg, #0891B2 0%, #06B6D4 100%);
+  color: var(--color-text-inverse);
+  border-radius: var(--radius-lg);
+  padding: 28rpx 48rpx;
   font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+  text-align: center;
+  box-shadow: 0 8rpx 24rpx rgba(8, 145, 178, 0.25);
+  transition: all 0.2s ease;
+  letter-spacing: 1rpx;
 }
 
-.card {
-  background: white;
-  border-radius: 16rpx;
-  padding: 30rpx;
-  margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
+.btn-primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 4rpx 12rpx rgba(8, 145, 178, 0.2);
 }
+
+.btn-primary[disabled] {
+  opacity: 0.45;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Outline Button */
+.btn-outline {
+  background: transparent;
+  color: var(--color-accent);
+  border: 2rpx solid var(--color-accent);
+  border-radius: var(--radius-lg);
+  padding: 24rpx 40rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-outline:active {
+  background: rgba(8, 145, 178, 0.06);
+  transform: scale(0.97);
+}
+
+/* Card Base */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:active {
+  transform: scale(0.985);
+  box-shadow: var(--shadow-md);
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.badge-primary {
+  background: rgba(8, 145, 178, 0.1);
+  color: var(--color-accent);
+}
+
+.badge-success {
+  background: rgba(5, 150, 105, 0.1);
+  color: var(--color-success);
+}
+
+.badge-warning {
+  background: rgba(217, 119, 6, 0.1);
+  color: var(--color-warning);
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 48rpx;
+  text-align: center;
+}
+
+.empty-state-icon {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E0F2FE 0%, #CFFAFE 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72rpx;
+  margin-bottom: 32rpx;
+}
+
+.empty-state-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 12rpx;
+}
+
+.empty-state-desc {
+  font-size: 26rpx;
+  color: var(--color-text-tertiary);
+  margin-bottom: 40rpx;
+  line-height: 1.6;
+}
+
+/* Divider */
+.divider {
+  height: 1rpx;
+  background: var(--color-border);
+  margin: 0;
+}
+
+/* Section Header */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.section-link {
+  font-size: 26rpx;
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+/* Skeleton loading */
+.skeleton {
+  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Fade-in animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeInUp 0.4s ease-out both;
+}
+
+.fade-in-1 { animation-delay: 0.05s; }
+.fade-in-2 { animation-delay: 0.1s; }
+.fade-in-3 { animation-delay: 0.15s; }
+.fade-in-4 { animation-delay: 0.2s; }

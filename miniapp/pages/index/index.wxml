@@ -1,23 +1,103 @@
-<view class="container">
+<!-- ============================================
+     index.wxml — Home Page
+     ============================================ -->
+<view class="page">
+
+  <!-- Hero Section -->
   <view class="hero">
-    <text class="greeting">今日复习</text>
-    <text class="count">{{count}} 张</text>
-    <text class="sub">待复习卡片</text>
-  </view>
-  <button class="btn-primary" wx:if="{{count > 0}}" bindtap="startReview">开始复习</button>
-  <view class="empty" wx:else>
-    <text class="empty-icon">📭</text>
-    <text class="empty-text">今天没有待复习的卡片</text>
-    <button class="btn-outline" bindtap="goCreate">创建新牌组</button>
-  </view>
-  <view class="stats">
-    <view class="stat-item">
-      <text class="stat-num">{{totalCards}}</text>
-      <text class="stat-label">总卡片</text>
-    </view>
-    <view class="stat-item">
-      <text class="stat-num">{{totalDecks}}</text>
-      <text class="stat-label">牌组</text>
+    <view class="hero-gradient"></view>
+    <view class="hero-content">
+      <text class="hero-greeting">今日复习</text>
+      <view class="hero-count-wrap">
+        <text class="hero-count">{{count}}</text>
+        <text class="hero-unit">张</text>
+      </view>
+      <text class="hero-sub">待复习卡片</text>
+
+      <!-- Streak Indicator -->
+      <view class="streak-badge" wx:if="{{streak > 0}}">
+        <text class="streak-icon">🔥</text>
+        <text class="streak-text">已连续复习 {{streak}} 天</text>
+      </view>
     </view>
   </view>
+
+  <!-- Main Actions -->
+  <view class="actions" wx:if="{{count > 0}}">
+    <button class="btn-review" bindtap="startReview">
+      <text class="btn-review-icon">▶</text>
+      <text class="btn-review-text">开始复习</text>
+    </button>
+  </view>
+
+  <!-- Empty State -->
+  <view class="empty-state fade-in" wx:else>
+    <view class="empty-state-icon-wrap">
+      <text class="empty-state-emoji">✨</text>
+    </view>
+    <text class="empty-state-title">全部完成！</text>
+    <text class="empty-state-desc">今天没有待复习的卡片，<text style="display:block">去创建新牌组开始学习吧</text></text>
+    <button class="btn-outline-empty" bindtap="goCreate">
+      <text class="btn-outline-icon">+</text>
+      <text>创建新牌组</text>
+    </button>
+  </view>
+
+  <!-- Stats Section -->
+  <view class="stats-section">
+    <text class="section-title">学习统计</text>
+    <view class="stats-grid">
+      <view class="stat-card fade-in fade-in-1">
+        <view class="stat-icon-wrap stat-icon-cards">
+          <text class="stat-icon">▦</text>
+        </view>
+        <text class="stat-num">{{totalCards}}</text>
+        <text class="stat-label">总卡片</text>
+      </view>
+      <view class="stat-card fade-in fade-in-2">
+        <view class="stat-icon-wrap stat-icon-decks">
+          <text class="stat-icon">▤</text>
+        </view>
+        <text class="stat-num">{{totalDecks}}</text>
+        <text class="stat-label">牌组数</text>
+      </view>
+      <view class="stat-card fade-in fade-in-3">
+        <view class="stat-icon-wrap stat-icon-reviewed">
+          <text class="stat-icon">✓</text>
+        </view>
+        <text class="stat-num">{{reviewedToday}}</text>
+        <text class="stat-label">今日已复习</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Quick Links -->
+  <view class="quick-links">
+    <text class="section-title">快捷操作</text>
+    <view class="link-cards">
+      <view class="link-card fade-in fade-in-2" bindtap="goDecks">
+        <view class="link-icon-wrap link-icon-decks">
+          <text class="link-icon">📚</text>
+        </view>
+        <view class="link-info">
+          <text class="link-title">我的牌组</text>
+          <text class="link-desc">管理所有卡片</text>
+        </view>
+        <text class="link-arrow">→</text>
+      </view>
+      <view class="link-card fade-in fade-in-3" bindtap="goCreate">
+        <view class="link-icon-wrap link-icon-create">
+          <text class="link-icon">✏️</text>
+        </view>
+        <view class="link-info">
+          <text class="link-title">新建牌组</text>
+          <text class="link-desc">AI 自动生成闪卡</text>
+        </view>
+        <text class="link-arrow">→</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Bottom spacer for tab bar -->
+  <view class="bottom-spacer"></view>
 </view>
