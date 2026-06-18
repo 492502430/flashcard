@@ -8,7 +8,8 @@ Page({
     card: null,
     flipped: false,
     flipping: false,
-    streak: 0
+    streak: 0,
+    reviewedSession: 0,  // How many reviewed this session
   },
 
   onLoad(opts) {
@@ -23,9 +24,9 @@ Page({
 
     wx.request({
       url: url,
-      header: { Authorization: 'Bearer ' + app.globalData.token },
+      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
       success: (res) => {
-        const data = res.data;
+        const data = res.data || {};
         const cards = data.cards || [];
         this.setData({
           cards,
@@ -39,18 +40,9 @@ Page({
 
   flipCard() {
     if (this.data.flipping) return;
-
     this.setData({ flipping: true });
-
-    if (this.data.flipped) {
-      this.setData({ flipped: false });
-    } else {
-      this.setData({ flipped: true });
-    }
-
-    setTimeout(() => {
-      this.setData({ flipping: false });
-    }, 450);
+    this.setData({ flipped: !this.data.flipped });
+    setTimeout(() => this.setData({ flipping: false }), 450);
   },
 
   rate(e) {
@@ -61,9 +53,11 @@ Page({
     wx.request({
       url: app.globalData.apiBase + '/api/review',
       method: 'POST',
-      header: { Authorization: 'Bearer ' + app.globalData.token },
+      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
       data: { card_id: card.id, rating },
       success: () => {
+        // Track: one more card reviewed this session
+        this.setData({ reviewedSession: this.data.reviewedSession + 1 });
         this.nextCard();
       },
       fail: () => {

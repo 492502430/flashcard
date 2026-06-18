@@ -64,10 +64,10 @@
       <view class="done-ring-outer"><view class="done-ring-inner"><view class="geo-check" style="color:#FFFFFF;width:36rpx;height:20rpx;border-width:6rpx;"></view></view></view>
     </view>
     <text class="done-title">复习完成</text>
-    <text class="done-desc">今天复习了 <text class="done-highlight">{{total}}</text> 张卡片<text style="display:block">继续保持！</text></text>
+    <text class="done-desc">本次复习了 <text class="done-highlight">{{reviewedSession}}</text> 张卡片<text style="display:block">继续保持！</text></text>
     <view class="done-stats">
-      <view class="done-stat"><text class="done-stat-num">{{total}}</text><text class="done-stat-label">已复习</text></view>
-      <view class="done-stat"><text class="done-stat-num">{{streak || 1}}</text><text class="done-stat-label">连续天数</text></view>
+      <view class="done-stat"><text class="done-stat-num">{{reviewedSession}}</text><text class="done-stat-label">本次复习</text></view>
+      <view class="done-stat"><text class="done-stat-num">{{streak}}</text><text class="done-stat-label">连续天数</text></view>
     </view>
     <button class="btn-primary done-btn" bindtap="goHome">返回首页</button>
   </view>
