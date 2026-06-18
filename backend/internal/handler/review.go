@@ -1,0 +1,92 @@
+package handler
+
+import (
+	"encoding/json"
+	"net/http"
+	"time"
+
+	"github.com/492502430/flashcard/backend/internal/fsrs"
+)
+
+// GetDueCards returns cards due for review today.
+func (h *Handler) GetDueCards(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value("user_id").(string)
+
+	var cards []struct {
+		ID           string    `json:"id"`
+		DeckID       string    `json:"deck_id"`
+		Question     string    `json:"question"`
+		Answer       string    `json:"answer"`
+		State        string    `json:"state"`
+		Stability    float64   `json:"stability"`
+		Difficulty   float64   `json:"difficulty"`
+		ReviewCount  int       `json:"review_count"`
+		NextReviewAt time.Time `json:"next_review_at"`
+	}
+
+	h.DB.Raw(`
+		SELECT c.id, c.deck_id, c.question, c.answer, c.state,
+			c.stability, c.difficulty, c.review_count, c.next_review_at
+		FROM cards c
+		JOIN decks d ON c.deck_id = d.id
+		WHERE d.user_id = ? AND c.next_review_at <= ?
+		ORDER BY c.next_review_at ASC LIMIT 50
+	`, userID, time.Now()).Scan(&cards)
+
+	writeJSON(w, 200, map[string]interface{}{
+		"cards": cards,
+		"total": len(cards),
+	})
+}
+
+// SubmitReviewRequest is the payload for submitting a review rating.
+type SubmitReviewRequest struct {
+	CardID string `json:"card_id"`
+	Rating int    `json:"rating"`
+}
+
+// SubmitReview processes a review rating and updates card scheduling.
+func (h *Handler) SubmitReview(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value("user_id").(string)
+
+	var req SubmitReviewRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil || req.CardID == "" || req.Rating < 1 || req.Rating > 4 {
+		writeError(w, 400, "card_id and rating (1-4) are required")
+		return
+	}
+
+	var card struct {
+		ID         string
+		State      string
+		Stability  float64
+		Difficulty float64
+	}
+
+	err := h.DB.Raw(`
+		SELECT c.id, c.state, c.stability, c.difficulty
+		FROM cards c
+		JOIN decks d ON c.deck_id = d.id
+		WHERE c.id = ? AND d.user_id = ?
+	`, req.CardID, userID).Scan(&card).Error
+
+	if err != nil || card.ID == "" {
+		writeError(w, 404, "card not found")
+		return
+	}
+
+	fsrscard := fsrs.Card{State: card.State, Stability: card.Stability, Difficulty: card.Difficulty}
+	nextReview, stability := fsrs.Schedule(&fsrscard, req.Rating)
+
+	h.DB.Exec(`
+		UPDATE cards SET state='review', stability=?, difficulty=?, next_review_at=?,
+			review_count=review_count+1, updated_at=NOW() WHERE id=?
+	`, stability, fsrscard.Difficulty, nextReview, req.CardID)
+
+	h.DB.Exec(`INSERT INTO review_records (card_id, user_id, rating, stability) VALUES (?, ?, ?, ?)`,
+		req.CardID, userID, req.Rating, stability)
+
+	writeJSON(w, 200, map[string]interface{}{
+		"next_review":   nextReview,
+		"new_stability": stability,
+	})
+}
