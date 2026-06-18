@@ -30,8 +30,8 @@
     </view>
   </view>
 
-  <!-- Review button -->
-  <view class="actions" wx:if="{{count > 0}}">
+  <!-- Review button — always visible -->
+  <view class="actions">
     <button class="btn-review" bindtap="startReview">
       <view class="btn-review-icon-circle"><view class="geo-play"></view></view>
       <text class="btn-review-text">开始复习</text>
