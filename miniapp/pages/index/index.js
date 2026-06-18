@@ -19,12 +19,15 @@ Page({
       url: app.globalData.apiBase + '/api/review/today',
       header: { Authorization: 'Bearer ' + app.globalData.token },
       success: (res) => {
-        const data = res.data;
+        const data = res.data || {};
         this.setData({
           count: data.total || 0,
           reviewedToday: data.reviewed_today || 0,
           streak: data.streak || 0
         });
+      },
+      fail: (err) => {
+        console.error('Failed to load review:', err);
       }
     });
 
@@ -33,11 +36,14 @@ Page({
       url: app.globalData.apiBase + '/api/decks',
       header: { Authorization: 'Bearer ' + app.globalData.token },
       success: (res) => {
-        const decks = res.data || [];
+        const decks = Array.isArray(res.data) ? res.data : [];
         this.setData({
           totalDecks: decks.length,
           totalCards: decks.reduce((s, d) => s + (d.card_count || 0), 0)
         });
+      },
+      fail: (err) => {
+        console.error('Failed to load decks:', err);
       }
     });
   },

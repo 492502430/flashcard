@@ -53,7 +53,7 @@ func main() {
 
 	h := handler.New(db)
 	r := chi.NewRouter()
-	r.Use(chimw.Logger, chimw.Recoverer)
+	r.Use(chimw.Logger, chimw.Recoverer, middleware.RequestLog)
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`{"status":"ok"}`))
