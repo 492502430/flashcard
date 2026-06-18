@@ -116,14 +116,15 @@
   border-radius: 32rpx;
   overflow: hidden;
   box-shadow:
-    0 24rpx 64rpx rgba(15,23,42,0.12),
-    0 8rpx 24rpx rgba(15,23,42,0.06);
+    0 4rpx 16rpx rgba(15,23,42,0.06),
+    0 16rpx 48rpx rgba(124,58,237,0.15),
+    0 32rpx 80rpx rgba(15,23,42,0.08);
 }
 .card-front {
-  background: linear-gradient(160deg, #FFFFFF 0%, #FAF5FF 100%);
+  background: #FFFFFF;
 }
 .card-back {
-  background: linear-gradient(160deg, #7C3AED 0%, #8B5CF6 100%);
+  background: linear-gradient(160deg, #7C3AED 0%, #6D28D9 100%);
   transform: rotateY(180deg);
 }
 .card-face-inner {
@@ -202,10 +203,10 @@
   border-radius: 32rpx;
   background: linear-gradient(
     135deg,
-    rgba(255,255,255,0.35) 0%,
-    transparent 40%,
-    transparent 60%,
-    rgba(255,255,255,0.08) 100%
+    rgba(255,255,255,0.25) 0%,
+    transparent 35%,
+    transparent 65%,
+    rgba(0,0,0,0.02) 100%
   );
   pointer-events: none;
 }
