@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports: ["8080:8080"]
+    environment:
+      - PORT=8080
+      - DATABASE_URL=postgres://flashcard:flashcard@postgres:5432/flashcard?sslmode=disable
+      - JWT_SECRET=change-me-in-production
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  ai-service:
+    build: ./ai-service
+    ports: ["8001:8001"]
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=flashcard
+      - POSTGRES_PASSWORD=flashcard
+      - POSTGRES_DB=flashcard
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flashcard"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
