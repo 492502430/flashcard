@@ -85,6 +85,9 @@
   border-radius: 12rpx;
   background: rgba(255,255,255,0.18);
 }
+.header-spacer {
+  flex: 1;
+}
 .deck-header-geo.geo-a { transform: rotate(45deg); border-radius: 6rpx; }
 .deck-header-geo.geo-b { border-radius: 50%; }
 .deck-header-geo.geo-c { width: 0; height: 0; border-left: 24rpx solid transparent; border-right: 24rpx solid transparent; border-bottom: 40rpx solid rgba(255,255,255,0.2); background: transparent; }

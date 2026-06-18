@@ -9,6 +9,7 @@
           <view class="geo-chevron-left" style="color:#FFFFFF;"></view>
         </view>
         <view class="deck-header-geo {{deck.geoStyle || 'geo-a'}}"></view>
+        <view class="header-spacer"></view>
         <view class="delete-btn tappable" bindtap="confirmDelete">
           <view class="geo-close" style="width:20rpx;height:20rpx;color:#FCA5A5;"></view>
         </view>
