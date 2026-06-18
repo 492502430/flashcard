@@ -97,25 +97,21 @@
   font-weight: 400;
 }
 
-/* Streak Pill — right-aligned */
-.streak-pill-container {
-  display: flex;
-  justify-content: flex-end;
-  margin: 16rpx 0;
-}
+/* Streak Pill — inline in hero */
 .streak-pill {
   display: inline-flex;
   align-items: center;
-  padding: 10rpx 20rpx;
-  background: rgba(245,158,11,0.1);
+  margin-left: 20rpx;
+  padding: 8rpx 18rpx;
+  background: rgba(255,255,255,0.12);
   border-radius: 20rpx;
-  border: 1rpx solid rgba(245,158,11,0.2);
-  max-width: 100%;
+  border: 1rpx solid rgba(255,255,255,0.15);
+  flex-shrink: 0;
 }
 .streak-pill-text {
-  font-size: 24rpx;
+  font-size: 22rpx;
   font-weight: 600;
-  color: #D97706;
+  color: rgba(255,255,255,0.85);
 }
 .streak-flame {
   position: relative;
