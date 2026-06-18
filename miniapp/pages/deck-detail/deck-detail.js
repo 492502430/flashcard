@@ -5,39 +5,56 @@ Page({
     deck: {},
     cards: [],
     newCount: 0,
-    dueCount: 0
+    dueCount: 0,
+    generating: true   // Assume generating until cards appear
   },
 
   onLoad(opts) {
-    const id = opts.id;
-    this.loadDeck(id);
+    this.deckId = opts.id;
+    this.loadDeck();
+    this.startPolling();
   },
 
-  loadDeck(id) {
+  onUnload() {
+    this.stopPolling();
+  },
+
+  loadDeck() {
     wx.request({
-      url: app.globalData.apiBase + '/api/decks/' + id,
-      header: { Authorization: 'Bearer ' + app.globalData.token },
+      url: app.globalData.apiBase + '/api/decks/' + this.deckId,
+      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
       success: (res) => {
         const data = res.data;
         const deck = data.deck || {};
         const cards = data.cards || [];
 
         const newCount = cards.filter(c => c.state === 'new').length;
-        const dueCount = cards.filter(c => c.state === 'learning' || c.state === 'review').length;
+        const dueCount = cards.filter(c => c.state !== 'new').length;
+        const hasCards = cards.length > 0;
 
-        this.setData({
-          deck,
-          cards,
-          newCount,
-          dueCount
-        });
+        this.setData({ deck, cards, newCount, dueCount, generating: !hasCards });
+        
+        if (hasCards) this.stopPolling();
       }
     });
   },
 
+  startPolling() {
+    this.stopPolling();
+    this._pollTimer = setInterval(() => {
+      this.loadDeck();
+    }, 3000); // Poll every 3 seconds
+  },
+
+  stopPolling() {
+    if (this._pollTimer) {
+      clearInterval(this._pollTimer);
+      this._pollTimer = null;
+    }
+  },
+
   startReview() {
-    const id = this.data.deck.id;
-    wx.navigateTo({ url: '/pages/review/review?deck_id=' + id });
+    wx.navigateTo({ url: '/pages/review/review?deck_id=' + this.deckId });
   },
 
   goBack() {

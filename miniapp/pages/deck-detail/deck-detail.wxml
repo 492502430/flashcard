@@ -54,7 +54,22 @@
     </view>
   </view>
 
-  <view class="empty-state fade-in" wx:else>
+  <!-- AI 正在生成中 -->
+  <view class="generating-state fade-in" wx:if="{{cards.length === 0 && generating}}">
+    <view class="gen-animation">
+      <view class="gen-spinner"></view>
+    </view>
+    <text class="gen-title">AI 正在生成卡片</text>
+    <text class="gen-desc">正在分析文本内容，自动提取知识点生成闪卡，请稍候...</text>
+    <view class="gen-dots-row">
+      <view class="gen-dot-bounce"></view>
+      <view class="gen-dot-bounce"></view>
+      <view class="gen-dot-bounce"></view>
+    </view>
+  </view>
+
+  <!-- 真的没卡片 -->
+  <view class="empty-state fade-in" wx:elif="{{cards.length === 0}}">
     <view class="empty-state-geo">
       <view class="geo-rect-stack"><view class="geo-rect"></view><view class="geo-rect"></view></view>
     </view>
