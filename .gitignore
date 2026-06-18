@@ -1,0 +1,23 @@
+# Go
+backend/flashcard-backend
+backend/vendor/
+*.exe
+
+# Python
+ai-service/venv/
+ai-service/__pycache__/
+ai-service/*.pyc
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
