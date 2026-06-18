@@ -9,7 +9,7 @@
   </view>
 
   <view class="deck-grid" wx:if="{{decks.length > 0}}">
-    <view class="deck-card fade-in {{index % 3 === 0 ? 'deck-theme-0' : index % 3 === 1 ? 'deck-theme-1' : 'deck-theme-2'}} tappable" wx:for="{{decks}}" wx:key="id" bindtap="openDeck" data-id="{{item.id}}">
+    <view class="deck-card fade-in {{index % 3 === 0 ? 'deck-theme-0' : index % 3 === 1 ? 'deck-theme-1' : 'deck-theme-2'}} tappable" wx:for="{{decks}}" wx:key="id" bindtap="openDeck" bindlongpress="confirmDelete" data-id="{{item.id}}" data-title="{{item.title}}">
       <view class="deck-cover">
         <view class="deck-cover-shape"></view>
         <view class="deck-cover-icon">

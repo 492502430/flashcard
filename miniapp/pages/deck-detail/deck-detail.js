@@ -59,5 +59,34 @@ Page({
 
   goBack() {
     wx.navigateBack();
+  },
+
+  confirmDelete() {
+    wx.showModal({
+      title: '删除牌组',
+      content: `确定要删除「${this.data.deck.title}」吗？所有卡片也会被删除。`,
+      confirmText: '删除',
+      confirmColor: '#DC2626',
+      success: (res) => {
+        if (res.confirm) {
+          this.deleteDeck();
+        }
+      }
+    });
+  },
+
+  deleteDeck() {
+    wx.request({
+      url: app.globalData.apiBase + '/api/decks/' + this.deckId,
+      method: 'DELETE',
+      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
+      success: () => {
+        wx.showToast({ title: '已删除', icon: 'success' });
+        setTimeout(() => wx.navigateBack(), 500);
+      },
+      fail: () => {
+        wx.showToast({ title: '删除失败', icon: 'none' });
+      }
+    });
   }
 });
