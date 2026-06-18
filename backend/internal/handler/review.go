@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-chi/chi/v5"
+
 	"github.com/492502430/flashcard/backend/internal/fsrs"
 )
 
@@ -88,5 +90,37 @@ func (h *Handler) SubmitReview(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, map[string]interface{}{
 		"next_review":   nextReview,
 		"new_stability": stability,
+	})
+}
+
+// GetDeckReview returns due cards for a specific deck.
+func (h *Handler) GetDeckReview(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value("user_id").(string)
+	deckID := chi.URLParam(r, "id")
+
+	var cards []struct {
+		ID           string    `json:"id"`
+		DeckID       string    `json:"deck_id"`
+		Question     string    `json:"question"`
+		Answer       string    `json:"answer"`
+		State        string    `json:"state"`
+		Stability    float64   `json:"stability"`
+		Difficulty   float64   `json:"difficulty"`
+		ReviewCount  int       `json:"review_count"`
+		NextReviewAt time.Time `json:"next_review_at"`
+	}
+
+	h.DB.Raw(`
+		SELECT c.id, c.deck_id, c.question, c.answer, c.state,
+			c.stability, c.difficulty, c.review_count, c.next_review_at
+		FROM cards c
+		JOIN decks d ON c.deck_id = d.id
+		WHERE d.id = ? AND d.user_id = ? AND c.next_review_at <= ?
+		ORDER BY c.next_review_at ASC LIMIT 50
+	`, deckID, userID, time.Now()).Scan(&cards)
+
+	writeJSON(w, 200, map[string]interface{}{
+		"cards": cards,
+		"total": len(cards),
 	})
 }
