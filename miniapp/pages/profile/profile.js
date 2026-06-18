@@ -2,47 +2,47 @@ const app = getApp();
 
 Page({
   data: {
-    nickname: '闪卡用户',
+    nickname: 'User',
     email: '',
-    userInitial: '闪',
+    userInitial: 'U',
     totalDecks: 0,
     totalCards: 0,
     reviewedTotal: 0,
     accountMenus: [
       {
-        title: '我的订阅',
-        desc: '管理订阅计划',
-        icon: '💎',
+        title: 'My Subscription',
+        desc: 'Manage plan',
+        geoStyle: 'geo-diamond',
         color: 'cyan',
         action: 'subscribe'
       },
       {
-        title: '学习记录',
-        desc: '查看复习历史',
-        icon: '📊',
+        title: 'Study History',
+        desc: 'View review log',
+        geoStyle: 'geo-bars',
         color: 'green',
         action: 'history'
       }
     ],
     generalMenus: [
       {
-        title: '通知设置',
-        desc: '复习提醒频率',
-        icon: '🔔',
+        title: 'Notifications',
+        desc: 'Review reminders',
+        geoStyle: 'geo-bell',
         color: 'purple',
         action: 'notifications'
       },
       {
-        title: '关于闪卡记忆',
+        title: 'About FlashCard',
         desc: 'v1.0.0',
-        icon: 'ℹ️',
+        geoStyle: 'geo-info',
         color: 'blue',
         action: 'about'
       },
       {
-        title: '反馈建议',
-        desc: '帮助我们改进',
-        icon: '💬',
+        title: 'Feedback',
+        desc: 'Help us improve',
+        geoStyle: 'geo-chat',
         color: 'orange',
         action: 'feedback'
       }
@@ -54,17 +54,15 @@ Page({
   },
 
   loadUserData() {
-    // Try to load user info from storage
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo) {
       this.setData({
-        nickname: userInfo.nickName || '闪卡用户',
+        nickname: userInfo.nickName || 'User',
         email: userInfo.email || '',
-        userInitial: (userInfo.nickName || '闪')[0]
+        userInitial: (userInfo.nickName || 'U')[0]
       });
     }
 
-    // Fetch stats
     wx.request({
       url: app.globalData.apiBase + '/api/decks',
       header: { Authorization: 'Bearer ' + app.globalData.token },
@@ -90,24 +88,23 @@ Page({
 
   onMenuTap(e) {
     const action = e.currentTarget.dataset.action;
-
     switch (action) {
       case 'about':
         wx.showModal({
-          title: '闪卡记忆',
-          content: 'AI 驱动的智能记忆工具。上传文本，AI 自动分析并生成闪卡，基于间隔重复算法帮你高效记忆。',
+          title: 'FlashCard',
+          content: 'AI-powered smart memory tool. Upload text, and AI analyzes and generates flashcards based on spaced repetition algorithms.',
           showCancel: false
         });
         break;
       case 'feedback':
         wx.showModal({
-          title: '反馈建议',
-          content: '请发送邮件至 feedback@flashcard.app',
+          title: 'Feedback',
+          content: 'Email us at feedback@flashcard.app',
           showCancel: false
         });
         break;
       default:
-        wx.showToast({ title: '功能开发中', icon: 'none' });
+        wx.showToast({ title: 'Coming soon', icon: 'none' });
     }
   }
 });

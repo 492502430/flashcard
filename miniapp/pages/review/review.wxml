@@ -1,53 +1,52 @@
 <!-- ============================================
-     review.wxml — Review Page (CORE EXPERIENCE)
+     review.wxml — Review Page | UI UX Pro Max
+     CENTERPIECE: 3D card flip, geometric rating
      ============================================ -->
 <view class="page">
 
-  <!-- Top Bar: Progress + Exit -->
+  <!-- Top Bar -->
   <view class="top-bar" wx:if="{{card}}">
-    <view class="exit-btn" bindtap="goHome">
-      <text class="exit-icon">✕</text>
+    <view class="exit-btn tappable" bindtap="goHome">
+      <view class="geo-close" style="color:#475569;"></view>
     </view>
     <view class="progress-wrap">
       <view class="progress-track">
-        <view class="progress-fill" style="width: {{(current - 1) / total * 100}}%"></view>
+        <view class="progress-fill" style="width:{{(current - 1) / total * 100}}%"></view>
       </view>
       <text class="progress-text">{{current}}<text class="progress-sep">/</text>{{total}}</text>
     </view>
   </view>
 
   <!-- ============================================
-       Flash Card — 3D Flip
+       3D Flash Card
        ============================================ -->
   <view class="card-stage" wx:if="{{card}}">
-    <!-- Hint text -->
-    <text class="flip-hint" wx:if="{{!flipped}}">点击卡片翻转查看答案</text>
+    <text class="flip-hint" wx:if="{{!flipped}}">Tap card to reveal answer</text>
 
-    <!-- 3D Card Container -->
     <view class="card-3d {{flipped ? 'is-flipped' : ''}} {{flipping ? 'is-flipping' : ''}}" bindtap="flipCard">
-      <!-- Front Face -->
+      <!-- FRONT — Question -->
       <view class="card-face card-front">
         <view class="card-face-inner">
-          <view class="card-label-wrap">
-            <view class="card-label-dot"></view>
-            <text class="card-label">问题</text>
+          <view class="card-label-row">
+            <view class="card-label-dot front-dot"></view>
+            <text class="card-label">QUESTION</text>
           </view>
           <view class="card-text-wrap">
             <text class="card-text">{{card.question}}</text>
           </view>
-          <view class="card-tap-indicator">
-            <text class="tap-text">轻触翻转</text>
-            <text class="tap-icon">↻</text>
+          <view class="card-tap-hint" wx:if="{{!flipped}}">
+            <view class="geo-rotate" style="color:#94A3B8;width:20rpx;height:20rpx;"></view>
+            <text class="tap-text">Tap to flip</text>
           </view>
         </view>
       </view>
 
-      <!-- Back Face -->
+      <!-- BACK — Answer -->
       <view class="card-face card-back">
         <view class="card-face-inner">
-          <view class="card-label-wrap">
+          <view class="card-label-row">
             <view class="card-label-dot back-dot"></view>
-            <text class="card-label">答案</text>
+            <text class="card-label">ANSWER</text>
           </view>
           <view class="card-text-wrap">
             <text class="card-text">{{card.answer}}</text>
@@ -56,35 +55,48 @@
       </view>
     </view>
 
-    <!-- Shine / gloss effect on card -->
-    <view class="card-shine" wx:if="{{!flipped}}"></view>
+    <!-- Gloss overlay -->
+    <view class="card-gloss" wx:if="{{!flipped}}"></view>
   </view>
 
   <!-- ============================================
-       Rating Buttons (shown after flip)
+       Rating Buttons (fade in after flip)
        ============================================ -->
   <view class="ratings-section {{flipped ? 'ratings-visible' : ''}}" wx:if="{{card}}">
-    <text class="ratings-label">你对这张卡的掌握程度？</text>
+    <text class="ratings-label">How well did you remember?</text>
     <view class="ratings-grid">
-      <button class="rate-btn rate-again" bindtap="rate" data-r="1" hover-class="rate-again-hover">
-        <text class="rate-emoji">😰</text>
-        <text class="rate-title">完全忘了</text>
-        <text class="rate-sub">1分钟内</text>
+      <!-- Again — Red -->
+      <button class="rate-btn rate-again" bindtap="rate" data-r="1">
+        <view class="rate-geo rate-geo-red">
+          <view class="geo-close" style="width:20rpx;height:20rpx;color:#DC2626;"></view>
+        </view>
+        <text class="rate-title">Forgot</text>
+        <text class="rate-sub">Repeat in 1 min</text>
       </button>
-      <button class="rate-btn rate-hard" bindtap="rate" data-r="2" hover-class="rate-hard-hover">
-        <text class="rate-emoji">🤔</text>
-        <text class="rate-title">有些模糊</text>
-        <text class="rate-sub">10分钟内</text>
+      <!-- Hard — Amber -->
+      <button class="rate-btn rate-hard" bindtap="rate" data-r="2">
+        <view class="rate-geo rate-geo-amber">
+          <view class="geo-triangle-up" style="color:#D97706;"></view>
+        </view>
+        <text class="rate-title">Hard</text>
+        <text class="rate-sub">Review in 10 min</text>
       </button>
-      <button class="rate-btn rate-good" bindtap="rate" data-r="3" hover-class="rate-good-hover">
-        <text class="rate-emoji">😊</text>
-        <text class="rate-title">记得不错</text>
-        <text class="rate-sub">1天后</text>
+      <!-- Good — Green -->
+      <button class="rate-btn rate-good" bindtap="rate" data-r="3">
+        <view class="rate-geo rate-geo-green">
+          <view class="geo-check" style="color:#059669;"></view>
+        </view>
+        <text class="rate-title">Good</text>
+        <text class="rate-sub">Review in 1 day</text>
       </button>
-      <button class="rate-btn rate-easy" bindtap="rate" data-r="4" hover-class="rate-easy-hover">
-        <text class="rate-emoji">🚀</text>
-        <text class="rate-title">太简单了</text>
-        <text class="rate-sub">4天后</text>
+      <!-- Easy — Blue -->
+      <button class="rate-btn rate-easy" bindtap="rate" data-r="4">
+        <view class="rate-geo rate-geo-blue">
+          <view class="geo-triangle-up" style="color:#0891B2;position:absolute;top:4rpx;"></view>
+          <view class="geo-triangle-up" style="color:#06B6D4;position:absolute;bottom:4rpx;"></view>
+        </view>
+        <text class="rate-title">Easy</text>
+        <text class="rate-sub">Review in 4 days</text>
       </button>
     </view>
   </view>
@@ -93,27 +105,27 @@
        Completion State
        ============================================ -->
   <view class="done-state" wx:else>
-    <view class="done-animation">
-      <view class="done-circle">
-        <view class="done-circle-inner">
-          <text class="done-check">✓</text>
+    <view class="done-visual">
+      <view class="done-ring-outer">
+        <view class="done-ring-inner">
+          <view class="geo-check" style="color:#FFFFFF;width:36rpx;height:20rpx;border-width:6rpx;"></view>
         </view>
       </view>
     </view>
-    <text class="done-title">今日复习完成！</text>
-    <text class="done-desc">你已复习了 <text class="done-highlight">{{total}}</text> 张卡片，<text style="display:block">继续保持！</text></text>
+    <text class="done-title">Review Complete</text>
+    <text class="done-desc">You reviewed <text class="done-highlight">{{total}}</text> cards today.<text style="display:block">Keep up the momentum</text></text>
 
     <view class="done-stats">
       <view class="done-stat">
         <text class="done-stat-num">{{total}}</text>
-        <text class="done-stat-label">复习总数</text>
+        <text class="done-stat-label">Reviewed</text>
       </view>
       <view class="done-stat">
         <text class="done-stat-num">{{streak || 1}}</text>
-        <text class="done-stat-label">连续天数</text>
+        <text class="done-stat-label">Day Streak</text>
       </view>
     </view>
 
-    <button class="btn-primary done-btn" bindtap="goHome">返回首页</button>
+    <button class="btn-primary done-btn" bindtap="goHome">Back to Home</button>
   </view>
 </view>

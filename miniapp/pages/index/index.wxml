@@ -1,103 +1,123 @@
 <!-- ============================================
-     index.wxml — Home Page
+     index.wxml — Home Page | UI UX Pro Max
      ============================================ -->
 <view class="page">
 
   <!-- Hero Section -->
   <view class="hero">
     <view class="hero-gradient"></view>
+    <view class="hero-shape hero-shape-1"></view>
+    <view class="hero-shape hero-shape-2"></view>
     <view class="hero-content">
-      <text class="hero-greeting">今日复习</text>
+      <view class="hero-label-row">
+        <view class="hero-label-dot"></view>
+        <text class="hero-greeting">TODAY'S REVIEW</text>
+      </view>
       <view class="hero-count-wrap">
         <text class="hero-count">{{count}}</text>
-        <text class="hero-unit">张</text>
+        <text class="hero-unit">cards</text>
       </view>
-      <text class="hero-sub">待复习卡片</text>
+      <text class="hero-sub">due for review</text>
 
-      <!-- Streak Indicator -->
+      <!-- Streak Indicator — geometric flame instead of emoji -->
       <view class="streak-badge" wx:if="{{streak > 0}}">
-        <text class="streak-icon">🔥</text>
-        <text class="streak-text">已连续复习 {{streak}} 天</text>
+        <view class="streak-flame">
+          <view class="streak-flame-core"></view>
+        </view>
+        <text class="streak-text">{{streak}} day streak</text>
       </view>
     </view>
   </view>
 
-  <!-- Main Actions -->
+  <!-- Main Action: Start Review -->
   <view class="actions" wx:if="{{count > 0}}">
     <button class="btn-review" bindtap="startReview">
-      <text class="btn-review-icon">▶</text>
-      <text class="btn-review-text">开始复习</text>
+      <view class="btn-review-icon-circle">
+        <view class="geo-play"></view>
+      </view>
+      <text class="btn-review-text">Start Review</text>
     </button>
   </view>
 
   <!-- Empty State -->
   <view class="empty-state fade-in" wx:else>
-    <view class="empty-state-icon-wrap">
-      <text class="empty-state-emoji">✨</text>
+    <view class="empty-state-geo">
+      <view class="geo-diamond" style="width:48rpx;height:48rpx;background:linear-gradient(135deg,#0891B2,#06B6D4);"></view>
+      <view class="empty-stars">
+        <view class="empty-star s1"></view>
+        <view class="empty-star s2"></view>
+        <view class="empty-star s3"></view>
+      </view>
     </view>
-    <text class="empty-state-title">全部完成！</text>
-    <text class="empty-state-desc">今天没有待复习的卡片，<text style="display:block">去创建新牌组开始学习吧</text></text>
-    <button class="btn-outline-empty" bindtap="goCreate">
-      <text class="btn-outline-icon">+</text>
-      <text>创建新牌组</text>
+    <text class="empty-state-title">All Done</text>
+    <text class="empty-state-desc">No cards due today.<text style="display:block">Create a new deck to keep learning</text></text>
+    <button class="btn-outline" bindtap="goCreate">
+      <view class="geo-plus" style="width:22rpx;height:22rpx;margin-right:10rpx;"></view>
+      <text>New Deck</text>
     </button>
   </view>
 
   <!-- Stats Section -->
   <view class="stats-section">
-    <text class="section-title">学习统计</text>
+    <text class="stats-heading">Learning Stats</text>
     <view class="stats-grid">
-      <view class="stat-card fade-in fade-in-1">
-        <view class="stat-icon-wrap stat-icon-cards">
-          <text class="stat-icon">▦</text>
+      <view class="stat-card fade-in fade-in-1 tappable">
+        <view class="stat-icon-box stat-icon-box-cards">
+          <view class="geo-stack">
+            <view class="geo-stack-card"></view>
+            <view class="geo-stack-card"></view>
+            <view class="geo-stack-card"></view>
+          </view>
         </view>
         <text class="stat-num">{{totalCards}}</text>
-        <text class="stat-label">总卡片</text>
+        <text class="stat-label">Total Cards</text>
       </view>
-      <view class="stat-card fade-in fade-in-2">
-        <view class="stat-icon-wrap stat-icon-decks">
-          <text class="stat-icon">▤</text>
+      <view class="stat-card fade-in fade-in-2 tappable" bindtap="goDecks">
+        <view class="stat-icon-box stat-icon-box-decks">
+          <view class="geo-square" style="background:#0891B2;"></view>
+          <view class="geo-square" style="background:#06B6D4;position:absolute;top:4rpx;left:4rpx;"></view>
         </view>
         <text class="stat-num">{{totalDecks}}</text>
-        <text class="stat-label">牌组数</text>
+        <text class="stat-label">Decks</text>
       </view>
-      <view class="stat-card fade-in fade-in-3">
-        <view class="stat-icon-wrap stat-icon-reviewed">
-          <text class="stat-icon">✓</text>
+      <view class="stat-card fade-in fade-in-3 tappable">
+        <view class="stat-icon-box stat-icon-box-reviewed">
+          <view class="geo-check" style="color:#059669;"></view>
         </view>
         <text class="stat-num">{{reviewedToday}}</text>
-        <text class="stat-label">今日已复习</text>
+        <text class="stat-label">Reviewed</text>
       </view>
     </view>
   </view>
 
   <!-- Quick Links -->
   <view class="quick-links">
-    <text class="section-title">快捷操作</text>
+    <text class="stats-heading">Quick Actions</text>
     <view class="link-cards">
-      <view class="link-card fade-in fade-in-2" bindtap="goDecks">
-        <view class="link-icon-wrap link-icon-decks">
-          <text class="link-icon">📚</text>
+      <view class="link-card fade-in fade-in-2 tappable" bindtap="goDecks">
+        <view class="link-icon-box link-icon-box-decks">
+          <view class="geo-square" style="background:linear-gradient(135deg,#0891B2,#06B6D4);width:28rpx;height:28rpx;border-radius:6rpx;"></view>
+          <view class="geo-square" style="background:rgba(8,145,178,0.3);width:20rpx;height:20rpx;border-radius:4rpx;position:absolute;top:-4rpx;right:-4rpx;"></view>
         </view>
         <view class="link-info">
-          <text class="link-title">我的牌组</text>
-          <text class="link-desc">管理所有卡片</text>
+          <text class="link-title">My Decks</text>
+          <text class="link-desc">Manage all cards</text>
         </view>
-        <text class="link-arrow">→</text>
+        <view class="geo-chevron-right" style="color:#94A3B8;"></view>
       </view>
-      <view class="link-card fade-in fade-in-3" bindtap="goCreate">
-        <view class="link-icon-wrap link-icon-create">
-          <text class="link-icon">✏️</text>
+      <view class="link-card fade-in fade-in-3 tappable" bindtap="goCreate">
+        <view class="link-icon-box link-icon-box-create">
+          <view class="geo-star" style="background:linear-gradient(135deg,#D97706,#F59E0B);width:32rpx;height:32rpx;"></view>
         </view>
         <view class="link-info">
-          <text class="link-title">新建牌组</text>
-          <text class="link-desc">AI 自动生成闪卡</text>
+          <text class="link-title">New Deck</text>
+          <text class="link-desc">AI auto-generates cards</text>
         </view>
-        <text class="link-arrow">→</text>
+        <view class="geo-chevron-right" style="color:#94A3B8;"></view>
       </view>
     </view>
   </view>
 
-  <!-- Bottom spacer for tab bar -->
+  <!-- Bottom spacer -->
   <view class="bottom-spacer"></view>
 </view>

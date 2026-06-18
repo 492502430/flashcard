@@ -1,11 +1,12 @@
 /* ============================================
-   index.wxss — Home Page Styles
+   index.wxss — Home Page | UI UX Pro Max
    ============================================ */
 
 .page {
   position: relative;
   min-height: 100vh;
-  padding-bottom: 120rpx; /* tab bar */
+  padding: 16rpx 32rpx 120rpx;
+  box-sizing: border-box;
 }
 
 /* ============================================
@@ -15,10 +16,9 @@
   position: relative;
   border-radius: 32rpx;
   overflow: hidden;
-  margin: 16rpx 0 24rpx;
+  margin: 0 0 32rpx;
   background: linear-gradient(145deg, #0F172A 0%, #1E293B 40%, #0F172A 100%);
 }
-
 .hero-gradient {
   position: absolute;
   top: -60rpx;
@@ -26,30 +26,57 @@
   width: 320rpx;
   height: 320rpx;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(8, 145, 178, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(8,145,178,0.25) 0%, transparent 70%);
   pointer-events: none;
 }
-
+.hero-shape {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hero-shape-1 {
+  bottom: -40rpx;
+  left: -20rpx;
+  width: 180rpx;
+  height: 180rpx;
+  background: radial-gradient(circle, rgba(5,150,105,0.12) 0%, transparent 70%);
+}
+.hero-shape-2 {
+  top: 20rpx;
+  left: 60%;
+  width: 100rpx;
+  height: 100rpx;
+  background: radial-gradient(circle, rgba(8,145,178,0.1) 0%, transparent 70%);
+}
 .hero-content {
   position: relative;
   padding: 56rpx 40rpx;
   z-index: 1;
 }
-
+.hero-label-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+.hero-label-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: #06B6D4;
+  margin-right: 10rpx;
+}
 .hero-greeting {
-  font-size: 28rpx;
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: 500;
-  letter-spacing: 2rpx;
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.55);
+  font-weight: 600;
+  letter-spacing: 3rpx;
   text-transform: uppercase;
 }
-
 .hero-count-wrap {
   display: flex;
   align-items: baseline;
-  margin: 16rpx 0 8rpx;
+  margin: 12rpx 0 6rpx;
 }
-
 .hero-count {
   font-size: 120rpx;
   font-weight: 800;
@@ -58,39 +85,61 @@
   font-feature-settings: "tnum";
   letter-spacing: -4rpx;
 }
-
 .hero-unit {
-  font-size: 32rpx;
+  font-size: 28rpx;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255,255,255,0.65);
   margin-left: 12rpx;
 }
-
 .hero-sub {
   font-size: 26rpx;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255,255,255,0.4);
   font-weight: 400;
 }
 
-/* Streak Badge */
+/* Streak Badge — geometric flame */
 .streak-badge {
   display: inline-flex;
   align-items: center;
-  margin-top: 24rpx;
+  margin-top: 28rpx;
   padding: 10rpx 24rpx;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255,255,255,0.08);
   border-radius: 20rpx;
-  border: 1rpx solid rgba(255, 255, 255, 0.15);
+  border: 1rpx solid rgba(255,255,255,0.12);
 }
-
-.streak-icon {
-  font-size: 28rpx;
-  margin-right: 8rpx;
+.streak-flame {
+  position: relative;
+  width: 28rpx;
+  height: 28rpx;
+  margin-right: 10rpx;
 }
-
+.streak-flame::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 14rpx solid transparent;
+  border-right: 14rpx solid transparent;
+  border-bottom: 28rpx solid #F59E0B;
+}
+.streak-flame-core {
+  position: absolute;
+  bottom: 4rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8rpx solid transparent;
+  border-right: 8rpx solid transparent;
+  border-bottom: 18rpx solid #FBBF24;
+  z-index: 1;
+}
 .streak-text {
   font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255,255,255,0.8);
   font-weight: 500;
 }
 
@@ -100,7 +149,6 @@
 .actions {
   margin-bottom: 40rpx;
 }
-
 .btn-review {
   display: flex;
   align-items: center;
@@ -110,27 +158,26 @@
   background: linear-gradient(135deg, #0891B2 0%, #06B6D4 100%);
   border-radius: 24rpx;
   border: none;
-  box-shadow: 0 12rpx 32rpx rgba(8, 145, 178, 0.3);
-  transition: all 0.2s ease;
+  box-shadow: 0 12rpx 32rpx rgba(8,145,178,0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .btn-review:active {
   transform: scale(0.97);
-  box-shadow: 0 6rpx 16rpx rgba(8, 145, 178, 0.2);
+  box-shadow: 0 6rpx 16rpx rgba(8,145,178,0.2);
 }
-
-.btn-review-icon {
+.btn-review-icon-circle {
   width: 56rpx;
   height: 56rpx;
-  line-height: 56rpx;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  color: #FFFFFF;
-  font-size: 28rpx;
-  text-align: center;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-right: 20rpx;
 }
-
+.btn-review-icon-circle .geo-play {
+  margin-left: 4rpx;
+}
 .btn-review-text {
   font-size: 34rpx;
   font-weight: 700;
@@ -141,44 +188,29 @@
 /* ============================================
    Empty State
    ============================================ */
-.empty-state-icon-wrap {
-  width: 160rpx;
-  height: 160rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #F0FDFA 0%, #E0F2FE 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 32rpx;
-  box-shadow: 0 8rpx 24rpx rgba(8, 145, 178, 0.08);
+.empty-stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
-
-.empty-state-emoji {
-  font-size: 72rpx;
+.empty-star {
+  position: absolute;
+  width: 12rpx;
+  height: 12rpx;
+  transform: rotate(45deg);
+  border-radius: 2rpx;
+  background: #0891B2;
+  animation: starTwinkle 2s ease-in-out infinite;
 }
-
-.btn-outline-empty {
-  display: inline-flex;
-  align-items: center;
-  padding: 24rpx 40rpx;
-  background: var(--color-surface);
-  border: 2rpx solid var(--color-accent);
-  border-radius: 24rpx;
-  color: var(--color-accent);
-  font-size: 28rpx;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.btn-outline-empty:active {
-  background: rgba(8, 145, 178, 0.05);
-  transform: scale(0.97);
-}
-
-.btn-outline-icon {
-  font-size: 32rpx;
-  margin-right: 10rpx;
-  font-weight: 300;
+.empty-star.s1 { top: 20rpx; left: 30rpx; animation-delay: 0s; }
+.empty-star.s2 { top: 40rpx; right: 25rpx; animation-delay: 0.6s; background: #06B6D4; }
+.empty-star.s3 { bottom: 30rpx; left: 40rpx; animation-delay: 1.2s; background: #059669; }
+@keyframes starTwinkle {
+  0%, 100% { opacity: 1; transform: rotate(45deg) scale(1); }
+  50%      { opacity: 0.4; transform: rotate(45deg) scale(0.6); }
 }
 
 /* ============================================
@@ -187,35 +219,31 @@
 .stats-section {
   margin-bottom: 40rpx;
 }
-
-.section-title {
+.stats-heading {
+  display: block;
   font-size: 30rpx;
   font-weight: 700;
   color: var(--color-text-primary);
   margin-bottom: 20rpx;
 }
-
 .stats-grid {
   display: flex;
   gap: 16rpx;
 }
-
 .stat-card {
   flex: 1;
   background: var(--color-surface);
   border-radius: 20rpx;
-  padding: 28rpx 20rpx;
+  padding: 28rpx 16rpx;
   text-align: center;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .stat-card:active {
-  transform: scale(0.97);
-  box-shadow: var(--shadow-md);
+  transform: scale(0.96);
+  box-shadow: var(--shadow-elevated);
 }
-
-.stat-icon-wrap {
+.stat-icon-box {
   width: 64rpx;
   height: 64rpx;
   border-radius: 16rpx;
@@ -223,24 +251,33 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto 16rpx;
+  position: relative;
 }
-
-.stat-icon-cards {
+.stat-icon-box-cards {
   background: #EFF6FF;
 }
-
-.stat-icon-decks {
+.stat-icon-box-decks {
   background: #F0FDFA;
 }
-
-.stat-icon-reviewed {
+.stat-icon-box-reviewed {
   background: #FEF3C7;
 }
-
-.stat-icon {
-  font-size: 30rpx;
+/* Stack-of-cards geometric */
+.geo-stack {
+  position: relative;
+  width: 32rpx;
+  height: 40rpx;
 }
-
+.geo-stack-card {
+  position: absolute;
+  width: 32rpx;
+  height: 24rpx;
+  border-radius: 4rpx;
+  background: #0891B2;
+}
+.geo-stack-card:nth-child(1) { top: 0; left: 0; opacity: 1; }
+.geo-stack-card:nth-child(2) { top: 6rpx; left: 4rpx; opacity: 0.6; }
+.geo-stack-card:nth-child(3) { top: 12rpx; left: 8rpx; opacity: 0.3; }
 .stat-num {
   display: block;
   font-size: 44rpx;
@@ -249,11 +286,10 @@
   line-height: 1.2;
   font-feature-settings: "tnum";
 }
-
 .stat-label {
   display: block;
   font-size: 22rpx;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-muted);
   margin-top: 6rpx;
 }
 
@@ -263,29 +299,25 @@
 .quick-links {
   margin-bottom: 40rpx;
 }
-
 .link-cards {
   display: flex;
   flex-direction: column;
   gap: 16rpx;
 }
-
 .link-card {
   display: flex;
   align-items: center;
   background: var(--color-surface);
   border-radius: 20rpx;
-  padding: 28rpx 28rpx;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease;
+  padding: 28rpx;
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .link-card:active {
   transform: scale(0.985);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-elevated);
 }
-
-.link-icon-wrap {
+.link-icon-box {
   width: 72rpx;
   height: 72rpx;
   border-radius: 18rpx;
@@ -294,24 +326,17 @@
   justify-content: center;
   margin-right: 20rpx;
   flex-shrink: 0;
+  position: relative;
 }
-
-.link-icon-decks {
+.link-icon-box-decks {
   background: linear-gradient(135deg, #E0F2FE, #CFFAFE);
 }
-
-.link-icon-create {
+.link-icon-box-create {
   background: linear-gradient(135deg, #FEF3C7, #FDE68A);
 }
-
-.link-icon {
-  font-size: 36rpx;
-}
-
 .link-info {
   flex: 1;
 }
-
 .link-title {
   display: block;
   font-size: 30rpx;
@@ -319,16 +344,9 @@
   color: var(--color-text-primary);
   margin-bottom: 4rpx;
 }
-
 .link-desc {
   font-size: 24rpx;
-  color: var(--color-text-tertiary);
-}
-
-.link-arrow {
-  font-size: 32rpx;
-  color: var(--color-text-tertiary);
-  font-weight: 300;
+  color: var(--color-text-muted);
 }
 
 .bottom-spacer {

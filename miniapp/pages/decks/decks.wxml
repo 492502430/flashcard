@@ -1,40 +1,42 @@
 <!-- ============================================
-     decks.wxml — Deck List Page
+     decks.wxml — Deck List | UI UX Pro Max
      ============================================ -->
 <view class="page">
 
   <!-- Header -->
   <view class="header">
-    <text class="header-title">我的牌组</text>
-    <view class="header-action" bindtap="goCreate">
-      <text class="header-action-icon">+</text>
-      <text class="header-action-text">新建</text>
+    <text class="header-title">My Decks</text>
+    <view class="header-action tappable" bindtap="goCreate">
+      <view class="geo-plus" style="width:22rpx;height:22rpx;color:#0891B2;"></view>
+      <text class="header-action-text">New</text>
     </view>
   </view>
 
   <!-- Deck Grid -->
   <view class="deck-grid" wx:if="{{decks.length > 0}}">
     <view
-      class="deck-card fade-in {{index % 3 === 0 ? 'deck-0' : index % 3 === 1 ? 'deck-1' : 'deck-2'}}"
+      class="deck-card fade-in {{index % 3 === 0 ? 'deck-theme-0' : index % 3 === 1 ? 'deck-theme-1' : 'deck-theme-2'}} tappable"
       wx:for="{{decks}}"
       wx:key="id"
       bindtap="openDeck"
       data-id="{{item.id}}"
     >
-      <!-- Gradient top section -->
+      <!-- Geometric cover section -->
       <view class="deck-cover">
-        <view class="deck-cover-pattern"></view>
-        <text class="deck-cover-icon">{{item.icon || '📝'}}</text>
+        <view class="deck-cover-shape"></view>
+        <view class="deck-cover-icon">
+          <view class="deck-geo-icon {{item.geoStyle}}"></view>
+        </view>
       </view>
 
-      <!-- Content -->
+      <!-- Deck info -->
       <view class="deck-body">
         <text class="deck-title">{{item.title}}</text>
         <view class="deck-meta">
           <view class="deck-badge">
-            <text class="deck-badge-text">{{item.card_count}} 张</text>
+            <text class="deck-badge-text">{{item.card_count}} cards</text>
           </view>
-          <text class="deck-due" wx:if="{{item.due_count > 0}}">{{item.due_count}} 待复习</text>
+          <text class="deck-due" wx:if="{{item.due_count > 0}}">{{item.due_count}} due</text>
         </view>
       </view>
     </view>
@@ -42,17 +44,20 @@
 
   <!-- Empty State -->
   <view class="empty-state fade-in" wx:else>
-    <view class="empty-state-illustration">
-      <text class="empty-emoji">📦</text>
+    <view class="empty-state-geo">
+      <view class="geo-box-stack">
+        <view class="geo-box"></view>
+        <view class="geo-box"></view>
+        <view class="geo-box"></view>
+      </view>
     </view>
-    <text class="empty-state-title">还没有牌组</text>
-    <text class="empty-state-desc">创建你的第一个牌组，<text style="display:block">AI 将自动为你生成闪卡</text></text>
-    <button class="btn-outline-empty" bindtap="goCreate">
-      <text class="btn-outline-icon">+</text>
-      <text>创建第一个牌组</text>
+    <text class="empty-state-title">No Decks Yet</text>
+    <text class="empty-state-desc">Create your first deck and<text style="display:block">AI will generate flashcards for you</text></text>
+    <button class="btn-outline" bindtap="goCreate">
+      <view class="geo-plus" style="width:22rpx;height:22rpx;margin-right:10rpx;"></view>
+      <text>Create First Deck</text>
     </button>
   </view>
 
-  <!-- Bottom spacer -->
   <view class="bottom-spacer"></view>
 </view>

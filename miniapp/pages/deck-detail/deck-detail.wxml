@@ -1,58 +1,64 @@
 <!-- ============================================
-     deck-detail.wxml — Deck Detail Page
+     deck-detail.wxml — Deck Detail | UI UX Pro Max
      ============================================ -->
 <view class="page">
 
   <!-- Deck Header -->
   <view class="deck-header">
-    <view class="deck-header-bg"></view>
+    <view class="deck-header-glow"></view>
+    <view class="deck-header-shape"></view>
     <view class="deck-header-content">
       <view class="deck-header-top">
-        <view class="back-btn" bindtap="goBack">
-          <text class="back-arrow">←</text>
+        <view class="back-btn tappable" bindtap="goBack">
+          <view class="geo-chevron-left" style="color:#FFFFFF;"></view>
         </view>
-        <text class="deck-header-icon">{{deck.icon || '📝'}}</text>
+        <view class="deck-header-geo {{deck.geoStyle || 'geo-a'}}"></view>
       </view>
       <text class="deck-header-title">{{deck.title}}</text>
+
+      <!-- Stats -->
       <view class="deck-header-meta">
         <view class="meta-item">
           <text class="meta-num">{{deck.card_count || cards.length}}</text>
-          <text class="meta-label">总卡片</text>
+          <text class="meta-label">Cards</text>
         </view>
         <view class="meta-divider"></view>
         <view class="meta-item">
           <text class="meta-num meta-new">{{newCount}}</text>
-          <text class="meta-label">新卡片</text>
+          <text class="meta-label">New</text>
         </view>
         <view class="meta-divider"></view>
         <view class="meta-item">
           <text class="meta-num meta-due">{{dueCount}}</text>
-          <text class="meta-label">待复习</text>
+          <text class="meta-label">Due</text>
         </view>
       </view>
+
       <button class="btn-start-review" bindtap="startReview" wx:if="{{dueCount > 0}}">
-        <text class="btn-start-icon">▶</text>
-        <text>开始复习</text>
+        <view class="btn-start-icon-circle">
+          <view class="geo-play"></view>
+        </view>
+        <text>Start Review</text>
       </button>
     </view>
   </view>
 
   <!-- Card List -->
   <view class="card-list-header">
-    <text class="card-list-title">全部卡片</text>
-    <text class="card-list-count">{{cards.length}} 张</text>
+    <text class="card-list-title">All Cards</text>
+    <text class="card-list-count">{{cards.length}} cards</text>
   </view>
 
   <view class="card-list" wx:if="{{cards.length > 0}}">
-    <view class="card-item fade-in" wx:for="{{cards}}" wx:key="id" style="animation-delay: {{index * 0.03}}s">
-      <view class="card-item-state {{item.state === 'new' ? 'state-new' : item.state === 'learning' ? 'state-learning' : 'state-review'}}"></view>
+    <view class="card-item fade-in tappable" wx:for="{{cards}}" wx:key="id" style="animation-delay:{{index * 0.03}}s">
+      <view class="card-state-bar {{item.state === 'new' ? 'state-new' : item.state === 'learning' ? 'state-learning' : 'state-review'}}"></view>
       <view class="card-item-body">
         <text class="card-item-question">{{item.question}}</text>
         <text class="card-item-answer">{{item.answer}}</text>
       </view>
       <view class="card-item-badge">
-        <text class="card-item-state-text {{item.state === 'new' ? 'state-text-new' : item.state === 'learning' ? 'state-text-learning' : 'state-text-review'}}">
-          {{item.state === 'new' ? '新' : item.state === 'learning' ? '学习中' : '复习'}}
+        <text class="card-state-label {{item.state === 'new' ? 'state-label-new' : item.state === 'learning' ? 'state-label-learning' : 'state-label-review'}}">
+          {{item.state === 'new' ? 'New' : item.state === 'learning' ? 'Learning' : 'Review'}}
         </text>
       </view>
     </view>
@@ -60,11 +66,14 @@
 
   <!-- Empty State -->
   <view class="empty-state fade-in" wx:else>
-    <view class="empty-state-icon-wrap">
-      <text class="empty-state-emoji">🃏</text>
+    <view class="empty-state-geo">
+      <view class="geo-rect-stack">
+        <view class="geo-rect"></view>
+        <view class="geo-rect"></view>
+      </view>
     </view>
-    <text class="empty-state-title">暂无卡片</text>
-    <text class="empty-state-desc">这个牌组还没有卡片</text>
+    <text class="empty-state-title">No Cards</text>
+    <text class="empty-state-desc">This deck has no cards yet</text>
   </view>
 
   <view class="bottom-spacer"></view>

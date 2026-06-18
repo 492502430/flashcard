@@ -15,11 +15,11 @@ Page({
       header: { Authorization: 'Bearer ' + app.globalData.token },
       success: (res) => {
         const decks = res.data || [];
-        // Add placeholder icons based on index
-        const icons = ['📝', '🧠', '📚', '💡', '🎯', '🔬', '🌍', '📖', '✍️'];
+        /* Geometric icon style classes — NO emoji */
+        const geoStyles = ['geo-a','geo-b','geo-c','geo-d','geo-e','geo-f','geo-g','geo-h','geo-i'];
         const enriched = decks.map((d, i) => ({
           ...d,
-          icon: d.icon || icons[i % icons.length]
+          geoStyle: d.geoStyle || geoStyles[i % geoStyles.length]
         }));
         this.setData({ decks: enriched });
       }

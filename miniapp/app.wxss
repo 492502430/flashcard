@@ -1,44 +1,44 @@
 /* ============================================
-   FlashCard Mini-Program — Global Styles
-   Design System: Linear/Notion-inspired
+   FlashCard Mini-Program — Global Design System
+   UI UX Pro Max | Education Tool Theme
    ============================================ */
 
 page {
+  /* === Color System === */
   --color-primary: #0F172A;
-  --color-accent: #0891B2;
-  --color-accent-light: #06B6D4;
-  --color-success: #059669;
+  --color-secondary: #0891B2;
+  --color-secondary-light: #06B6D4;
+  --color-accent: #059669;
   --color-warning: #D97706;
-  --color-danger: #DC2626;
+  --color-error: #DC2626;
+
   --color-bg: #F8FAFC;
   --color-surface: #FFFFFF;
   --color-border: #E2E8F0;
   --color-text-primary: #0F172A;
   --color-text-secondary: #475569;
-  --color-text-tertiary: #94A3B8;
+  --color-text-muted: #94A3B8;
   --color-text-inverse: #FFFFFF;
+
+  /* === Radius === */
   --radius-sm: 12rpx;
   --radius-md: 16rpx;
   --radius-lg: 20rpx;
   --radius-xl: 24rpx;
-  --shadow-sm: 0 2rpx 8rpx rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 4rpx 16rpx rgba(15, 23, 42, 0.06);
-  --shadow-lg: 0 8rpx 32rpx rgba(15, 23, 42, 0.08);
-  --shadow-xl: 0 16rpx 48rpx rgba(15, 23, 42, 0.12);
+  --radius-2xl: 32rpx;
 
-  background-color: var(--color-bg);
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  /* === Shadows (subtle layered, no hard shadows) === */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-elevated: 0 2px 8px rgba(0, 0, 0, 0.12);
+  --shadow-button: 0 8rpx 24rpx rgba(8, 145, 178, 0.2);
+
+  /* === Typography === */
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
   font-size: 28rpx;
   color: var(--color-text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-}
-
-/* Container */
-.container {
-  padding: 24rpx 32rpx;
-  min-height: 100vh;
-  box-sizing: border-box;
+  background-color: var(--color-bg);
 }
 
 /* ============================================
@@ -47,24 +47,25 @@ page {
 
 /* Primary Button */
 .btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, #0891B2 0%, #06B6D4 100%);
   color: var(--color-text-inverse);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   padding: 28rpx 48rpx;
   font-size: 30rpx;
   font-weight: 600;
   border: none;
   text-align: center;
-  box-shadow: 0 8rpx 24rpx rgba(8, 145, 178, 0.25);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-button);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   letter-spacing: 1rpx;
 }
-
 .btn-primary:active {
   transform: scale(0.97);
-  box-shadow: 0 4rpx 12rpx rgba(8, 145, 178, 0.2);
+  box-shadow: 0 4rpx 12rpx rgba(8, 145, 178, 0.15);
 }
-
 .btn-primary[disabled] {
   opacity: 0.45;
   box-shadow: none;
@@ -73,36 +74,37 @@ page {
 
 /* Outline Button */
 .btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
-  color: var(--color-accent);
-  border: 2rpx solid var(--color-accent);
-  border-radius: var(--radius-lg);
+  color: var(--color-secondary);
+  border: 2rpx solid var(--color-secondary);
+  border-radius: var(--radius-xl);
   padding: 24rpx 40rpx;
   font-size: 28rpx;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .btn-outline:active {
-  background: rgba(8, 145, 178, 0.06);
+  background: rgba(8, 145, 178, 0.08);
   transform: scale(0.97);
 }
 
 /* Card Base */
 .card {
   background: var(--color-surface);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   padding: 32rpx;
   margin-bottom: 24rpx;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
-
 .card:active {
   transform: scale(0.985);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-elevated);
 }
 
 /* Badge */
@@ -114,17 +116,14 @@ page {
   font-size: 22rpx;
   font-weight: 600;
 }
-
 .badge-primary {
   background: rgba(8, 145, 178, 0.1);
-  color: var(--color-accent);
+  color: var(--color-secondary);
 }
-
 .badge-success {
   background: rgba(5, 150, 105, 0.1);
-  color: var(--color-success);
+  color: var(--color-accent);
 }
-
 .badge-warning {
   background: rgba(217, 119, 6, 0.1);
   color: var(--color-warning);
@@ -139,8 +138,7 @@ page {
   padding: 100rpx 48rpx;
   text-align: center;
 }
-
-.empty-state-icon {
+.empty-state-geo {
   width: 160rpx;
   height: 160rpx;
   border-radius: 50%;
@@ -148,20 +146,18 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 72rpx;
   margin-bottom: 32rpx;
+  position: relative;
 }
-
 .empty-state-title {
   font-size: 32rpx;
   font-weight: 700;
   color: var(--color-text-primary);
   margin-bottom: 12rpx;
 }
-
 .empty-state-desc {
   font-size: 26rpx;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-muted);
   margin-bottom: 40rpx;
   line-height: 1.6;
 }
@@ -180,49 +176,212 @@ page {
   align-items: center;
   margin-bottom: 24rpx;
 }
-
 .section-title {
   font-size: 30rpx;
   font-weight: 700;
   color: var(--color-text-primary);
 }
-
 .section-link {
   font-size: 26rpx;
-  color: var(--color-accent);
+  color: var(--color-secondary);
   font-weight: 500;
 }
+.section-link:active {
+  opacity: 0.7;
+}
 
-/* Skeleton loading */
+/* ============================================
+   Geometric Icon System (NO EMOJI)
+   ============================================ */
+
+/* Circle shape */
+.geo-circle {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+}
+.geo-circle-sm { width: 24rpx; height: 24rpx; }
+.geo-circle-lg { width: 48rpx; height: 48rpx; }
+.geo-circle-xl { width: 72rpx; height: 72rpx; }
+
+/* Diamond shape */
+.geo-diamond {
+  width: 32rpx;
+  height: 32rpx;
+  transform: rotate(45deg);
+  border-radius: 4rpx;
+}
+.geo-diamond-sm { width: 24rpx; height: 24rpx; }
+
+/* Triangle up */
+.geo-triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 16rpx solid transparent;
+  border-right: 16rpx solid transparent;
+  border-bottom: 28rpx solid currentColor;
+}
+
+/* Triangle down */
+.geo-triangle-down {
+  width: 0;
+  height: 0;
+  border-left: 16rpx solid transparent;
+  border-right: 16rpx solid transparent;
+  border-top: 28rpx solid currentColor;
+}
+
+/* Square with rounded corners */
+.geo-square {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 6rpx;
+}
+
+/* Plus sign — two crossed bars */
+.geo-plus {
+  position: relative;
+  width: 28rpx;
+  height: 28rpx;
+}
+.geo-plus::before,
+.geo-plus::after {
+  content: '';
+  position: absolute;
+  background: currentColor;
+  border-radius: 2rpx;
+}
+.geo-plus::before {
+  width: 100%;
+  height: 4rpx;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+.geo-plus::after {
+  height: 100%;
+  width: 4rpx;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+/* Checkmark — using border trick */
+.geo-check {
+  width: 28rpx;
+  height: 16rpx;
+  border-left: 4rpx solid currentColor;
+  border-bottom: 4rpx solid currentColor;
+  transform: rotate(-45deg);
+  border-radius: 2rpx;
+}
+
+/* Play triangle */
+.geo-play {
+  width: 0;
+  height: 0;
+  border-top: 16rpx solid transparent;
+  border-bottom: 16rpx solid transparent;
+  border-left: 28rpx solid currentColor;
+}
+
+/* Close X — two crossed bars */
+.geo-close {
+  position: relative;
+  width: 24rpx;
+  height: 24rpx;
+}
+.geo-close::before,
+.geo-close::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 3rpx;
+  background: currentColor;
+  border-radius: 2rpx;
+  top: 50%;
+  left: 0;
+}
+.geo-close::before { transform: translateY(-50%) rotate(45deg); }
+.geo-close::after  { transform: translateY(-50%) rotate(-45deg); }
+
+/* Arrow right — chevron */
+.geo-chevron-right {
+  width: 20rpx;
+  height: 20rpx;
+  border-top: 3rpx solid currentColor;
+  border-right: 3rpx solid currentColor;
+  transform: rotate(45deg);
+  border-radius: 1rpx;
+}
+
+/* Arrow left */
+.geo-chevron-left {
+  width: 20rpx;
+  height: 20rpx;
+  border-top: 3rpx solid currentColor;
+  border-left: 3rpx solid currentColor;
+  transform: rotate(-45deg);
+  border-radius: 1rpx;
+}
+
+/* Rotate / refresh arrow (partial circle) */
+.geo-rotate {
+  width: 24rpx;
+  height: 24rpx;
+  border: 3rpx solid currentColor;
+  border-radius: 50%;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  transform: rotate(-45deg);
+}
+
+/* Star — 4-point sparkle using diamond */
+.geo-star {
+  width: 32rpx;
+  height: 32rpx;
+  transform: rotate(45deg);
+  border-radius: 4rpx;
+}
+
+/* Horizontal bar (for charts) */
+.geo-bar {
+  width: 24rpx;
+  height: 6rpx;
+  border-radius: 3rpx;
+}
+
+/* ============================================
+   Skeleton Loading (shimmer)
+   ============================================ */
 .skeleton {
   background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: var(--radius-sm);
 }
-
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
+  0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
 
-/* Fade-in animation */
+/* ============================================
+   Animations
+   ============================================ */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20rpx); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
 .fade-in {
-  animation: fadeInUp 0.4s ease-out both;
+  animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
-
 .fade-in-1 { animation-delay: 0.05s; }
 .fade-in-2 { animation-delay: 0.1s; }
 .fade-in-3 { animation-delay: 0.15s; }
 .fade-in-4 { animation-delay: 0.2s; }
+
+/* Active state utility */
+.tappable:active {
+  transform: scale(0.97);
+  transition: transform 0.15s ease;
+}
