@@ -10,7 +10,7 @@
         </view>
         <view class="deck-header-geo {{deck.geoStyle || 'geo-a'}}"></view>
         <view class="delete-btn tappable" bindtap="confirmDelete">
-          <view class="geo-close" style="color:rgba(255,255,255,0.8);width:22rpx;height:22rpx;"></view>
+          <text class="delete-btn-text">删除</text>
         </view>
       </view>
       <text class="deck-header-title">{{deck.title}}</text>
