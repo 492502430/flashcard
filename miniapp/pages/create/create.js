@@ -44,23 +44,41 @@ Page({
   },
 
   uploadAndExtract(filePath) {
-    // Get token from storage if globalData is empty
     let token = app.globalData.token || wx.getStorageSync('token');
+    console.log('[upload] token exists:', !!token);
+
     if (!token) {
-      wx.showToast({ title: '未登录，请关闭小程序重试', icon: 'none' });
-      this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
+      // Token missing — re-login and retry
+      console.log('[upload] No token, re-logging...');
+      app.login();
+      wx.showLoading({ title: '登录中...' });
+      setTimeout(() => {
+        wx.hideLoading();
+        let retryToken = app.globalData.token || wx.getStorageSync('token');
+        if (retryToken) {
+          app.globalData.token = retryToken;
+          this.setData({ uploading: true, uploadProgress: 20 });
+          this.doUpload(filePath, retryToken);
+        } else {
+          wx.showToast({ title: '登录失败，请重启小程序', icon: 'none' });
+          this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
+        }
+      }, 2500);
       return;
     }
-    // Also save to globalData
-    app.globalData.token = token;
 
+    app.globalData.token = token;
     this.setData({ uploading: true, uploadProgress: 20 });
+    this.doUpload(filePath, token);
+  },
+
+  doUpload(filePath, token) {
 
     wx.uploadFile({
       url: app.globalData.apiBase + '/api/upload',
       filePath: filePath,
       name: 'file',
-      header: { Authorization: 'Bearer ' + app.globalData.token },
+      header: { Authorization: 'Bearer ' + token },
       success: (res) => {
         this.setData({ uploadProgress: 100 });
         try {
@@ -116,7 +134,7 @@ Page({
     wx.request({
       url: app.globalData.apiBase + '/api/decks',
       method: 'POST',
-      header: { Authorization: 'Bearer ' + app.globalData.token },
+      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
       data: { title: deckTitle, text: this.data.text },
       success: (res) => {
         this.setData({ generating: false });
