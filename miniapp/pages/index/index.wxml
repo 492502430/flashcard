@@ -1,5 +1,13 @@
 <!-- index.wxml — 首页 | UI UX Pro Max -->
 <view class="page">
+  <!-- Search Bar -->
+  <view class="search-bar" bindtap="openSearch">
+    <view class="search-bar-inner">
+      <view class="geo-magnify"></view>
+      <text class="search-placeholder">搜索卡片...</text>
+    </view>
+  </view>
+
   <!-- Hero -->
   <view class="hero">
     <view class="hero-gradient"></view>
@@ -33,6 +41,14 @@
   <!-- Stats — ALWAYS visible -->
   <view class="stats-section">
     <text class="stats-heading">学习统计</text>
+    <view class="week-chart" wx:if="{{weekStats.length > 0}}">
+      <view class="week-bars">
+        <view class="week-bar-item" wx:for="{{weekStats}}" wx:key="date">
+          <view class="week-bar-fill" style="height:{{item.height}}rpx;background:{{index === weekStats.length-1 ? 'linear-gradient(180deg,#7C3AED,#A78BFA)' : 'linear-gradient(180deg,rgba(124,58,237,0.3),rgba(167,139,250,0.3))'}};"></view>
+          <text class="week-bar-label">{{item.label}}</text>
+        </view>
+      </view>
+    </view>
     <view class="stats-grid">
       <view class="stat-card fade-in fade-in-1 tappable">
         <view class="stat-icon-box stat-icon-box-cards">
@@ -100,4 +116,52 @@
   </view>
 
   <view class="bottom-spacer"></view>
+
+  <!-- Search Modal Overlay -->
+  <view class="search-overlay {{showSearch ? 'search-overlay--visible' : ''}}" catchtouchmove="preventTouchMove">
+    <view class="search-modal">
+      <!-- Search header -->
+      <view class="search-modal-header">
+        <view class="search-input-wrap">
+          <view class="geo-magnify" style="color:#94A3B8;margin-right:16rpx;"></view>
+          <input class="search-input"
+            placeholder="输入关键词搜索"
+            value="{{keyword}}"
+            focus="{{showSearch}}"
+            bindinput="onSearchInput"
+            confirm-type="search"
+            bindconfirm="doSearch"
+            placeholder-style="color:#94A3B8;"
+          />
+          <view class="search-clear" wx:if="{{keyword}}" catchtap="clearSearch">
+            <view class="geo-close" style="width:20rpx;height:20rpx;color:#94A3B8;"></view>
+          </view>
+        </view>
+        <text class="search-cancel" bindtap="closeSearch">取消</text>
+      </view>
+
+      <!-- Results -->
+      <scroll-view class="search-results" scroll-y wx:if="{{keyword && searched}}">
+        <view wx:if="{{searchResults.length === 0}}" class="search-empty">
+          <text class="search-empty-text">未找到匹配的卡片</text>
+        </view>
+        <view wx:for="{{searchResults}}" wx:key="id" class="search-card">
+          <view class="search-card-deck">
+            <view class="geo-square" style="background:#7C3AED;width:20rpx;height:20rpx;border-radius:4rpx;margin-right:10rpx;"></view>
+            <text class="search-card-deck-text">{{item.deck_title}}</text>
+          </view>
+          <view class="search-card-q">{{item.question}}</view>
+          <view class="search-card-a">{{item.answer}}</view>
+        </view>
+      </scroll-view>
+
+      <!-- Initial hint -->
+      <view class="search-hint" wx:if="{{!keyword || !searched}}">
+        <view class="search-hint-icon">
+          <view class="geo-magnify" style="width:48rpx;height:48rpx;color:#C4B5FD;"></view>
+        </view>
+        <text class="search-hint-text">输入关键词搜索所有卡片</text>
+      </view>
+    </view>
+  </view>
 </view>

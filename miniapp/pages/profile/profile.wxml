@@ -58,6 +58,17 @@
   </view>
 
   <view class="menu-card" style="margin-top: 24rpx;">
+    <view class="menu-item tappable" bindtap="exportData">
+      <view class="menu-icon-wrap menu-icon-red">
+        <view class="menu-geo geo-download"></view>
+      </view>
+      <view class="menu-item-body">
+        <text class="menu-item-title">导出数据</text>
+        <text class="menu-item-desc">备份所有牌组和卡片</text>
+      </view>
+      <view class="geo-chevron-right"></view>
+    </view>
+
     <view class="menu-item tappable" bindtap="onMenuTap" data-action="about">
       <view class="menu-icon-wrap menu-icon-blue">
         <view class="menu-geo geo-info"></view>

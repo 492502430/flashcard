@@ -6,7 +6,12 @@ Page({
     totalCards: 0,
     totalDecks: 0,
     reviewedToday: 0,
-    streak: 0
+    streak: 0,
+    showSearch: false,
+    keyword: '',
+    searched: false,
+    searchResults: [],
+    searchTimer: null
   },
 
   onShow() {
@@ -46,6 +51,23 @@ Page({
         console.error('Failed to load decks:', err);
       }
     });
+
+    // Load weekly stats
+    wx.request({
+      url: app.globalData.apiBase + '/api/stats',
+      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
+      success: (res) => {
+        const stats = res.data || [];
+        const maxCount = Math.max(1, ...stats.map(s => s.count));
+        const days = ['日','一','二','三','四','五','六'];
+        const weekStats = stats.map(s => ({
+          ...s,
+          label: days[new Date(s.date).getDay()],
+          height: Math.max(4, Math.round(s.count / maxCount * 120))
+        }));
+        this.setData({ weekStats });
+      }
+    });
   },
 
   startReview() {
@@ -58,5 +80,55 @@ Page({
 
   goDecks() {
     wx.switchTab({ url: '/pages/decks/decks' });
+  },
+
+  // Search
+  openSearch() {
+    this.setData({ showSearch: true, searched: false, searchResults: [], keyword: '' });
+  },
+
+  closeSearch() {
+    this.setData({ showSearch: false, keyword: '', searched: false, searchResults: [] });
+  },
+
+  onSearchInput(e) {
+    const keyword = e.detail.value;
+    this.setData({ keyword, searched: false });
+
+    // Debounce search
+    if (this.data.searchTimer) clearTimeout(this.data.searchTimer);
+    this.data.searchTimer = setTimeout(() => {
+      if (keyword.trim()) {
+        this.doSearch();
+      }
+    }, 400);
+  },
+
+  doSearch() {
+    const keyword = this.data.keyword.trim();
+    if (!keyword) return;
+
+    wx.request({
+      url: app.globalData.apiBase + '/api/cards/search?q=' + encodeURIComponent(keyword),
+      header: { Authorization: 'Bearer ' + app.globalData.token },
+      success: (res) => {
+        this.setData({
+          searchResults: Array.isArray(res.data) ? res.data : [],
+          searched: true
+        });
+      },
+      fail: (err) => {
+        console.error('Search failed:', err);
+        this.setData({ searched: true, searchResults: [] });
+      }
+    });
+  },
+
+  clearSearch() {
+    this.setData({ keyword: '', searched: false, searchResults: [] });
+  },
+
+  preventTouchMove() {
+    // Prevent background scroll when modal is open
   }
 });

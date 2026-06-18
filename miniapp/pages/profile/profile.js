@@ -74,5 +74,27 @@ Page({
       default:
         wx.showToast({ title: '即将上线', icon: 'none' });
     }
+  },
+
+  exportData() {
+    wx.showLoading({ title: '导出中...' });
+    wx.request({
+      url: app.globalData.apiBase + '/api/export',
+      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
+      success: (res) => {
+        wx.hideLoading();
+        const data = JSON.stringify(res.data, null, 2);
+        wx.setClipboardData({
+          data,
+          success: () => {
+            wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
+          }
+        });
+      },
+      fail: () => {
+        wx.hideLoading();
+        wx.showToast({ title: '导出失败', icon: 'none' });
+      }
+    });
   }
 });

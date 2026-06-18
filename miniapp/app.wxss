@@ -351,6 +351,26 @@ page {
   border-radius: 3rpx;
 }
 
+/* Magnifying glass */
+.geo-magnify {
+  width: 28rpx;
+  height: 28rpx;
+  border: 3rpx solid currentColor;
+  border-radius: 50%;
+  position: relative;
+}
+.geo-magnify::after {
+  content: '';
+  position: absolute;
+  bottom: -4rpx;
+  right: -8rpx;
+  width: 8rpx;
+  height: 3rpx;
+  background: currentColor;
+  border-radius: 2rpx;
+  transform: rotate(45deg);
+}
+
 /* ============================================
    Skeleton Loading (shimmer)
    ============================================ */

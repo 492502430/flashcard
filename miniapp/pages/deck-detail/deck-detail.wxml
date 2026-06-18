@@ -43,7 +43,7 @@
   </view>
 
   <view class="card-list" wx:if="{{cards.length > 0}}">
-    <view class="card-item fade-in tappable" wx:for="{{cards}}" wx:key="id" style="animation-delay:{{index * 0.03}}s">
+    <view class="card-item fade-in tappable" wx:for="{{cards}}" wx:key="id" style="animation-delay:{{index * 0.03}}s" bindtap="openEditModal" data-id="{{item.id}}" data-question="{{item.question}}" data-answer="{{item.answer}}">
       <view class="card-state-bar {{item.state === 'new' ? 'state-new' : item.state === 'learning' ? 'state-learning' : 'state-review'}}"></view>
       <view class="card-item-body">
         <text class="card-item-question">{{item.question}}</text>
@@ -53,6 +53,9 @@
         <text class="card-state-label {{item.state === 'new' ? 'state-label-new' : item.state === 'learning' ? 'state-label-learning' : 'state-label-review'}}">
           {{item.state === 'new' ? '新' : item.state === 'learning' ? '学习中' : '已掌握'}}
         </text>
+      </view>
+      <view class="card-delete-icon tappable" catchtap="confirmDeleteCard" data-id="{{item.id}}">
+        <view class="geo-close" style="width:18rpx;height:18rpx;color:#DC2626;"></view>
       </view>
     </view>
   </view>
@@ -80,4 +83,29 @@
     <text class="empty-state-desc">这个牌组还没有生成卡片</text>
   </view>
   <view class="bottom-spacer"></view>
+</view>
+
+<!-- 编辑卡片弹窗 -->
+<view class="modal-mask" wx:if="{{showEditModal}}" bindtap="closeEditModal"></view>
+<view class="edit-modal {{showEditModal ? 'edit-modal-show' : ''}}">
+  <view class="edit-modal-header">
+    <text class="edit-modal-title">编辑卡片</text>
+    <view class="edit-modal-close tappable" bindtap="closeEditModal">
+      <view class="geo-close" style="width:20rpx;height:20rpx;color:var(--color-text-muted);"></view>
+    </view>
+  </view>
+  <view class="edit-modal-body">
+    <view class="edit-field">
+      <text class="edit-label">问题</text>
+      <textarea class="edit-textarea" placeholder="请输入问题" value="{{editQuestion}}" bindinput="onEditQuestionInput" auto-height maxlength="1000"></textarea>
+    </view>
+    <view class="edit-field">
+      <text class="edit-label">答案</text>
+      <textarea class="edit-textarea" placeholder="请输入答案" value="{{editAnswer}}" bindinput="onEditAnswerInput" auto-height maxlength="2000"></textarea>
+    </view>
+  </view>
+  <view class="edit-modal-footer">
+    <button class="edit-btn-cancel" bindtap="closeEditModal">取消</button>
+    <button class="edit-btn-save" bindtap="saveEditCard" disabled="{{editSaving}}">{{editSaving ? '保存中...' : '保存'}}</button>
+  </view>
 </view>

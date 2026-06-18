@@ -6,7 +6,13 @@ Page({
     cards: [],
     newCount: 0,
     dueCount: 0,
-    generating: true   // Assume generating until cards appear
+    generating: true,   // Assume generating until cards appear
+    // Edit modal state
+    showEditModal: false,
+    editCardId: '',
+    editQuestion: '',
+    editAnswer: '',
+    editSaving: false
   },
 
   onLoad(opts) {
@@ -92,6 +98,88 @@ Page({
       },
       fail: () => {
         wx.showToast({ title: '删除失败', icon: 'none' });
+      }
+    });
+  },
+
+  confirmDeleteCard(e) {
+    const cardId = e.currentTarget.dataset.id;
+    wx.showModal({
+      title: '删除卡片',
+      content: '确定要删除这张卡片吗？',
+      confirmText: '删除',
+      confirmColor: '#DC2626',
+      success: (res) => {
+        if (res.confirm) this.deleteCard(cardId);
+      }
+    });
+  },
+
+  deleteCard(cardId) {
+    wx.request({
+      url: app.globalData.apiBase + '/api/cards/' + cardId,
+      method: 'DELETE',
+      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
+      success: () => {
+        wx.showToast({ title: '已删除', icon: 'success' });
+        this.loadDeck();  // Refresh list
+      }
+    });
+  },
+
+  // ── Edit modal handlers ──
+
+  openEditModal(e) {
+    const { id, question, answer } = e.currentTarget.dataset;
+    this.setData({
+      showEditModal: true,
+      editCardId: id,
+      editQuestion: question,
+      editAnswer: answer,
+      editSaving: false
+    });
+  },
+
+  closeEditModal() {
+    this.setData({ showEditModal: false });
+  },
+
+  onEditQuestionInput(e) {
+    this.setData({ editQuestion: e.detail.value });
+  },
+
+  onEditAnswerInput(e) {
+    this.setData({ editAnswer: e.detail.value });
+  },
+
+  saveEditCard() {
+    const { editCardId, editQuestion, editAnswer } = this.data;
+    if (!editQuestion.trim() || !editAnswer.trim()) {
+      wx.showToast({ title: '问题和答案不能为空', icon: 'none' });
+      return;
+    }
+
+    this.setData({ editSaving: true });
+
+    wx.request({
+      url: app.globalData.apiBase + '/api/cards/' + editCardId,
+      method: 'PUT',
+      header: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
+      },
+      data: {
+        question: editQuestion.trim(),
+        answer: editAnswer.trim()
+      },
+      success: () => {
+        wx.showToast({ title: '已保存', icon: 'success' });
+        this.setData({ showEditModal: false, editSaving: false });
+        this.loadDeck();  // Refresh list
+      },
+      fail: () => {
+        wx.showToast({ title: '保存失败', icon: 'none' });
+        this.setData({ editSaving: false });
       }
     });
   }

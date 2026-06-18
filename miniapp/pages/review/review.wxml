@@ -14,6 +14,7 @@
       <view class="card-face card-front">
         <view class="card-face-inner">
           <view class="card-label-row"><view class="card-label-dot front-dot"></view><text class="card-label">问题</text></view>
+          <text class="card-deck-title" wx:if="{{card.deck_title}}">{{card.deck_title}}</text>
           <view class="card-text-wrap"><text class="card-text">{{card.question}}</text></view>
           <view class="card-tap-hint" wx:if="{{!flipped}}">
             <view class="geo-rotate" style="color:#94A3B8;width:20rpx;height:20rpx;"></view>

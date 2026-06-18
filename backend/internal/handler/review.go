@@ -17,6 +17,7 @@ func (h *Handler) GetDueCards(w http.ResponseWriter, r *http.Request) {
 	var cards []struct {
 		ID           string    `json:"id"`
 		DeckID       string    `json:"deck_id"`
+		DeckTitle    string    `json:"deck_title"`
 		Question     string    `json:"question"`
 		Answer       string    `json:"answer"`
 		State        string    `json:"state"`
@@ -27,7 +28,7 @@ func (h *Handler) GetDueCards(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.DB.Raw(`
-		SELECT c.id, c.deck_id, c.question, c.answer, c.state,
+		SELECT c.id, c.deck_id, d.title AS deck_title, c.question, c.answer, c.state,
 			c.stability, c.difficulty, c.review_count, c.next_review_at
 		FROM cards c
 		JOIN decks d ON c.deck_id = d.id
@@ -125,6 +126,7 @@ func (h *Handler) GetDeckReview(w http.ResponseWriter, r *http.Request) {
 	var cards []struct {
 		ID           string    `json:"id"`
 		DeckID       string    `json:"deck_id"`
+		DeckTitle    string    `json:"deck_title"`
 		Question     string    `json:"question"`
 		Answer       string    `json:"answer"`
 		State        string    `json:"state"`
@@ -135,7 +137,7 @@ func (h *Handler) GetDeckReview(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.DB.Raw(`
-		SELECT c.id, c.deck_id, c.question, c.answer, c.state,
+		SELECT c.id, c.deck_id, d.title AS deck_title, c.question, c.answer, c.state,
 			c.stability, c.difficulty, c.review_count, c.next_review_at
 		FROM cards c
 		JOIN decks d ON c.deck_id = d.id
