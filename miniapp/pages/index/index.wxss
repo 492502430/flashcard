@@ -17,7 +17,7 @@
   border-radius: 32rpx;
   overflow: hidden;
   margin: 0 0 32rpx;
-  background: linear-gradient(145deg, #0F172A 0%, #1E293B 40%, #0F172A 100%);
+  background: linear-gradient(145deg, #7C3AED 0%, #8B5CF6 40%, #7C3AED 100%);
 }
 .hero-gradient {
   position: absolute;
@@ -26,7 +26,7 @@
   width: 320rpx;
   height: 320rpx;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(8,145,178,0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%);
   pointer-events: none;
 }
 .hero-shape {
@@ -46,7 +46,7 @@
   left: 60%;
   width: 100rpx;
   height: 100rpx;
-  background: radial-gradient(circle, rgba(8,145,178,0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%);
 }
 .hero-content {
   position: relative;
@@ -62,7 +62,7 @@
   width: 10rpx;
   height: 10rpx;
   border-radius: 50%;
-  background: #06B6D4;
+  background: #10B981;
   margin-right: 10rpx;
 }
 .hero-greeting {
@@ -155,15 +155,15 @@
   justify-content: center;
   width: 100%;
   padding: 32rpx;
-  background: linear-gradient(135deg, #0891B2 0%, #06B6D4 100%);
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%);
   border-radius: 24rpx;
   border: none;
-  box-shadow: 0 12rpx 32rpx rgba(8,145,178,0.3);
+  box-shadow: 0 12rpx 32rpx rgba(5,150,105,0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-review:active {
   transform: scale(0.97);
-  box-shadow: 0 6rpx 16rpx rgba(8,145,178,0.2);
+  box-shadow: 0 6rpx 16rpx rgba(5,150,105,0.2);
 }
 .btn-review-icon-circle {
   width: 56rpx;
@@ -202,11 +202,11 @@
   height: 12rpx;
   transform: rotate(45deg);
   border-radius: 2rpx;
-  background: #0891B2;
+  background: #059669;
   animation: starTwinkle 2s ease-in-out infinite;
 }
 .empty-star.s1 { top: 20rpx; left: 30rpx; animation-delay: 0s; }
-.empty-star.s2 { top: 40rpx; right: 25rpx; animation-delay: 0.6s; background: #06B6D4; }
+.empty-star.s2 { top: 40rpx; right: 25rpx; animation-delay: 0.6s; background: #10B981; }
 .empty-star.s3 { bottom: 30rpx; left: 40rpx; animation-delay: 1.2s; background: #059669; }
 @keyframes starTwinkle {
   0%, 100% { opacity: 1; transform: rotate(45deg) scale(1); }
@@ -273,7 +273,7 @@
   width: 32rpx;
   height: 24rpx;
   border-radius: 4rpx;
-  background: #0891B2;
+  background: #059669;
 }
 .geo-stack-card:nth-child(1) { top: 0; left: 0; opacity: 1; }
 .geo-stack-card:nth-child(2) { top: 6rpx; left: 4rpx; opacity: 0.6; }
@@ -329,7 +329,7 @@
   position: relative;
 }
 .link-icon-box-decks {
-  background: linear-gradient(135deg, #E0F2FE, #CFFAFE);
+  background: linear-gradient(135deg, #EDE9FE, #DDD6FE);
 }
 .link-icon-box-create {
   background: linear-gradient(135deg, #FEF3C7, #FDE68A);

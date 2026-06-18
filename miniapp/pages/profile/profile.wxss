@@ -16,7 +16,7 @@
   flex-direction: column;
   align-items: center;
   padding: 48rpx 32rpx 32rpx;
-  background: linear-gradient(160deg, #0F172A 0%, #1E293B 100%);
+  background: linear-gradient(160deg, #7C3AED 0%, #8B5CF6 100%);
   border-radius: 32rpx;
   margin-bottom: 32rpx;
   position: relative;
@@ -29,7 +29,7 @@
   width: 200rpx;
   height: 200rpx;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(8,145,178,0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(139,92,246,0.18) 0%, transparent 70%);
   pointer-events: none;
 }
 .user-avatar-wrap {
@@ -41,11 +41,11 @@
   width: 120rpx;
   height: 120rpx;
   border-radius: 50%;
-  background: linear-gradient(135deg, #0891B2, #06B6D4);
+  background: linear-gradient(135deg, #7C3AED, #8B5CF6);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 12rpx 32rpx rgba(8,145,178,0.35);
+  box-shadow: 0 12rpx 32rpx rgba(124,58,237,0.35);
 }
 .user-avatar-text {
   font-size: 48rpx;
@@ -60,7 +60,7 @@
   height: 24rpx;
   border-radius: 50%;
   background: #10B981;
-  border: 3rpx solid #0F172A;
+  border: 3rpx solid #7C3AED;
 }
 .user-name {
   font-size: 34rpx;
@@ -134,14 +134,14 @@
   display: flex;
   align-items: center;
   padding: 28rpx;
-  border-bottom: 1rpx solid #F8FAFC;
+  border-bottom: 1rpx solid #FAF5FF;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .menu-item:last-child {
   border-bottom: none;
 }
 .menu-item:active {
-  background: #F8FAFC;
+  background: #FAF5FF;
   transform: scale(0.985);
 }
 .menu-icon-wrap {
@@ -154,7 +154,7 @@
   margin-right: 20rpx;
   flex-shrink: 0;
 }
-.menu-icon-cyan    { background: #E0F2FE; }
+.menu-icon-cyan    { background: #EDE9FE; }
 .menu-icon-green   { background: #ECFDF5; }
 .menu-icon-purple  { background: #F3E8FF; }
 .menu-icon-orange  { background: #FFF7ED; }
@@ -167,7 +167,7 @@
 }
 /* Diamond — subscription */
 .menu-geo.geo-diamond {
-  width: 26rpx; height: 26rpx; background: #06B6D4; border-radius: 4rpx; transform: rotate(45deg);
+  width: 26rpx; height: 26rpx; background: #10B981; border-radius: 4rpx; transform: rotate(45deg);
 }
 /* Bar chart — history */
 .menu-geo.geo-bars {

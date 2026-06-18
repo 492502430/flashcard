@@ -7,7 +7,7 @@
   <view class="header">
     <text class="header-title">My Decks</text>
     <view class="header-action tappable" bindtap="goCreate">
-      <view class="geo-plus" style="width:22rpx;height:22rpx;color:#0891B2;"></view>
+      <view class="geo-plus" style="width:22rpx;height:22rpx;color:#059669;"></view>
       <text class="header-action-text">New</text>
     </view>
   </view>

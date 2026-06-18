@@ -16,7 +16,7 @@
   border-radius: 28rpx;
   overflow: hidden;
   margin-bottom: 32rpx;
-  background: linear-gradient(145deg, #0F172A 0%, #1E293B 100%);
+  background: linear-gradient(145deg, #7C3AED 0%, #8B5CF6 100%);
 }
 .deck-header-glow {
   position: absolute;
@@ -25,7 +25,7 @@
   width: 280rpx;
   height: 280rpx;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(8,145,178,0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%);
   pointer-events: none;
 }
 .deck-header-shape {
@@ -129,18 +129,18 @@
   justify-content: center;
   width: 100%;
   padding: 28rpx;
-  background: linear-gradient(135deg, #0891B2, #06B6D4);
+  background: linear-gradient(135deg, #059669, #10B981);
   border-radius: 20rpx;
   border: none;
   color: #FFFFFF;
   font-size: 30rpx;
   font-weight: 700;
-  box-shadow: 0 8rpx 24rpx rgba(8,145,178,0.3);
+  box-shadow: 0 8rpx 24rpx rgba(5,150,105,0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-start-review:active {
   transform: scale(0.97);
-  box-shadow: 0 4rpx 12rpx rgba(8,145,178,0.18);
+  box-shadow: 0 4rpx 12rpx rgba(5,150,105,0.18);
 }
 .btn-start-icon-circle {
   width: 48rpx;
@@ -249,7 +249,7 @@
 .geo-rect {
   position: absolute;
   border-radius: 8rpx;
-  background: #0891B2;
+  background: #059669;
   opacity: 0.25;
 }
 .geo-rect:nth-child(1) { width: 72rpx; height: 48rpx; top: 0; left: 0; }

@@ -5,7 +5,7 @@
 
 .page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+  background: linear-gradient(180deg, #FAF5FF 0%, #F7F3FD 100%);
   padding: 32rpx;
   box-sizing: border-box;
   display: flex;
@@ -35,7 +35,7 @@
 }
 .exit-btn:active {
   transform: scale(0.9);
-  background: #F1F5F9;
+  background: #F7F3FD;
 }
 
 /* Progress */
@@ -48,13 +48,13 @@
 .progress-track {
   flex: 1;
   height: 10rpx;
-  background: #E2E8F0;
+  background: #EFE7FC;
   border-radius: 5rpx;
   overflow: hidden;
 }
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #0891B2, #06B6D4);
+  background: linear-gradient(90deg, #059669, #10B981);
   border-radius: 5rpx;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -122,10 +122,10 @@
     0 8rpx 24rpx rgba(15,23,42,0.06);
 }
 .card-front {
-  background: linear-gradient(160deg, #FFFFFF 0%, #F8FAFC 100%);
+  background: linear-gradient(160deg, #FFFFFF 0%, #FAF5FF 100%);
 }
 .card-back {
-  background: linear-gradient(160deg, #0F172A 0%, #1E293B 100%);
+  background: linear-gradient(160deg, #7C3AED 0%, #8B5CF6 100%);
   transform: rotateY(180deg);
 }
 .card-face-inner {
@@ -148,7 +148,7 @@
   border-radius: 50%;
   margin-right: 12rpx;
 }
-.front-dot { background: #0891B2; }
+.front-dot { background: #059669; }
 .back-dot  { background: #34D399; }
 .card-label {
   font-size: 24rpx;
@@ -289,7 +289,7 @@
 .rate-geo-red   { background: rgba(220,38,38,0.1); }
 .rate-geo-amber { background: rgba(217,119,6,0.1); }
 .rate-geo-green { background: rgba(5,150,105,0.1); }
-.rate-geo-blue  { background: rgba(8,145,178,0.1); }
+.rate-geo-blue  { background: rgba(139,92,246,0.1); }
 
 .rate-title {
   font-size: 26rpx;

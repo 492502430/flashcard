@@ -6,7 +6,7 @@
   <!-- Header -->
   <view class="header">
     <view class="back-btn tappable" bindtap="goBack">
-      <view class="geo-chevron-left" style="color:#0F172A;"></view>
+      <view class="geo-chevron-left" style="color:#7C3AED;"></view>
     </view>
     <text class="header-title">New Deck</text>
     <view class="header-spacer"></view>
@@ -20,7 +20,7 @@
       <text class="form-label">Deck Name</text>
       <view class="input-wrap">
         <view class="input-geo">
-          <view class="geo-square" style="width:24rpx;height:24rpx;background:#0891B2;border-radius:5rpx;"></view>
+          <view class="geo-square" style="width:24rpx;height:24rpx;background:#059669;border-radius:5rpx;"></view>
         </view>
         <input
           class="form-input"

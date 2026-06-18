@@ -92,8 +92,8 @@
       <!-- Easy — Blue -->
       <button class="rate-btn rate-easy" bindtap="rate" data-r="4">
         <view class="rate-geo rate-geo-blue">
-          <view class="geo-triangle-up" style="color:#0891B2;position:absolute;top:4rpx;"></view>
-          <view class="geo-triangle-up" style="color:#06B6D4;position:absolute;bottom:4rpx;"></view>
+          <view class="geo-triangle-up" style="color:#059669;position:absolute;top:4rpx;"></view>
+          <view class="geo-triangle-up" style="color:#10B981;position:absolute;bottom:4rpx;"></view>
         </view>
         <text class="rate-title">Easy</text>
         <text class="rate-sub">Review in 4 days</text>

@@ -5,16 +5,16 @@
 
 page {
   /* === Color System === */
-  --color-primary: #0F172A;
-  --color-secondary: #0891B2;
-  --color-secondary-light: #06B6D4;
+  --color-primary: #7C3AED;
+  --color-secondary: #8B5CF6;
+  --color-secondary-light: #A78BFA;
   --color-accent: #059669;
   --color-warning: #D97706;
   --color-error: #DC2626;
 
-  --color-bg: #F8FAFC;
+  --color-bg: #FAF5FF;
   --color-surface: #FFFFFF;
-  --color-border: #E2E8F0;
+  --color-border: #EFE7FC;
   --color-text-primary: #0F172A;
   --color-text-secondary: #475569;
   --color-text-muted: #94A3B8;
@@ -30,7 +30,7 @@ page {
   /* === Shadows (subtle layered, no hard shadows) === */
   --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08);
   --shadow-elevated: 0 2px 8px rgba(0, 0, 0, 0.12);
-  --shadow-button: 0 8rpx 24rpx rgba(8, 145, 178, 0.2);
+  --shadow-button: 0 8rpx 24rpx rgba(124, 58, 237, 0.2);
 
   /* === Typography === */
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
@@ -50,7 +50,7 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0891B2 0%, #06B6D4 100%);
+  background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%);
   color: var(--color-text-inverse);
   border-radius: var(--radius-xl);
   padding: 28rpx 48rpx;
@@ -64,7 +64,7 @@ page {
 }
 .btn-primary:active {
   transform: scale(0.97);
-  box-shadow: 0 4rpx 12rpx rgba(8, 145, 178, 0.15);
+  box-shadow: 0 4rpx 12rpx rgba(124, 58, 237, 0.15);
 }
 .btn-primary[disabled] {
   opacity: 0.45;
@@ -87,7 +87,7 @@ page {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-outline:active {
-  background: rgba(8, 145, 178, 0.08);
+  background: rgba(139, 92, 246, 0.08);
   transform: scale(0.97);
 }
 
@@ -117,7 +117,7 @@ page {
   font-weight: 600;
 }
 .badge-primary {
-  background: rgba(8, 145, 178, 0.1);
+  background: rgba(139, 92, 246, 0.1);
   color: var(--color-secondary);
 }
 .badge-success {
@@ -142,7 +142,7 @@ page {
   width: 160rpx;
   height: 160rpx;
   border-radius: 50%;
-  background: linear-gradient(135deg, #E0F2FE 0%, #CFFAFE 100%);
+  background: linear-gradient(135deg, #F3E8FF 0%, #EDE9FE 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -355,7 +355,7 @@ page {
    Skeleton Loading (shimmer)
    ============================================ */
 .skeleton {
-  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+  background: linear-gradient(90deg, #F7F3FD 25%, #EFE7FC 50%, #F7F3FD 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: var(--radius-sm);

@@ -70,10 +70,10 @@
   overflow: hidden;
 }
 .deck-theme-0 .deck-cover {
-  background: linear-gradient(135deg, #0F172A 0%, #1E3A5F 100%);
+  background: linear-gradient(135deg, #7C3AED 0%, #7C3AED 100%);
 }
 .deck-theme-1 .deck-cover {
-  background: linear-gradient(135deg, #0891B2 0%, #06B6D4 100%);
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%);
 }
 .deck-theme-2 .deck-cover {
   background: linear-gradient(135deg, #059669 0%, #10B981 100%);
@@ -154,7 +154,7 @@
 }
 .deck-badge {
   padding: 6rpx 14rpx;
-  background: #F1F5F9;
+  background: #F7F3FD;
   border-radius: 12rpx;
 }
 .deck-badge-text {
@@ -177,8 +177,8 @@
 .geo-box {
   position: absolute;
   border-radius: 8rpx;
-  border: 3rpx solid #0891B2;
-  background: rgba(8,145,178,0.06);
+  border: 3rpx solid #059669;
+  background: rgba(5,150,105,0.06);
 }
 .geo-box:nth-child(1) { width: 80rpx; height: 80rpx; top: 0; left: 0; }
 .geo-box:nth-child(2) { width: 64rpx; height: 64rpx; top: 8rpx; left: 8rpx; opacity: 0.6; }

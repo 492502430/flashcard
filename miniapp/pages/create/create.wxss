@@ -27,7 +27,7 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .back-btn:active {
-  background: #F1F5F9;
+  background: #F7F3FD;
   transform: scale(0.9);
 }
 .header-title {
@@ -59,19 +59,19 @@
   align-items: center;
   background: var(--color-surface);
   border-radius: 20rpx;
-  border: 2rpx solid #E2E8F0;
+  border: 2rpx solid #EFE7FC;
   padding: 0 24rpx;
   transition: border-color 0.3s ease;
 }
 .input-wrap:focus-within {
   border-color: var(--color-secondary);
-  box-shadow: 0 0 0 4rpx rgba(8,145,178,0.08);
+  box-shadow: 0 0 0 4rpx rgba(139,92,246,0.08);
 }
 .input-geo {
   width: 44rpx;
   height: 44rpx;
   border-radius: 10rpx;
-  background: rgba(8,145,178,0.08);
+  background: rgba(139,92,246,0.08);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -93,13 +93,13 @@
 .textarea-wrap {
   background: var(--color-surface);
   border-radius: 20rpx;
-  border: 2rpx solid #E2E8F0;
+  border: 2rpx solid #EFE7FC;
   overflow: hidden;
   transition: border-color 0.3s ease;
 }
 .textarea-wrap:focus-within {
   border-color: var(--color-secondary);
-  box-shadow: 0 0 0 4rpx rgba(8,145,178,0.08);
+  box-shadow: 0 0 0 4rpx rgba(139,92,246,0.08);
 }
 .form-textarea {
   width: 100%;
@@ -118,7 +118,7 @@
 /* Character Count */
 .char-count {
   padding: 20rpx 28rpx;
-  border-top: 1rpx solid #F1F5F9;
+  border-top: 1rpx solid #F7F3FD;
   display: flex;
   align-items: center;
   gap: 16rpx;
@@ -126,7 +126,7 @@
 .char-count-bar {
   flex: 1;
   height: 6rpx;
-  background: #E2E8F0;
+  background: #EFE7FC;
   border-radius: 3rpx;
   overflow: hidden;
 }
@@ -137,7 +137,7 @@
   transition: all 0.3s ease;
 }
 .fill-ready {
-  background: linear-gradient(90deg, #0891B2, #06B6D4);
+  background: linear-gradient(90deg, #059669, #10B981);
 }
 .char-count-text {
   font-size: 22rpx;
@@ -176,7 +176,7 @@
   width: 28rpx;
   height: 28rpx;
   border-radius: 50%;
-  background: #0891B2;
+  background: #059669;
   opacity: 0.3;
   position: absolute;
   top: 0;
@@ -187,7 +187,7 @@
   width: 16rpx;
   height: 10rpx;
   border-radius: 0 0 4rpx 4rpx;
-  background: #0891B2;
+  background: #059669;
   opacity: 0.3;
   position: absolute;
   bottom: 0;
@@ -217,9 +217,9 @@
   align-items: center;
   width: 100%;
   padding: 32rpx;
-  background: #F1F5F9;
+  background: #F7F3FD;
   border-radius: 24rpx;
-  border: 2rpx solid #E2E8F0;
+  border: 2rpx solid #EFE7FC;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-bottom: 32rpx;
 }
@@ -227,13 +227,13 @@
   border: none;
 }
 .btn-ready {
-  background: linear-gradient(135deg, #0891B2, #06B6D4);
+  background: linear-gradient(135deg, #059669, #10B981);
   border-color: transparent;
-  box-shadow: 0 12rpx 32rpx rgba(8,145,178,0.3);
+  box-shadow: 0 12rpx 32rpx rgba(5,150,105,0.3);
 }
 .btn-ready:active {
   transform: scale(0.97);
-  box-shadow: 0 6rpx 16rpx rgba(8,145,178,0.18);
+  box-shadow: 0 6rpx 16rpx rgba(5,150,105,0.18);
 }
 .btn-submit-geo {
   width: 56rpx;

@@ -42,7 +42,7 @@
   <!-- Empty State -->
   <view class="empty-state fade-in" wx:else>
     <view class="empty-state-geo">
-      <view class="geo-diamond" style="width:48rpx;height:48rpx;background:linear-gradient(135deg,#0891B2,#06B6D4);"></view>
+      <view class="geo-diamond" style="width:48rpx;height:48rpx;background:linear-gradient(135deg,#059669,#10B981);"></view>
       <view class="empty-stars">
         <view class="empty-star s1"></view>
         <view class="empty-star s2"></view>
@@ -74,8 +74,8 @@
       </view>
       <view class="stat-card fade-in fade-in-2 tappable" bindtap="goDecks">
         <view class="stat-icon-box stat-icon-box-decks">
-          <view class="geo-square" style="background:#0891B2;"></view>
-          <view class="geo-square" style="background:#06B6D4;position:absolute;top:4rpx;left:4rpx;"></view>
+          <view class="geo-square" style="background:#059669;"></view>
+          <view class="geo-square" style="background:#10B981;position:absolute;top:4rpx;left:4rpx;"></view>
         </view>
         <text class="stat-num">{{totalDecks}}</text>
         <text class="stat-label">Decks</text>
@@ -96,8 +96,8 @@
     <view class="link-cards">
       <view class="link-card fade-in fade-in-2 tappable" bindtap="goDecks">
         <view class="link-icon-box link-icon-box-decks">
-          <view class="geo-square" style="background:linear-gradient(135deg,#0891B2,#06B6D4);width:28rpx;height:28rpx;border-radius:6rpx;"></view>
-          <view class="geo-square" style="background:rgba(8,145,178,0.3);width:20rpx;height:20rpx;border-radius:4rpx;position:absolute;top:-4rpx;right:-4rpx;"></view>
+          <view class="geo-square" style="background:linear-gradient(135deg,#059669,#10B981);width:28rpx;height:28rpx;border-radius:6rpx;"></view>
+          <view class="geo-square" style="background:rgba(5,150,105,0.3);width:20rpx;height:20rpx;border-radius:4rpx;position:absolute;top:-4rpx;right:-4rpx;"></view>
         </view>
         <view class="link-info">
           <text class="link-title">My Decks</text>

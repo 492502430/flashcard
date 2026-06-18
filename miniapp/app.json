@@ -8,13 +8,13 @@
     "pages/profile/profile"
   ],
   "window": {
-    "navigationBarBackgroundColor": "#1E3A5F",
+    "navigationBarBackgroundColor": "#7C3AED",
     "navigationBarTitleText": "闪卡记忆",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {
     "color": "#94A3B8",
-    "selectedColor": "#0891B2",
+    "selectedColor": "#7C3AED",
     "backgroundColor": "#FFFFFF",
     "list": [
       {
