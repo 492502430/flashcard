@@ -50,7 +50,7 @@
 }
 .hero-content {
   position: relative;
-  padding: 56rpx 40rpx;
+  padding: 36rpx 32rpx;
   z-index: 1;
 }
 .hero-label-row {
@@ -78,12 +78,12 @@
   margin: 12rpx 0 6rpx;
 }
 .hero-count {
-  font-size: 120rpx;
+  font-size: 96rpx;
   font-weight: 800;
   color: #FFFFFF;
   line-height: 1;
   font-feature-settings: "tnum";
-  letter-spacing: -4rpx;
+  letter-spacing: -3rpx;
 }
 .hero-unit {
   font-size: 28rpx;
@@ -217,14 +217,14 @@
    Stats Section
    ============================================ */
 .stats-section {
-  margin-bottom: 40rpx;
+  margin-bottom: 28rpx;
 }
 .stats-heading {
   display: block;
-  font-size: 30rpx;
+  font-size: 28rpx;
   font-weight: 700;
   color: var(--color-text-primary);
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
 }
 .stats-grid {
   display: flex;
@@ -234,7 +234,7 @@
   flex: 1;
   background: var(--color-surface);
   border-radius: 20rpx;
-  padding: 28rpx 16rpx;
+  padding: 24rpx 10rpx;
   text-align: center;
   box-shadow: var(--shadow-card);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -244,13 +244,13 @@
   box-shadow: var(--shadow-elevated);
 }
 .stat-icon-box {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 16rpx;
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 14rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 16rpx;
+  margin: 0 auto 12rpx;
   position: relative;
 }
 .stat-icon-box-cards {
@@ -280,7 +280,7 @@
 .geo-stack-card:nth-child(3) { top: 12rpx; left: 8rpx; opacity: 0.3; }
 .stat-num {
   display: block;
-  font-size: 44rpx;
+  font-size: 36rpx;
   font-weight: 800;
   color: var(--color-text-primary);
   line-height: 1.2;
