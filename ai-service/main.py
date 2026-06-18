@@ -11,8 +11,17 @@ from openai import OpenAI
 
 app = FastAPI(title="FlashCard AI Service", version="1.0.0")
 
+# Load key from .env file or environment
+def _load_key():
+    env_file = os.path.join(os.path.dirname(__file__), ".env")
+    if os.path.exists(env_file):
+        for line in open(env_file):
+            if line.startswith("DEEPSEEK_API_KEY="):
+                return line.strip().split("=", 1)[1]
+    return os.environ.get("DEEPSEEK_API_KEY", "")
+
 client = OpenAI(
-    api_key=os.environ["DEEPSEEK_API_KEY"],
+    api_key=_load_key(),
     base_url="https://api.deepseek.com/v1",
 )
 

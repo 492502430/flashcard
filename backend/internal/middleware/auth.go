@@ -8,9 +8,8 @@ import (
 	"github.com/492502430/flashcard/backend/internal/handler"
 )
 
-type contextKey string
-
-const UserIDKey contextKey = "user_id"
+// UserIDCtxKey is the context key for user ID (exported for handlers).
+const UserIDCtxKey = "user_id"
 
 // AuthRequired validates JWT token and sets user_id in context.
 func AuthRequired(next http.Handler) http.Handler {
@@ -28,7 +27,7 @@ func AuthRequired(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), UserIDKey, claims.UserID)
+		ctx := context.WithValue(r.Context(), UserIDCtxKey, claims.UserID)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
