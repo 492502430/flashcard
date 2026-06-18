@@ -1,0 +1,23 @@
+<view class="container">
+  <view class="hero">
+    <text class="greeting">今日复习</text>
+    <text class="count">{{count}} 张</text>
+    <text class="sub">待复习卡片</text>
+  </view>
+  <button class="btn-primary" wx:if="{{count > 0}}" bindtap="startReview">开始复习</button>
+  <view class="empty" wx:else>
+    <text class="empty-icon">📭</text>
+    <text class="empty-text">今天没有待复习的卡片</text>
+    <button class="btn-outline" bindtap="goCreate">创建新牌组</button>
+  </view>
+  <view class="stats">
+    <view class="stat-item">
+      <text class="stat-num">{{totalCards}}</text>
+      <text class="stat-label">总卡片</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-num">{{totalDecks}}</text>
+      <text class="stat-label">牌组</text>
+    </view>
+  </view>
+</view>

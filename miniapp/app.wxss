@@ -1,0 +1,25 @@
+page {
+  background-color: #F8FAFC;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.container {
+  padding: 20rpx 30rpx;
+}
+
+.btn-primary {
+  background-color: #0891B2;
+  color: white;
+  border-radius: 12rpx;
+  padding: 20rpx 40rpx;
+  text-align: center;
+  font-size: 30rpx;
+}
+
+.card {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
+}

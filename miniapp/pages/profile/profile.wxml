@@ -1,0 +1,12 @@
+<view class="container">
+  <view class="user-card">
+    <view class="avatar">👤</view>
+    <text class="nickname">闪卡用户</text>
+  </view>
+  <view class="menu">
+    <view class="menu-item" wx:for="{{menus}}" wx:key="title" bindtap="onTap" data-action="{{item.action}}">
+      <text>{{item.title}}</text>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+</view>

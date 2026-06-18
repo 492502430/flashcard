@@ -1,0 +1,13 @@
+<view class="container">
+  <view class="header">
+    <text class="title">{{deck.title}}</text>
+    <text class="sub">{{deck.card_count}} 张卡片</text>
+  </view>
+  <view class="card-list">
+    <view class="card" wx:for="{{cards}}" wx:key="id">
+      <text class="card-q">{{item.question}}</text>
+      <text class="card-a">{{item.answer}}</text>
+      <text class="card-state">{{item.state}}</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,27 @@
+<view class="container">
+  <view class="progress-bar">
+    <text class="prog-text">{{current}}/{{total}}</text>
+    <progress percent="{{current/total*100}}" stroke-width="6" activeColor="#0891B2" backgroundColor="#E2E8F0"/>
+  </view>
+  <view class="review-card {{flipped ? 'flipped' : ''}}" bindtap="flip" wx:if="{{card}}">
+    <view class="card-face front">
+      <text class="label">问题</text>
+      <text class="text">{{card.question}}</text>
+    </view>
+    <view class="card-face back">
+      <text class="label">答案</text>
+      <text class="text">{{card.answer}}</text>
+    </view>
+  </view>
+  <view class="done" wx:else>
+    <text class="done-icon">🎉</text>
+    <text class="done-text">今日复习完成！</text>
+    <button class="btn-primary" bindtap="goHome">返回首页</button>
+  </view>
+  <view class="ratings" wx:if="{{flipped}}">
+    <button class="rate again" bindtap="rate" data-r="1">😰 忘了</button>
+    <button class="rate hard" bindtap="rate" data-r="2">🤔 模糊</button>
+    <button class="rate good" bindtap="rate" data-r="3">😊 记得</button>
+    <button class="rate easy" bindtap="rate" data-r="4">🚀 简单</button>
+  </view>
+</view>

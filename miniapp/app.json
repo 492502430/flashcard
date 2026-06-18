@@ -1,0 +1,40 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/decks/decks",
+    "pages/deck-detail/deck-detail",
+    "pages/review/review",
+    "pages/create/create",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#1E3A5F",
+    "navigationBarTitleText": "闪卡记忆",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#94A3B8",
+    "selectedColor": "#0891B2",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/home.png",
+        "selectedIconPath": "assets/home-active.png"
+      },
+      {
+        "pagePath": "pages/decks/decks",
+        "text": "牌组",
+        "iconPath": "assets/decks.png",
+        "selectedIconPath": "assets/decks-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/profile.png",
+        "selectedIconPath": "assets/profile-active.png"
+      }
+    ]
+  }
+}
