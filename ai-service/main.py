@@ -25,18 +25,30 @@ client = OpenAI(
     base_url="https://api.deepseek.com/v1",
 )
 
-PROMPT = """你是一个教育专家。请根据以下文本生成闪卡（问答题卡片）。
+PROMPT = """你是一位资深教育内容设计师。请根据以下文本生成高质量的学习闪卡。
 
-规则：
-1. 只提取文本中的核心知识点和关键概念，忽略铺垫和废话
-2. 每张卡一个问题，答案简洁但完整
-3. 一般生成 8-20 张卡片，质量优先，不要凑数
-4. 返回 JSON 数组：每项必须包含 q（问题）、a（答案）、tags（标签数组）三个字段，字段名必须是英文 q、a、tags
+## 题型要求（混合使用）
+1. **概念问答**（占 40%）：针对核心概念、定理、定义提问
+2. **填空题**（占 30%）：将关键术语或数字挖空，用「______」表示。q 字段填完整句子（含空），a 字段填答案
+3. **应用题/场景题**（占 30%）：设计一个具体场景，让学习者运用知识点解决问题
 
-文本：
-{text}
+## 内容筛选规则
+- 只选取考试常考点、易错点、核心定义，忽略叙述性铺垫
+- 如果原文描述了因果关系或对比关系，必须出题
+- 如果原文有具体数字、日期、公式，优先出题
+- 如果原文案例有实际应用价值，转化为场景题
 
-请返回纯 JSON 数组，不要加 markdown 代码块标记。"""
+## ⚠️ 输出格式（极其重要）
+你必须且只能返回一个 JSON 数组，不要任何其他文字。不要加 ```json 标记。不要加任何解释。直接返回数组本身。
+
+格式示例：
+[{"q":"什么是辩证唯物主义？","a":"认为物质决定意识的哲学观点","tags":["哲学","唯物主义"],"type":"qa"}, {"q":"唯物辩证法的三大规律是______、______和否定之否定规律","a":"对立统一、量变质变","tags":["辩证法"],"type":"fill"}]
+
+type 必须是 "qa"、"fill"、"scenario" 之一。"""
+
+GENERATE_USER = """请根据以下文本生成 {card_count} 张闪卡：
+
+{text}"""
 
 
 class GenerateRequest(BaseModel):
@@ -48,6 +60,7 @@ class Card(BaseModel):
     q: str
     a: str
     tags: list[str] = []
+    type: str = "qa"
 
 
 class GenerateResponse(BaseModel):
@@ -66,15 +79,17 @@ def generate(req: GenerateRequest):
     if len(req.text) < 50:
         raise HTTPException(400, "text too short (min 50 chars)")
 
+    card_count = max(8, min(25, len(req.text) // 80))
+
     try:
         response = client.chat.completions.create(
             model="deepseek-chat",
             messages=[
-                {"role": "system", "content": "你是教育专家。只返回 JSON 数组，不要加 markdown 标记。"},
-                {"role": "user", "content": PROMPT.format(text=req.text)},
+                {"role": "system", "content": PROMPT},
+                {"role": "user", "content": GENERATE_USER.format(card_count=card_count, text=req.text)},
             ],
-            temperature=0.3,
-            max_tokens=2000,
+            temperature=0.4,
+            max_tokens=3000,
         )
         content = response.choices[0].message.content
         cards = json.loads(content)
