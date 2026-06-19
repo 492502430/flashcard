@@ -136,16 +136,30 @@ async def extract_text(file: UploadFile = File(...)):
         except ImportError:
             raise HTTPException(500, "DOCX support requires python-docx: pip install python-docx")
 
-    # Image — OCR via pytesseract
+    # Image — OCR via PaddleOCR (best Chinese handwriting support)
     if filename.lower().endswith((".png", ".jpg", ".jpeg")):
         try:
+            from paddleocr import PaddleOCR
+            ocr = PaddleOCR(use_angle_cls=True, lang='ch')
             from PIL import Image
-            import pytesseract
             img = Image.open(io.BytesIO(content))
-            text = pytesseract.image_to_string(img, lang="chi_sim+eng")
+            import tempfile, os
+            with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
+                img.save(tmp.name)
+            result = ocr.predict(tmp.name)
+            os.unlink(tmp.name)
+            text = ""
+            if result:
+                for r in result:
+                    j = r.json() if callable(r.json) else r.json
+                    rec = j.get("res", {}).get("rec_texts", "")
+                    if rec and rec != "00":
+                        text += rec + "\n"
+                    elif hasattr(r, "rec_texts") and r.rec_texts:
+                        text += "\n".join(r.rec_texts) + "\n"
             return {"text": text, "filename": filename, "size": len(text)}
         except ImportError:
-            raise HTTPException(500, "Image OCR requires: pip install pytesseract pillow")
+            raise HTTPException(500, "Image OCR requires: pip install paddleocr paddlepaddle pillow")
         except Exception as e:
             raise HTTPException(500, f"OCR failed: {str(e)}")
 
