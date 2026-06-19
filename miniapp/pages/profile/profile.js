@@ -52,8 +52,9 @@ Page({
       url: app.globalData.apiBase + '/api/review/today',
       header: { Authorization: 'Bearer ' + app.globalData.token },
       success: (res) => {
-        const total = res.data.reviewed_total || res.data.total || 0;
-        this.setData({ reviewedTotal: total });
+        const data = res.data || {};
+        // Use reviewed_today (actual reviews done), not total (due cards)
+        this.setData({ reviewedTotal: data.reviewed_today || 0 });
       }
     });
   },
