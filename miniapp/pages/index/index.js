@@ -20,6 +20,9 @@ Page({
   },
 
   loadData() {
+    // Reset to zero before fetching — prevent stale cached values
+    this.setData({ count: 0, totalCards: 0, totalDecks: 0, reviewedToday: 0, streak: 0 });
+
     // Fetch today's review count
     wx.request({
       url: app.globalData.apiBase + '/api/review/today',
