@@ -16,7 +16,7 @@
     <view class="hero-content">
       <view class="hero-label-row">
         <view class="hero-label-dot"></view>
-        <text class="hero-greeting">今日复习</text>
+        <text class="hero-greeting">今日待复习</text>
         <view class="streak-pill" wx:if="{{streak > 0}}">
           <view class="streak-flame"><view class="streak-flame-core"></view></view>
           <text class="streak-pill-text">已连续 {{streak}} 天</text>
@@ -40,7 +40,7 @@
 
   <!-- Stats — ALWAYS visible -->
   <view class="stats-section">
-    <text class="stats-heading">学习统计</text>
+    <text class="stats-heading">学习统计<text wx:if="{{reviewedToday > 0}}" class="stats-heading-sub"> · 今日已复习 {{reviewedToday}} 张</text></text>
     <view class="week-chart" wx:if="{{weekStats.length > 0}}">
       <view class="week-bars">
         <view class="week-bar-item" wx:for="{{weekStats}}" wx:key="date">
