@@ -25,6 +25,19 @@
   color: var(--color-text-muted);
 }
 
+.template-note {
+  background: rgba(124,58,237,0.06);
+  border-radius: var(--radius-md);
+  padding: 20rpx 24rpx;
+  margin-bottom: 28rpx;
+  border-left: 4rpx solid var(--color-primary);
+}
+.note-text {
+  font-size: 24rpx;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
 /* Category */
 .category {
   margin-bottom: 36rpx;

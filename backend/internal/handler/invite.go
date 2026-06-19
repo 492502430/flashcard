@@ -17,21 +17,20 @@ func generateInviteCode() string {
 	return string(code)
 }
 
-// GetMyInviteCode returns the current user's invite code.
+// GetMyInviteCode returns the current user's invite code, generating one if needed.
 func (h *Handler) GetMyInviteCode(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value("user_id").(string)
 
-	var result struct {
-		InviteCode string `json:"invite_code"`
-	}
-	err := h.DB.Raw(`SELECT invite_code FROM users WHERE id = ?`, userID).Scan(&result).Error
-	if err != nil || result.InviteCode == "" {
-		writeError(w, 500, "invite code not found")
-		return
+	var code string
+	h.DB.Raw(`SELECT invite_code FROM users WHERE id = ?`, userID).Scan(&code)
+
+	if code == "" {
+		code = generateInviteCode()
+		h.DB.Exec(`UPDATE users SET invite_code = ? WHERE id = ?`, code, userID)
 	}
 
 	writeJSON(w, 200, map[string]string{
-		"invite_code": result.InviteCode,
+		"invite_code": code,
 	})
 }
 
@@ -41,6 +40,7 @@ func (h *Handler) GetInviteStats(w http.ResponseWriter, r *http.Request) {
 
 	var inviteCode string
 	h.DB.Raw(`SELECT invite_code FROM users WHERE id = ?`, userID).Scan(&inviteCode)
+
 	if inviteCode == "" {
 		writeJSON(w, 200, map[string]int{"invited_count": 0})
 		return

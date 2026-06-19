@@ -5,6 +5,10 @@
     <text class="header-sub">精选牌组，一键导入</text>
   </view>
 
+  <view class="template-note">
+    <text class="note-text">📌 以上为示例模板，覆盖核心高频知识点。如需完整学习资料，请点击底部「导入资料」上传你自己的文件，AI 为你定制专属闪卡。</text>
+  </view>
+
   <block wx:for="{{categories}}" wx:key="category">
     <view class="category">
       <view class="category-title">
