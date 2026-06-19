@@ -67,20 +67,28 @@ func (h *Handler) WxLogin(w http.ResponseWriter, r *http.Request) {
 	openid := req.Code
 
 	var user struct {
-		ID       string
-		OpenID   string
-		Nickname string
+		ID         string
+		OpenID     string
+		Nickname   string
+		InviteCode string
 	}
 
 	err := h.DB.Raw(`
 		INSERT INTO users (openid) VALUES (?)
 		ON CONFLICT (openid) DO UPDATE SET openid=excluded.openid
-		RETURNING id, openid, COALESCE(nickname, '') as nickname
+		RETURNING id, openid, COALESCE(nickname, '') as nickname, COALESCE(invite_code, '') as invite_code
 	`, openid).Scan(&user).Error
 
 	if err != nil {
 		writeError(w, 500, "failed to create user")
 		return
+	}
+
+	// Generate invite code for new users (empty invite_code means first login)
+	if user.InviteCode == "" {
+		code := generateInviteCode()
+		h.DB.Exec(`UPDATE users SET invite_code = ? WHERE id = ?`, code, user.ID)
+		user.InviteCode = code
 	}
 
 	token, err := GenerateToken(user.ID)

@@ -301,6 +301,66 @@
 }
 
 /* ============================================
+   30-Day Calendar Heatmap
+   ============================================ */
+.heatmap-section {
+  margin-bottom: 28rpx;
+}
+.heatmap-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6rpx;
+  background: var(--color-surface);
+  border-radius: 20rpx;
+  padding: 20rpx 16rpx;
+  box-shadow: var(--shadow-card);
+}
+.heatmap-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+  width: calc((100% - 30rpx) / 6);
+  padding: 4rpx 0;
+}
+.heatmap-cell--today {
+  background: rgba(124, 58, 237, 0.06);
+  border-radius: 8rpx;
+}
+.heatmap-square {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 6rpx;
+  background: #F1F5F9;
+}
+.heatmap-square.heatmap-l1 { background: #C4B5FD; }
+.heatmap-square.heatmap-l2 { background: #8B5CF6; }
+.heatmap-square.heatmap-l3 { background: #7C3AED; }
+.heatmap-square.heatmap-l4 { background: #5B21B6; }
+.heatmap-day {
+  font-size: 18rpx;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+.heatmap-cell--today .heatmap-day {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6rpx;
+  margin-top: 12rpx;
+  padding: 0 8rpx;
+}
+.heatmap-legend-label {
+  font-size: 20rpx;
+  color: var(--color-text-muted);
+  margin: 0 4rpx;
+}
+
+/* ============================================
    Quick Links
    ============================================ */
 .quick-links {

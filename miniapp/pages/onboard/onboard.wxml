@@ -1,0 +1,65 @@
+<!-- onboard.wxml -- 3-step swipeable onboarding -->
+<view class="page">
+  <!-- Skip button -->
+  <view class="skip-btn tappable" bindtap="skipOnboard">
+    <text class="skip-text">跳过</text>
+    <view class="geo-chevron-right" style="color:var(--color-text-muted);"></view>
+  </view>
+
+  <!-- Swiper -->
+  <swiper class="swiper" current="{{current}}" bindchange="onSwiperChange" indicator-dots="{{false}}" circular="{{false}}">
+    <swiper-item wx:for="{{steps}}" wx:key="title">
+      <view class="slide">
+        <!-- Geometric icon -->
+        <view class="slide-icon-wrap">
+          <block wx:if="{{item.icon === 'spark'}}">
+            <view class="geo-onboard-spark">
+              <view class="geo-onboard-spark-core"></view>
+              <view class="geo-onboard-spark-ray ray-1"></view>
+              <view class="geo-onboard-spark-ray ray-2"></view>
+              <view class="geo-onboard-spark-ray ray-3"></view>
+              <view class="geo-onboard-spark-ray ray-4"></view>
+            </view>
+          </block>
+          <block wx:if="{{item.icon === 'repeat'}}">
+            <view class="geo-onboard-repeat">
+              <view class="geo-onboard-repeat-arc arc-top"></view>
+              <view class="geo-onboard-repeat-arc arc-bottom"></view>
+            </view>
+          </block>
+          <block wx:if="{{item.icon === 'check'}}">
+            <view class="geo-onboard-check">
+              <view class="geo-onboard-check-circle"></view>
+              <view class="geo-onboard-check-mark"></view>
+            </view>
+          </block>
+        </view>
+
+        <text class="slide-title">{{item.title}}</text>
+        <text class="slide-desc">{{item.desc}}</text>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <!-- Bottom controls -->
+  <view class="bottom">
+    <!-- Dots -->
+    <view class="dots">
+      <view class="dot {{current === 0 ? 'dot-active' : ''}}"></view>
+      <view class="dot {{current === 1 ? 'dot-active' : ''}}"></view>
+      <view class="dot {{current === 2 ? 'dot-active' : ''}}"></view>
+    </view>
+
+    <!-- Button -->
+    <button class="btn-finish" bindtap="{{current === 2 ? 'finishOnboard' : ''}}" wx:if="{{current === 2}}">
+      <text class="btn-finish-text">开始使用</text>
+    </button>
+    <view class="swipe-hint" wx:else>
+      <view class="swipe-hint-arrows">
+        <view class="geo-chevron-left swipe-hint-arrow"></view>
+        <view class="geo-chevron-right swipe-hint-arrow"></view>
+      </view>
+      <text class="swipe-hint-text">左右滑动浏览</text>
+    </view>
+  </view>
+</view>

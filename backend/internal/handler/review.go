@@ -112,9 +112,13 @@ func (h *Handler) SubmitReview(w http.ResponseWriter, r *http.Request) {
 	h.DB.Exec(`INSERT INTO review_records (card_id, user_id, rating, stability) VALUES (?, ?, ?, ?)`,
 		req.CardID, userID, req.Rating, stability)
 
+	// Check for newly earned achievements
+	newAchievements := h.CheckAndAwardAchievements(userID)
+
 	writeJSON(w, 200, map[string]interface{}{
-		"next_review":   nextReview,
-		"new_stability": stability,
+		"next_review":      nextReview,
+		"new_stability":    stability,
+		"new_achievements": newAchievements,
 	})
 }
 

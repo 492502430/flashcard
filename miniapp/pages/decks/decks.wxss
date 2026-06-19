@@ -15,6 +15,11 @@
   align-items: center;
   padding: 16rpx 0 32rpx;
 }
+.header-actions {
+  display: flex;
+  gap: 12rpx;
+  align-items: center;
+}
 .header-title {
   font-size: 40rpx;
   font-weight: 800;

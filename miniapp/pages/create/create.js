@@ -9,7 +9,8 @@ Page({
     fileSize: '',
     uploading: false,
     uploadProgress: 0,
-    generating: false
+    generating: false,
+    submitFailed: false
   },
 
   onTitle(e) { this.setData({ title: e.detail.value }); },
@@ -143,7 +144,7 @@ Page({
     }
 
     const deckTitle = this.data.title || '未命名牌组';
-    this.setData({ generating: true });
+    this.setData({ generating: true, submitFailed: false });
 
     wx.request({
       url: app.globalData.apiBase + '/api/decks',
@@ -151,7 +152,7 @@ Page({
       header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
       data: { title: deckTitle, text: this.data.text },
       success: (res) => {
-        this.setData({ generating: false });
+        this.setData({ generating: false, submitFailed: false });
         if (res.data && res.data.id) {
           wx.showToast({ title: 'AI 正在生成卡片...', icon: 'none' });
           setTimeout(() => {
@@ -164,10 +165,15 @@ Page({
       },
       fail: (err) => {
         console.error('Create deck failed:', err);
-        this.setData({ generating: false });
-        wx.showToast({ title: '创建失败，请重试', icon: 'none' });
+        this.setData({ generating: false, submitFailed: true });
+        wx.showToast({ title: '生成失败，请点击重试', icon: 'none', duration: 3000 });
       }
     });
+  },
+
+  retrySubmit() {
+    this.setData({ submitFailed: false });
+    this.submit();
   },
 
   goBack() {

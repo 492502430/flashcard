@@ -44,14 +44,14 @@ func (h *Handler) CreateDeck(w http.ResponseWriter, r *http.Request) {
 
 	// 2. If text provided, generate cards via AI
 	if req.Text != "" {
-		go h.generateCardsAsync(deck.ID, req.Text)
+		go h.generateCardsAsync(deck.ID, userID, req.Text)
 	}
 
 	writeJSON(w, 201, deck)
 }
 
 // generateCardsAsync calls the AI service and inserts cards into the deck.
-func (h *Handler) generateCardsAsync(deckID, text string) {
+func (h *Handler) generateCardsAsync(deckID, userID, text string) {
 	aiClient := ai.NewClient("http://localhost:8001")
 
 	result, err := aiClient.GenerateCards(text, deckID)
@@ -73,7 +73,13 @@ func (h *Handler) generateCardsAsync(deckID, text string) {
 	h.DB.Exec(`UPDATE decks SET card_count = ?, updated_at = NOW() WHERE id = ?`,
 		result.Count, deckID)
 
-	log.Printf("AI generated %d cards for deck %s", result.Count, deckID)
+	// Increment user's tokens_used
+	if result.TokensUsed > 0 {
+		h.DB.Exec(`UPDATE users SET tokens_used = tokens_used + ? WHERE id = ?`,
+			result.TokensUsed, userID)
+	}
+
+	log.Printf("AI generated %d cards for deck %s (tokens: %d)", result.Count, deckID, result.TokensUsed)
 }
 
 // ListDecks returns all decks for the current user.

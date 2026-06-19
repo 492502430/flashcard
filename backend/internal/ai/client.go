@@ -23,9 +23,10 @@ type Card struct {
 
 // GenerateResponse is the AI service response.
 type GenerateResponse struct {
-	DeckID string `json:"deck_id"`
-	Cards  []Card `json:"cards"`
-	Count  int    `json:"count"`
+	DeckID     string `json:"deck_id"`
+	Cards      []Card `json:"cards"`
+	Count      int    `json:"count"`
+	TokensUsed int    `json:"tokens_used"`
 }
 
 // NewClient creates an AI service client.

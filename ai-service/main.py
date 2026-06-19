@@ -67,6 +67,7 @@ class GenerateResponse(BaseModel):
     deck_id: str
     cards: list[Card]
     count: int
+    tokens_used: int = 0
 
 
 @app.get("/health")
@@ -93,7 +94,8 @@ def generate(req: GenerateRequest):
         )
         content = response.choices[0].message.content
         cards = json.loads(content)
-        return GenerateResponse(deck_id=req.deck_id, cards=cards, count=len(cards))
+        usage = response.usage.total_tokens if response.usage else 0
+        return GenerateResponse(deck_id=req.deck_id, cards=cards, count=len(cards), tokens_used=usage)
     except json.JSONDecodeError:
         raise HTTPException(500, "AI returned invalid JSON")
     except Exception as e:

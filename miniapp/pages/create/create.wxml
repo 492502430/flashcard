@@ -98,6 +98,21 @@
       <view class="gen-dots"><view class="gen-dot"></view><view class="gen-dot"></view><view class="gen-dot"></view></view>
       <text class="gen-text">{{filePath ? 'AI 正在解析文件并生成卡片...' : 'AI 正在分析文本并生成卡片...'}}</text>
     </view>
+
+    <!-- Failure fallback — retry button -->
+    <view class="retry-section" wx:if="{{submitFailed && !generating}}">
+      <view class="retry-card">
+        <view class="retry-icon-wrap">
+          <view class="geo-rotate" style="width:48rpx;height:48rpx;color:var(--color-warning);border-width:4rpx;"></view>
+        </view>
+        <text class="retry-title">AI 生成失败</text>
+        <text class="retry-desc">网络异常或服务繁忙，请点击下方按钮重试</text>
+        <button class="retry-btn" bindtap="retrySubmit">
+          <view class="geo-rotate" style="width:28rpx;height:28rpx;color:#FFFFFF;margin-right:12rpx;"></view>
+          <text class="retry-btn-text">重新生成</text>
+        </button>
+      </view>
+    </view>
   </view>
   <view class="bottom-spacer"></view>
 </view>

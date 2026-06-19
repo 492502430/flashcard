@@ -1,0 +1,50 @@
+<!-- templates.wxml — 模板库 -->
+<view class="page">
+  <view class="header">
+    <text class="header-title">模板库</text>
+    <text class="header-sub">精选牌组，一键导入</text>
+  </view>
+
+  <block wx:for="{{categories}}" wx:key="category">
+    <view class="category">
+      <view class="category-title">
+        <view class="category-dot"></view>
+        <text>{{item.category}}</text>
+      </view>
+
+      <view class="template-grid">
+        <view class="template-card fade-in tappable" wx:for="{{item.items}}" wx:for-item="tpl" wx:key="id"
+              bindtap="previewTemplate" data-id="{{tpl.id}}">
+          <view class="tpl-cover">
+            <view class="tpl-cover-shape"></view>
+            <view class="tpl-icon-wrap">
+              <view class="geo-{{tpl.icon || 'diamond'}} tpl-icon-inner"></view>
+            </view>
+          </view>
+          <view class="tpl-body">
+            <text class="tpl-title">{{tpl.title}}</text>
+            <text class="tpl-desc">{{tpl.description}}</text>
+            <view class="tpl-footer">
+              <view class="tpl-badge">
+                <text class="tpl-badge-text">{{tpl.card_count}} 张卡片</text>
+              </view>
+              <view class="tpl-import-btn {{importing === tpl.id ? 'importing' : ''}}" catchtap="importTemplate" data-id="{{tpl.id}}" data-title="{{tpl.title}}">
+                <text wx:if="{{importing === tpl.id}}">导入中...</text>
+                <text wx:else>导入</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <view class="empty-state fade-in" wx:if="{{templates.length === 0 && categories.length === 0}}">
+    <view class="empty-state-geo">
+      <view class="geo-box-stack"><view class="geo-box"></view><view class="geo-box"></view><view class="geo-box"></view></view>
+    </view>
+    <text class="empty-state-title">加载中...</text>
+  </view>
+
+  <view class="bottom-spacer"></view>
+</view>

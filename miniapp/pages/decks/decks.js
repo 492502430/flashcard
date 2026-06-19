@@ -58,6 +58,10 @@ Page({
     wx.navigateTo({ url: '/pages/create/create' });
   },
 
+  goTemplates() {
+    wx.navigateTo({ url: '/pages/templates/templates' });
+  },
+
   confirmDelete(e) {
     const id = e.currentTarget.dataset.id;
     const title = e.currentTarget.dataset.title || '这个牌组';

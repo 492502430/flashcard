@@ -11,7 +11,8 @@ Page({
     keyword: '',
     searched: false,
     searchResults: [],
-    searchTimer: null
+    searchTimer: null,
+    checkinDays: []  // 30-day heatmap data
   },
 
   onShow() {
@@ -68,6 +69,49 @@ Page({
         this.setData({ weekStats });
       }
     });
+
+    // Load 30-day checkin for calendar heatmap
+    wx.request({
+      url: app.globalData.apiBase + '/api/checkin',
+      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
+      success: (res) => {
+        const checkinData = res.data || [];
+        this.buildCheckinGrid(checkinData);
+      }
+    });
+  },
+
+  buildCheckinGrid(apiData) {
+    // Build a map from date string to count
+    const countMap = {};
+    apiData.forEach(d => { countMap[d.date] = d.count; });
+
+    // Generate past 30 days (including today)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const grid = [];
+    const weekDays = ['日','一','二','三','四','五','六'];
+
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().slice(0, 10);
+      const count = countMap[dateStr] || 0;
+      // Level: 0=none, 1=1-3, 2=4-9, 3=10-19, 4=20+
+      let level = 0;
+      if (count > 0) level = 1;
+      if (count >= 4) level = 2;
+      if (count >= 10) level = 3;
+      if (count >= 20) level = 4;
+      grid.push({
+        date: dateStr,
+        count,
+        level,
+        dayOfWeek: weekDays[d.getDay()],
+        isToday: i === 0
+      });
+    }
+    this.setData({ checkinDays: grid });
   },
 
   startReview() {

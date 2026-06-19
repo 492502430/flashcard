@@ -444,3 +444,68 @@
 .bottom-spacer {
   height: 60rpx;
 }
+
+/* ============================================
+   Retry Section — failure fallback
+   ============================================ */
+.retry-section {
+  padding: 16rpx 0;
+  animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.retry-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #FFFBEB, #FFF7ED);
+  border-radius: 24rpx;
+  border: 2rpx solid #FDE68A;
+  padding: 40rpx 32rpx;
+  text-align: center;
+}
+.retry-icon-wrap {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background: rgba(217, 119, 6, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20rpx;
+}
+.retry-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 10rpx;
+}
+.retry-desc {
+  font-size: 24rpx;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 28rpx;
+  max-width: 480rpx;
+}
+.retry-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #D97706, #F59E0B);
+  border-radius: 40rpx;
+  padding: 24rpx 48rpx;
+  border: none;
+  box-shadow: 0 8rpx 24rpx rgba(217, 119, 6, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.retry-btn::after {
+  border: none;
+}
+.retry-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 4rpx 12rpx rgba(217, 119, 6, 0.15);
+}
+.retry-btn-text {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 1rpx;
+}

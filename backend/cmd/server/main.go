@@ -27,6 +27,9 @@ func main() {
 		openid TEXT UNIQUE NOT NULL,
 		nickname TEXT DEFAULT '',
 		avatar_url TEXT DEFAULT '',
+		invite_code TEXT UNIQUE,
+		tokens_used INT DEFAULT 0,
+		invited_by TEXT DEFAULT '',
 		created_at TIMESTAMPTZ DEFAULT NOW(),
 		updated_at TIMESTAMPTZ DEFAULT NOW())`)
 	db.Exec(`CREATE TABLE IF NOT EXISTS decks (
@@ -49,6 +52,23 @@ func main() {
 		user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 		rating INT NOT NULL, stability FLOAT DEFAULT 0,
 		created_at TIMESTAMPTZ DEFAULT NOW())`)
+	db.Exec(`CREATE TABLE IF NOT EXISTS card_feedbacks (
+		id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+		card_id UUID NOT NULL REFERENCES cards(id) ON DELETE CASCADE,
+		user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+		type TEXT NOT NULL,
+		created_at TIMESTAMPTZ DEFAULT NOW())`)
+	db.Exec(`CREATE TABLE IF NOT EXISTS achievements (
+		id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+		user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+		key TEXT NOT NULL,
+		earned_at TIMESTAMPTZ DEFAULT NOW(),
+		notified_at TIMESTAMPTZ,
+		UNIQUE(user_id, key))`)
+	// Migration: add columns for existing databases
+	db.Exec(`ALTER TABLE users ADD COLUMN IF NOT EXISTS invite_code TEXT UNIQUE`)
+	db.Exec(`ALTER TABLE users ADD COLUMN IF NOT EXISTS tokens_used INT DEFAULT 0`)
+	db.Exec(`ALTER TABLE users ADD COLUMN IF NOT EXISTS invited_by TEXT DEFAULT ''`)
 	log.Println("Database migrated")
 
 	h := handler.New(db)
@@ -58,6 +78,27 @@ func main() {
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`{"status":"ok"}`))
 	})
+
+	// Admin routes (protected by X-Admin-Token header)
+	adminAuth := handler.AdminAuth(cfg.AdminPassword)
+	r.Group(func(r chi.Router) {
+		r.Use(adminAuth)
+		r.Get("/admin", h.AdminPage)
+		r.Get("/api/admin/stats", func(w http.ResponseWriter, r *http.Request) {
+			if r.Method != http.MethodGet {
+				http.Error(w, `{"error":"method not allowed"}`, http.StatusMethodNotAllowed)
+				return
+			}
+			h.AdminStats(w, r)
+		})
+	})
+
+	// API documentation (no auth)
+	r.Get("/api/docs", h.DocsPage)
+
+	// Template decks (listing is public, import requires auth)
+	r.Get("/api/templates", h.ListTemplates)
+	r.Get("/api/templates/{id}", h.GetTemplate)
 
 	r.Post("/api/auth/login", h.WxLogin)
 
@@ -76,6 +117,12 @@ func main() {
 		r.Post("/api/upload", h.Upload)
 		r.Get("/api/review/today", h.GetDueCards)
 		r.Post("/api/review", h.SubmitReview)
+		r.Post("/api/cards/{id}/feedback", h.SubmitCardFeedback)
+		r.Get("/api/achievements", h.GetAchievements)
+		r.Get("/api/checkin", h.GetCheckin)
+		r.Get("/api/invite/my-code", h.GetMyInviteCode)
+		r.Get("/api/invite/stats", h.GetInviteStats)
+		r.Post("/api/templates/{id}/import", h.ImportTemplate)
 	})
 
 	log.Printf("Server starting on :%s", cfg.Port)

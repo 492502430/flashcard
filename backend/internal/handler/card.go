@@ -158,3 +158,44 @@ func (h *Handler) ExportAll(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, 200, result)
 }
+
+// SubmitCardFeedback records user feedback about a card issue.
+func (h *Handler) SubmitCardFeedback(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value("user_id").(string)
+	cardID := chi.URLParam(r, "id")
+
+	var req struct {
+		Type string `json:"type"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, 400, "invalid request body")
+		return
+	}
+
+	validTypes := map[string]bool{
+		"content_error":     true,
+		"answer_too_brief":  true,
+		"question_unclear":  true,
+	}
+	if !validTypes[req.Type] {
+		writeError(w, 400, "invalid feedback type: must be content_error, answer_too_brief, or question_unclear")
+		return
+	}
+
+	// Verify the card belongs to the user via deck ownership
+	var count int
+	h.DB.Raw(`
+		SELECT COUNT(*) FROM cards c
+		JOIN decks d ON c.deck_id = d.id
+		WHERE c.id = ? AND d.user_id = ?
+	`, cardID, userID).Scan(&count)
+	if count == 0 {
+		writeError(w, 404, "card not found")
+		return
+	}
+
+	h.DB.Exec(`INSERT INTO card_feedbacks (card_id, user_id, type) VALUES (?, ?, ?)`,
+		cardID, userID, req.Type)
+
+	writeJSON(w, 200, map[string]string{"status": "ok"})
+}

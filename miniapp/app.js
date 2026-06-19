@@ -12,6 +12,13 @@ App({
       console.log('[app] Found stored token');
     }
     this.login();
+
+    // Onboarding check — redirect first-time users
+    const onboarded = wx.getStorageSync('onboarded');
+    if (!onboarded) {
+      console.log('[app] First launch — redirecting to onboard');
+      wx.reLaunch({ url: '/pages/onboard/onboard' });
+    }
   },
 
   login() {

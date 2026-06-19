@@ -75,6 +75,28 @@
     </view>
   </view>
 
+  <!-- 30-Day Calendar Heatmap -->
+  <view class="heatmap-section" wx:if="{{checkinDays.length > 0}}">
+    <text class="stats-heading">打卡日历</text>
+    <view class="heatmap-grid">
+      <view class="heatmap-cell {{item.isToday ? 'heatmap-cell--today' : ''}}"
+        wx:for="{{checkinDays}}" wx:key="date"
+        data-date="{{item.date}}" data-count="{{item.count}}">
+        <view class="heatmap-square heatmap-l{{item.level}}"></view>
+        <text class="heatmap-day">{{item.dayOfWeek}}</text>
+      </view>
+    </view>
+    <view class="heatmap-legend">
+      <text class="heatmap-legend-label">少</text>
+      <view class="heatmap-square heatmap-l0" style="width:20rpx;height:20rpx;border-radius:4rpx;"></view>
+      <view class="heatmap-square heatmap-l1" style="width:20rpx;height:20rpx;border-radius:4rpx;"></view>
+      <view class="heatmap-square heatmap-l2" style="width:20rpx;height:20rpx;border-radius:4rpx;"></view>
+      <view class="heatmap-square heatmap-l3" style="width:20rpx;height:20rpx;border-radius:4rpx;"></view>
+      <view class="heatmap-square heatmap-l4" style="width:20rpx;height:20rpx;border-radius:4rpx;"></view>
+      <text class="heatmap-legend-label">多</text>
+    </view>
+  </view>
+
   <!-- Empty state — only when no cards at all -->
   <view class="empty-state fade-in" wx:if="{{totalCards === 0}}">
     <view class="empty-state-geo">

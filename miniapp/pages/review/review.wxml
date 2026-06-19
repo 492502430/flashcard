@@ -58,6 +58,15 @@
         <text class="rate-sub">4天后复习</text>
       </button>
     </view>
+
+    <!-- Card Quality Feedback -->
+    <view class="feedback-bar {{showFeedback ? 'feedback-visible' : ''}}">
+      <text class="feedback-label">卡片有问题？</text>
+      <view class="feedback-options">
+        <text class="feedback-option tappable" wx:for="{{feedbackOptions}}" wx:key="type" bindtap="submitFeedback" data-type="{{item.type}}">{{item.label}}</text>
+        <text class="feedback-dismiss tappable" bindtap="dismissFeedback">✕</text>
+      </view>
+    </view>
   </view>
 
   <view class="done-state" wx:else>
@@ -71,5 +80,9 @@
       <view class="done-stat"><text class="done-stat-num">{{streak}}</text><text class="done-stat-label">连续天数</text></view>
     </view>
     <button class="btn-primary done-btn" bindtap="goHome">返回首页</button>
+    <button class="btn-share" bindtap="generatePoster">分享成就</button>
   </view>
+
+  <!-- Hidden canvas for poster generation -->
+  <canvas type="2d" id="posterCanvas" class="poster-canvas" wx:if="{{showPosterCanvas}}"></canvas>
 </view>

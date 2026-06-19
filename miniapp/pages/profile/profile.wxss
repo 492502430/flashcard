@@ -159,6 +159,8 @@
 .menu-icon-purple  { background: #F3E8FF; }
 .menu-icon-orange  { background: #FFF7ED; }
 .menu-icon-blue    { background: #EFF6FF; }
+.menu-icon-red     { background: #FEF2F2; }
+.menu-icon-amber   { background: #FFFBEB; }
 
 /* Geometric menu icons — NO emoji */
 .menu-geo {
@@ -209,6 +211,58 @@
   width: 0; height: 0;
   border-top: 6rpx solid #D97706; border-right: 6rpx solid transparent;
 }
+/* Bell + clock — review reminder */
+.menu-geo.menu-geo-bell-clock {
+  position: relative;
+  width: 28rpx;
+  height: 30rpx;
+  border: 3rpx solid #D97706;
+  border-radius: 12rpx 12rpx 4rpx 4rpx;
+  border-bottom: none;
+}
+.menu-geo.menu-geo-bell-clock::after {
+  content: ''; position: absolute; bottom: -5rpx; left: 50%; transform: translateX(-50%);
+  width: 6rpx; height: 6rpx; border-radius: 50%; background: #D97706;
+}
+/* Download arrow — export */
+.menu-geo.geo-download {
+  width: 22rpx; height: 22rpx;
+  border-left: 3rpx solid #DC2626;
+  border-bottom: 3rpx solid #DC2626;
+  transform: rotate(-45deg);
+  margin-top: -6rpx;
+}
+.menu-geo.geo-download::after {
+  content: ''; position: absolute; top: -10rpx; left: -5rpx;
+  width: 0; height: 0;
+  border-left: 5rpx solid transparent;
+  border-right: 5rpx solid transparent;
+  border-bottom: 7rpx solid #DC2626;
+}
+
+/* Gift box — invite */
+.menu-geo.menu-geo-gift {
+  width: 26rpx; height: 26rpx;
+  border: 3rpx solid #06B6D4;
+  border-radius: 4rpx;
+  position: relative;
+}
+.menu-geo.menu-geo-gift::before {
+  content: '';
+  position: absolute; top: -8rpx; left: 50%;
+  transform: translateX(-50%);
+  width: 16rpx; height: 8rpx;
+  border: 3rpx solid #06B6D4;
+  border-radius: 4rpx 4rpx 0 0;
+  border-bottom: none;
+}
+.menu-geo.menu-geo-gift::after {
+  content: '';
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12rpx; height: 2rpx;
+  background: #06B6D4;
+}
 
 .menu-item-body {
   flex: 1;
@@ -233,6 +287,227 @@
   font-size: 22rpx;
   color: #CBD5E1;
   margin-top: 40rpx;
+}
+
+/* ============================================
+   Achievements Section
+   ============================================ */
+.achievements-card {
+  background: var(--color-surface);
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: var(--shadow-card);
+}
+.achievements-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+.achievement-item {
+  flex: 0 0 calc(33.33% - 12rpx);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 8rpx;
+  border-radius: 16rpx;
+  background: #F8F6FC;
+  position: relative;
+  transition: all 0.3s ease;
+  min-height: 140rpx;
+}
+.achievement-earned {
+  background: linear-gradient(135deg, #F3E8FF 0%, #EDE9FE 100%);
+  border: 1rpx solid rgba(124, 58, 237, 0.15);
+}
+.achievement-locked {
+  opacity: 0.5;
+}
+.achievement-icon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10rpx;
+  background: rgba(124, 58, 237, 0.08);
+}
+.achievement-earned .achievement-icon {
+  background: linear-gradient(135deg, #7C3AED, #8B5CF6);
+}
+.achievement-title {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: 4rpx;
+}
+.achievement-desc {
+  font-size: 18rpx;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+.achievement-lock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+}
+.ach-lock-icon {
+  width: 24rpx;
+  height: 24rpx;
+}
+
+/* Achievement geometric icons */
+.ach-geo {
+  width: 28rpx;
+  height: 28rpx;
+  position: relative;
+}
+/* Star — 4-point sparkle */
+.ach-star {
+  width: 32rpx;
+  height: 32rpx;
+  background: #FFFFFF;
+  transform: rotate(45deg);
+  border-radius: 3rpx;
+}
+/* Diamond */
+.ach-diamond {
+  width: 24rpx;
+  height: 24rpx;
+  background: #FFFFFF;
+  transform: rotate(45deg);
+  border-radius: 3rpx;
+}
+/* Trophy — simplified geometric */
+.ach-trophy {
+  position: relative;
+  width: 26rpx;
+  height: 30rpx;
+}
+.ach-trophy::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18rpx;
+  height: 18rpx;
+  border: 3rpx solid #FFFFFF;
+  border-radius: 50% 50% 0 0;
+  border-bottom: none;
+}
+.ach-trophy::after {
+  content: '';
+  position: absolute;
+  bottom: 2rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24rpx;
+  height: 4rpx;
+  background: #FFFFFF;
+  border-radius: 2rpx;
+}
+/* Fire — three triangles */
+.ach-fire {
+  position: relative;
+  width: 20rpx;
+  height: 28rpx;
+}
+.ach-fire::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10rpx solid transparent;
+  border-right: 10rpx solid transparent;
+  border-bottom: 24rpx solid #FFFFFF;
+}
+.ach-fire::after {
+  content: '';
+  position: absolute;
+  bottom: 14rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6rpx;
+  height: 6rpx;
+  background: #7C3AED;
+  border-radius: 50%;
+}
+/* Streak — lightning bolt */
+.ach-streak {
+  position: relative;
+  width: 16rpx;
+  height: 28rpx;
+}
+.ach-streak::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 8rpx solid transparent;
+  border-right: 8rpx solid transparent;
+  border-bottom: 16rpx solid #FFFFFF;
+  transform: rotate(10deg);
+}
+.ach-streak::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-left: 6rpx solid transparent;
+  border-right: 6rpx solid transparent;
+  border-top: 12rpx solid #FFFFFF;
+  transform: rotate(-10deg);
+}
+/* Crown */
+.ach-crown {
+  position: relative;
+  width: 30rpx;
+  height: 22rpx;
+}
+.ach-crown::before {
+  content: '';
+  position: absolute;
+  top: 4rpx;
+  left: 0;
+  width: 100%;
+  height: 12rpx;
+  border: 3rpx solid #FFFFFF;
+  border-radius: 4rpx;
+  border-top: none;
+}
+.ach-crown::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 4rpx;
+  width: 22rpx;
+  height: 6rpx;
+  background: #FFFFFF;
+  clip-path: polygon(0% 100%, 25% 0%, 50% 60%, 75% 0%, 100% 100%);
+}
+
+/* Switch — review reminder toggle */
+.menu-switch {
+  flex-shrink: 0;
+  transform: scale(0.85);
 }
 
 .bottom-spacer {

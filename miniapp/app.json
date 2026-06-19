@@ -1,7 +1,9 @@
 {
   "pages": [
+    "pages/onboard/onboard",
     "pages/index/index",
     "pages/decks/decks",
+    "pages/templates/templates",
     "pages/deck-detail/deck-detail",
     "pages/review/review",
     "pages/create/create",
