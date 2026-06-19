@@ -7,11 +7,14 @@ import (
 	"github.com/492502430/flashcard/backend/internal/config"
 )
 
-// AdminAuth validates the X-Admin-Token header against ADMIN_PASSWORD.
+// AdminAuth validates admin token from header or query param.
 func AdminAuth(password string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			token := r.Header.Get("X-Admin-Token")
+			if token == "" {
+				token = r.URL.Query().Get("token")
+			}
 			if token == "" || token != password {
 				writeError(w, http.StatusUnauthorized, "invalid admin token")
 				return
