@@ -73,6 +73,7 @@
       <view class="gen-dot-bounce"></view>
       <view class="gen-dot-bounce"></view>
     </view>
+    <text class="gen-back-hint">可返回首页，AI 后台继续生成</text>
   </view>
 
   <!-- 真的没卡片 -->

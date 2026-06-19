@@ -154,10 +154,10 @@ Page({
       success: (res) => {
         this.setData({ generating: false, submitFailed: false });
         if (res.data && res.data.id) {
-          wx.showToast({ title: 'AI 正在生成卡片...', icon: 'none' });
+          const deckId = res.data.id;
           setTimeout(() => {
-            wx.navigateTo({ url: '/pages/deck-detail/deck-detail?id=' + res.data.id });
-          }, 500);
+            wx.navigateTo({ url: '/pages/deck-detail/deck-detail?id=' + deckId });
+          }, 300);
         } else {
           wx.showToast({ title: '创建成功！', icon: 'success' });
           setTimeout(() => wx.navigateBack(), 800);

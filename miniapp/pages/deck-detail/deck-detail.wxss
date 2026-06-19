@@ -322,7 +322,13 @@
   font-size: 24rpx;
   color: var(--color-text-muted);
   line-height: 1.6;
-  margin-bottom: 32rpx;
+  margin-bottom: 24rpx;
+}
+.gen-back-hint {
+  font-size: 22rpx;
+  color: var(--color-text-muted);
+  margin-top: 24rpx;
+  opacity: 0.6;
 }
 .gen-dots-row {
   display: flex;
