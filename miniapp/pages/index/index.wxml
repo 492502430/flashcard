@@ -97,6 +97,29 @@
     </view>
   </view>
 
+  <!-- New User Onboarding Banner — prominent purple banner with arrow -->
+  <view class="onboard-banner" wx:if="{{totalDecks === 0}}" bindtap="goCreate">
+    <view class="onboard-banner-glow"></view>
+    <view class="onboard-banner-content">
+      <view class="onboard-banner-icon">
+        <view class="geo-sparkle"></view>
+      </view>
+      <view class="onboard-banner-text">
+        <text class="onboard-banner-title">首次使用？点击导入资料开始</text>
+        <text class="onboard-banner-desc">AI 自动生成闪卡，轻松高效记忆</text>
+      </view>
+      <view class="onboard-banner-arrow">
+        <text class="onboard-banner-arrow-text">导入资料</text>
+        <view class="geo-arrow-right"></view>
+      </view>
+    </view>
+    <!-- Arrow pointing down to the 导入资料 button below -->
+    <view class="onboard-arrow-down">
+      <view class="onboard-arrow-down-line"></view>
+      <view class="onboard-arrow-down-tip"></view>
+    </view>
+  </view>
+
   <!-- Empty state — only when no cards at all -->
   <view class="empty-state fade-in" wx:if="{{totalCards === 0}}">
     <view class="empty-state-geo">

@@ -137,7 +137,7 @@ Page({
   },
 
   showInvite() {
-    wx.showLoading({ title: '加载中...' });
+    wx.showLoading({ title: '加载中...', mask: true });
     wx.request({
       url: app.globalData.apiBase + '/api/invite/my-code',
       header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
@@ -145,11 +145,11 @@ Page({
         wx.hideLoading();
         const inviteCode = (res.data && res.data.invite_code) || '';
         if (!inviteCode) {
-          wx.showToast({ title: '获取邀请码失败', icon: 'none' });
+          wx.showToast({ title: '获取邀请码失败，请稍后重试', icon: 'none' });
           return;
         }
 
-        // Load invite stats
+        // Wrap second request inside success of first — only fetch stats if we got the invite code
         wx.request({
           url: app.globalData.apiBase + '/api/invite/stats',
           header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
@@ -174,14 +174,16 @@ Page({
               }
             });
           },
-          fail: () => {
-            wx.showToast({ title: '加载邀请统计失败', icon: 'none' });
+          fail: (err) => {
+            console.error('加载邀请统计失败:', err);
+            wx.showToast({ title: '加载邀请统计失败: ' + (err.errMsg || '网络异常'), icon: 'none', duration: 2500 });
           }
         });
       },
-      fail: () => {
+      fail: (err) => {
         wx.hideLoading();
-        wx.showToast({ title: '网络请求失败', icon: 'none' });
+        console.error('获取邀请码失败:', err);
+        wx.showToast({ title: '获取邀请码失败: ' + (err.errMsg || '网络异常，请检查网络后重试'), icon: 'none', duration: 2500 });
       }
     });
   }

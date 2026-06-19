@@ -27,8 +27,9 @@ Page({
         });
         this.setData({ templates, categories });
       },
-      fail: () => {
-        wx.showToast({ title: '加载失败', icon: 'none' });
+      fail: (err) => {
+        console.error('加载模板列表失败:', err);
+        wx.showToast({ title: '加载模板失败: ' + (err.errMsg || '网络异常'), icon: 'none', duration: 2500 });
       }
     });
   },
@@ -61,8 +62,9 @@ Page({
           wx.showToast({ title: errMsg, icon: 'none' });
         }
       },
-      fail: () => {
-        wx.showToast({ title: '网络错误', icon: 'none' });
+      fail: (err) => {
+        console.error('导入模板失败:', err);
+        wx.showToast({ title: '导入失败: ' + (err.errMsg || '网络异常，请稍后重试'), icon: 'none', duration: 2500 });
       },
       complete: () => {
         this.setData({ importing: null });
@@ -78,7 +80,7 @@ Page({
       success: (res) => {
         const tmpl = res.data;
         if (!tmpl || !tmpl.cards) {
-          wx.showToast({ title: '加载失败', icon: 'none' });
+          wx.showToast({ title: '加载模板详情失败', icon: 'none' });
           return;
         }
         // Show first few cards in a modal
@@ -98,8 +100,9 @@ Page({
           }
         });
       },
-      fail: () => {
-        wx.showToast({ title: '加载失败', icon: 'none' });
+      fail: (err) => {
+        console.error('加载模板详情失败:', err);
+        wx.showToast({ title: '加载模板详情失败: ' + (err.errMsg || '网络异常'), icon: 'none', duration: 2500 });
       }
     });
   }
