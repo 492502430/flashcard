@@ -271,9 +271,9 @@ func (h *Handler) ImportTemplate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err := h.DB.Raw(`
-		INSERT INTO decks (user_id, title, source) VALUES (?, ?, 'template')
+		INSERT INTO decks (user_id, title, source, source_name) VALUES (?, ?, 'template', ?)
 		RETURNING id, title, card_count
-	`, userID, tmpl.Title).Scan(&deck).Error
+	`, userID, tmpl.Title, tmpl.Title).Scan(&deck).Error
 
 	if err != nil {
 		writeError(w, 500, "failed to create deck from template")
@@ -288,9 +288,9 @@ func (h *Handler) ImportTemplate(w http.ResponseWriter, r *http.Request) {
 			tagsJSON = string(b)
 		}
 		h.DB.Exec(`
-			INSERT INTO cards (deck_id, question, answer, tags, next_review_at)
-			VALUES (?, ?, ?, ?, NOW())
-		`, deck.ID, card.Question, card.Answer, tagsJSON)
+			INSERT INTO cards (deck_id, question, answer, tags, document_name, next_review_at)
+			VALUES (?, ?, ?, ?, ?, NOW())
+		`, deck.ID, card.Question, card.Answer, tagsJSON, tmpl.Title)
 	}
 
 	// Update card count

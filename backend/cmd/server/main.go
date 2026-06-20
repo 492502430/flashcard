@@ -69,6 +69,8 @@ func main() {
 	db.Exec(`ALTER TABLE users ADD COLUMN IF NOT EXISTS invite_code TEXT UNIQUE`)
 	db.Exec(`ALTER TABLE users ADD COLUMN IF NOT EXISTS tokens_used INT DEFAULT 0`)
 	db.Exec(`ALTER TABLE users ADD COLUMN IF NOT EXISTS invited_by TEXT DEFAULT ''`)
+	db.Exec(`ALTER TABLE decks ADD COLUMN IF NOT EXISTS source_name TEXT DEFAULT ''`)
+	db.Exec(`ALTER TABLE cards ADD COLUMN IF NOT EXISTS document_name TEXT DEFAULT ''`)
 	log.Println("Database migrated")
 
 	h := handler.New(db)
@@ -111,6 +113,7 @@ func main() {
 		r.Delete("/api/decks/{id}", h.DeleteDeck)
 		r.Delete("/api/cards/{id}", h.DeleteCard)
 		r.Put("/api/cards/{id}", h.UpdateCard)
+		r.Post("/api/cards/optimize", h.OptimizeCards)
 		r.Get("/api/cards/search", h.SearchCards)
 		r.Get("/api/export", h.ExportAll)
 		r.Get("/api/stats", h.GetStats)

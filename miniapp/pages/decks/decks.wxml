@@ -23,6 +23,7 @@
       </view>
       <view class="deck-body">
         <text class="deck-title">{{item.title}}</text>
+        <text class="deck-source">{{item.source_name || '默认文档'}}</text>
         <view class="deck-meta">
           <view class="deck-badge">
             <text class="deck-badge-text" wx:if="{{item.card_count > 0}}">{{item.card_count}} 张</text>

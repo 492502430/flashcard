@@ -61,15 +61,18 @@
 /* Template Grid (2-column) */
 .template-grid {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 16rpx;
 }
 .template-card {
-  width: calc(50% - 8rpx);
+  width: 100%;
+  min-height: 156rpx;
   background: var(--color-surface);
-  border-radius: 20rpx;
+  border: 1rpx solid var(--color-border);
+  border-radius: 18rpx;
   overflow: hidden;
   box-shadow: var(--shadow-card);
+  display: flex;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .template-card:active {
@@ -80,21 +83,52 @@
 /* Template Cover */
 .tpl-cover {
   position: relative;
-  height: 120rpx;
-  background: linear-gradient(135deg, #F3E8FF 0%, #EDE9FE 100%);
+  width: 170rpx;
+  min-height: 156rpx;
+  flex: none;
+  background: #EEF2FF;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
-.tpl-cover-shape {
+.tpl-cover-image,
+.tpl-cover-blur {
   position: absolute;
-  bottom: -24rpx;
-  right: -24rpx;
-  width: 100rpx;
-  height: 100rpx;
-  border-radius: 50%;
-  background: rgba(139, 92, 246, 0.08);
+  inset: 0;
+}
+
+.tpl-cover-image {
+  opacity: 0.82;
+}
+
+.tpl-cover-blur {
+  backdrop-filter: blur(6rpx);
+  background: rgba(255,255,255,0.14);
+}
+
+.cover-politics .tpl-cover-image {
+  background:
+    linear-gradient(135deg, rgba(91,75,219,0.9), rgba(239,68,68,0.58)),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.28) 0 6rpx, transparent 6rpx 16rpx);
+}
+
+.cover-english .tpl-cover-image {
+  background:
+    linear-gradient(135deg, rgba(47,128,237,0.9), rgba(32,185,112,0.55)),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.28) 0 10rpx, transparent 10rpx 22rpx);
+}
+
+.cover-cs .tpl-cover-image {
+  background:
+    linear-gradient(135deg, rgba(17,24,39,0.88), rgba(91,75,219,0.62)),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.22) 0 4rpx, transparent 4rpx 14rpx);
+}
+
+.cover-default .tpl-cover-image {
+  background:
+    linear-gradient(135deg, rgba(91,75,219,0.85), rgba(47,128,237,0.5)),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.24) 0 8rpx, transparent 8rpx 18rpx);
 }
 .tpl-icon-wrap {
   position: relative;
@@ -110,7 +144,12 @@
 
 /* Template Body */
 .tpl-body {
-  padding: 18rpx 20rpx 20rpx;
+  flex: 1;
+  min-width: 0;
+  padding: 18rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .tpl-title {
   display: block;

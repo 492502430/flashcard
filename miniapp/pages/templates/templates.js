@@ -1,5 +1,12 @@
 const app = getApp();
 
+function coverClassForTemplate(tpl) {
+  if (tpl.category === '考研政治') return 'cover-politics';
+  if (tpl.category === '英语四级') return 'cover-english';
+  if (tpl.category === '计算机基础') return 'cover-cs';
+  return 'cover-default';
+}
+
 Page({
   data: {
     templates: [],
@@ -19,6 +26,7 @@ Page({
         const categories = [];
         const catMap = {};
         templates.forEach(t => {
+          t.coverClass = coverClassForTemplate(t);
           if (!catMap[t.category]) {
             catMap[t.category] = { category: t.category, items: [] };
             categories.push(catMap[t.category]);

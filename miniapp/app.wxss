@@ -1,416 +1,205 @@
-/* ============================================
-   FlashCard Mini-Program — Global Design System
-   UI UX Pro Max | Education Tool Theme
-   ============================================ */
-
 page {
-  /* === Color System === */
-  --color-primary: #7C3AED;
-  --color-primary-dark: #6D28D9;
-  --color-secondary: #8B5CF6;
-  --color-secondary-light: #A78BFA;
-  --color-accent: #059669;
-  --color-accent-light: #10B981;
-  --color-warning: #D97706;
-  --color-error: #DC2626;
-
-  --color-bg: #F8F6FC;
-  --color-bg-alt: #F0ECF8;
+  --color-primary: #5B4BDB;
+  --color-primary-dark: #4636CC;
+  --color-secondary: #2F80ED;
+  --color-success: #20B970;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --color-bg: #F7F8FC;
   --color-surface: #FFFFFF;
-  --color-border: #EDE9FE;
-  --color-text-primary: #0F172A;
-  --color-text-secondary: #475569;
-  --color-text-muted: #94A3B8;
-  --color-text-inverse: #FFFFFF;
-
-  /* === Radius === */
-  --radius-sm: 10rpx;
-  --radius-md: 14rpx;
-  --radius-lg: 18rpx;
-  --radius-xl: 22rpx;
-  --radius-2xl: 28rpx;
-  --radius-3xl: 36rpx;
-
-  /* === Shadows (deep, premium layered) === */
-  --shadow-xs: 0 1px 2px rgba(15,23,42,0.04);
-  --shadow-sm: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
-  --shadow-md: 0 4px 6px rgba(15,23,42,0.05), 0 2px 4px rgba(15,23,42,0.04);
-  --shadow-lg: 0 10px 15px rgba(15,23,42,0.06), 0 4px 6px rgba(15,23,42,0.04);
-  --shadow-xl: 0 20px 25px rgba(15,23,42,0.07), 0 8px 10px rgba(15,23,42,0.04);
-  --shadow-card: 0 1px 3px rgba(15,23,42,0.04), 0 4px 8px rgba(15,23,42,0.04);
-  --shadow-elevated: 0 4px 12px rgba(15,23,42,0.06), 0 8px 24px rgba(124,58,237,0.08);
-  --shadow-button: 0 4px 14px rgba(124,58,237,0.25), 0 2px 6px rgba(124,58,237,0.12);
-
-  /* === Typography === */
+  --color-border: #E7EAF2;
+  --color-border-soft: #F0F2F7;
+  --color-text-primary: #111827;
+  --color-text-secondary: #4B5563;
+  --color-text-muted: #8A94A6;
+  --radius-sm: 12rpx;
+  --radius-md: 16rpx;
+  --radius-lg: 22rpx;
+  --radius-xl: 28rpx;
+  --shadow-card: 0 8rpx 28rpx rgba(31, 41, 55, 0.08);
+  --shadow-soft: 0 4rpx 16rpx rgba(31, 41, 55, 0.06);
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
   font-size: 28rpx;
-  color: var(--color-text-primary);
-  line-height: 1.6;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  background-color: var(--color-bg);
 }
 
-/* ============================================
-   Shared Components
-   ============================================ */
+button {
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  font: inherit;
+  box-sizing: border-box;
+  overflow: visible;
+}
 
-/* Primary Button */
+button::after { border: 0; }
+
+.page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24rpx 28rpx 120rpx;
+}
+
+.tappable:active,
+button:active {
+  opacity: 0.78;
+}
+
 .btn-primary {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%);
-  color: var(--color-text-inverse);
-  border-radius: var(--radius-xl);
-  padding: 28rpx 48rpx;
-  font-size: 30rpx;
-  font-weight: 600;
-  border: none;
-  text-align: center;
-  box-shadow: var(--shadow-button);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  letter-spacing: 1rpx;
-}
-.btn-primary:active {
-  transform: scale(0.97);
-  box-shadow: 0 4rpx 12rpx rgba(124, 58, 237, 0.15);
-}
-.btn-primary[disabled] {
-  opacity: 0.45;
-  box-shadow: none;
-  transform: none;
-}
-
-/* Outline Button */
-.btn-outline {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  color: var(--color-secondary);
-  border: 2rpx solid var(--color-secondary);
-  border-radius: var(--radius-xl);
-  padding: 24rpx 40rpx;
-  font-size: 28rpx;
-  font-weight: 600;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.btn-outline:active {
-  background: rgba(139, 92, 246, 0.08);
-  transform: scale(0.97);
-}
-
-/* Card Base */
-.card {
-  background: var(--color-surface);
-  border-radius: var(--radius-xl);
-  padding: 32rpx;
-  margin-bottom: 24rpx;
-  box-shadow: var(--shadow-card);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-.card:active {
-  transform: scale(0.985);
-  box-shadow: var(--shadow-elevated);
-}
-
-/* Badge */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 6rpx 16rpx;
-  border-radius: 20rpx;
-  font-size: 22rpx;
-  font-weight: 600;
-}
-.badge-primary {
-  background: rgba(139, 92, 246, 0.1);
-  color: var(--color-secondary);
-}
-.badge-success {
-  background: rgba(5, 150, 105, 0.1);
-  color: var(--color-accent);
-}
-.badge-warning {
-  background: rgba(217, 119, 6, 0.1);
-  color: var(--color-warning);
-}
-
-/* Empty State */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 100rpx 48rpx;
-  text-align: center;
-}
-.empty-state-geo {
-  width: 160rpx;
-  height: 160rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #F3E8FF 0%, #EDE9FE 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 32rpx;
-  position: relative;
-}
-.empty-state-title {
-  font-size: 32rpx;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  margin-bottom: 12rpx;
-}
-.empty-state-desc {
-  font-size: 26rpx;
-  color: var(--color-text-muted);
-  margin-bottom: 40rpx;
-  line-height: 1.6;
-}
-
-/* Divider */
-.divider {
-  height: 1rpx;
-  background: var(--color-border);
-  margin: 0;
-}
-
-/* Section Header */
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24rpx;
-}
-.section-title {
+  min-height: 84rpx;
+  border-radius: 22rpx;
+  background: linear-gradient(180deg, #6554F1 0%, #4C3DDA 100%);
+  color: #FFFFFF;
   font-size: 30rpx;
   font-weight: 700;
-  color: var(--color-text-primary);
-}
-.section-link {
-  font-size: 26rpx;
-  color: var(--color-secondary);
-  font-weight: 500;
-}
-.section-link:active {
-  opacity: 0.7;
+  box-shadow: 0 10rpx 22rpx rgba(82, 65, 220, 0.24);
 }
 
-/* ============================================
-   Geometric Icon System (NO EMOJI)
-   ============================================ */
+.bottom-spacer { height: 36rpx; }
 
-/* Circle shape */
-.geo-circle {
+.fade-in {
+  animation: fadeIn 0.24s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.geo-magnify,
+.geo-chevron-left,
+.geo-chevron-right,
+.geo-close,
+.geo-upload-arrow,
+.geo-doc,
+.geo-check,
+.geo-rotate,
+.geo-plus {
+  position: relative;
+  display: inline-block;
   width: 32rpx;
   height: 32rpx;
+  color: currentColor;
+  box-sizing: border-box;
+}
+
+.geo-magnify::before {
+  content: "";
+  position: absolute;
+  left: 3rpx;
+  top: 3rpx;
+  width: 18rpx;
+  height: 18rpx;
+  border: 3rpx solid currentColor;
   border-radius: 50%;
 }
-.geo-circle-sm { width: 24rpx; height: 24rpx; }
-.geo-circle-lg { width: 48rpx; height: 48rpx; }
-.geo-circle-xl { width: 72rpx; height: 72rpx; }
 
-/* Diamond shape */
-.geo-diamond {
-  width: 32rpx;
-  height: 32rpx;
+.geo-magnify::after {
+  content: "";
+  position: absolute;
+  right: 4rpx;
+  bottom: 5rpx;
+  width: 12rpx;
+  height: 3rpx;
+  background: currentColor;
+  border-radius: 4rpx;
   transform: rotate(45deg);
+  transform-origin: center;
+}
+
+.geo-chevron-left::before,
+.geo-chevron-right::before {
+  content: "";
+  position: absolute;
+  top: 8rpx;
+  width: 16rpx;
+  height: 16rpx;
+  border-left: 3rpx solid currentColor;
+  border-bottom: 3rpx solid currentColor;
+}
+
+.geo-chevron-left::before {
+  left: 10rpx;
+  transform: rotate(45deg);
+}
+
+.geo-chevron-right::before {
+  right: 10rpx;
+  transform: rotate(-135deg);
+}
+
+.geo-close::before,
+.geo-close::after,
+.geo-plus::before,
+.geo-plus::after {
+  content: "";
+  position: absolute;
+  left: 5rpx;
+  top: 14rpx;
+  width: 22rpx;
+  height: 3rpx;
+  background: currentColor;
   border-radius: 4rpx;
 }
-.geo-diamond-sm { width: 24rpx; height: 24rpx; }
 
-/* Triangle up */
-.geo-triangle-up {
-  width: 0;
-  height: 0;
-  border-left: 16rpx solid transparent;
-  border-right: 16rpx solid transparent;
-  border-bottom: 28rpx solid currentColor;
-}
+.geo-close::before { transform: rotate(45deg); }
+.geo-close::after { transform: rotate(-45deg); }
+.geo-plus::after { transform: rotate(90deg); }
 
-/* Triangle down */
-.geo-triangle-down {
-  width: 0;
-  height: 0;
-  border-left: 16rpx solid transparent;
-  border-right: 16rpx solid transparent;
-  border-top: 28rpx solid currentColor;
-}
-
-/* Square with rounded corners */
-.geo-square {
-  width: 28rpx;
-  height: 28rpx;
+.geo-upload-arrow::before {
+  content: "";
+  position: absolute;
+  left: 14rpx;
+  top: 8rpx;
+  width: 4rpx;
+  height: 20rpx;
+  background: currentColor;
   border-radius: 6rpx;
 }
 
-/* Plus sign — two crossed bars */
-.geo-plus {
-  position: relative;
-  width: 28rpx;
-  height: 28rpx;
-}
-.geo-plus::before,
-.geo-plus::after {
-  content: '';
+.geo-upload-arrow::after {
+  content: "";
   position: absolute;
-  background: currentColor;
-  border-radius: 2rpx;
-}
-.geo-plus::before {
-  width: 100%;
-  height: 4rpx;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-}
-.geo-plus::after {
-  height: 100%;
-  width: 4rpx;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
+  left: 8rpx;
+  top: 7rpx;
+  width: 14rpx;
+  height: 14rpx;
+  border-left: 4rpx solid currentColor;
+  border-top: 4rpx solid currentColor;
+  transform: rotate(45deg);
 }
 
-/* Checkmark — using border trick */
+.geo-doc {
+  border: 3rpx solid currentColor;
+  border-radius: 6rpx;
+}
+
+.geo-doc::after {
+  content: "";
+  position: absolute;
+  left: 7rpx;
+  top: 9rpx;
+  width: 14rpx;
+  height: 3rpx;
+  background: currentColor;
+  border-radius: 4rpx;
+  box-shadow: 0 8rpx 0 currentColor;
+}
+
 .geo-check {
   width: 28rpx;
   height: 16rpx;
   border-left: 4rpx solid currentColor;
   border-bottom: 4rpx solid currentColor;
   transform: rotate(-45deg);
-  border-radius: 2rpx;
-}
-
-/* Play triangle */
-.geo-play {
-  width: 0;
-  height: 0;
-  border-top: 16rpx solid transparent;
-  border-bottom: 16rpx solid transparent;
-  border-left: 28rpx solid currentColor;
-}
-
-/* Close X — two crossed bars */
-.geo-close {
-  position: relative;
-  width: 24rpx;
-  height: 24rpx;
-}
-.geo-close::before,
-.geo-close::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 3rpx;
-  background: currentColor;
-  border-radius: 2rpx;
-  top: 50%;
-  left: 0;
-}
-.geo-close::before { transform: translateY(-50%) rotate(45deg); }
-.geo-close::after  { transform: translateY(-50%) rotate(-45deg); }
-
-/* Arrow right — chevron */
-.geo-chevron-right {
-  width: 20rpx;
-  height: 20rpx;
-  border-top: 3rpx solid currentColor;
-  border-right: 3rpx solid currentColor;
-  transform: rotate(45deg);
-  border-radius: 1rpx;
-}
-
-/* Arrow left */
-.geo-chevron-left {
-  width: 20rpx;
-  height: 20rpx;
-  border-top: 3rpx solid currentColor;
-  border-left: 3rpx solid currentColor;
-  transform: rotate(-45deg);
-  border-radius: 1rpx;
-}
-
-/* Rotate / refresh arrow (partial circle) */
-.geo-rotate {
-  width: 24rpx;
-  height: 24rpx;
-  border: 3rpx solid currentColor;
-  border-radius: 50%;
-  border-right-color: transparent;
-  border-bottom-color: transparent;
-  transform: rotate(-45deg);
-}
-
-/* Star — 4-point sparkle using diamond */
-.geo-star {
-  width: 32rpx;
-  height: 32rpx;
-  transform: rotate(45deg);
-  border-radius: 4rpx;
-}
-
-/* Horizontal bar (for charts) */
-.geo-bar {
-  width: 24rpx;
-  height: 6rpx;
-  border-radius: 3rpx;
-}
-
-/* Magnifying glass */
-.geo-magnify {
-  width: 28rpx;
-  height: 28rpx;
-  border: 3rpx solid currentColor;
-  border-radius: 50%;
-  position: relative;
-}
-.geo-magnify::after {
-  content: '';
-  position: absolute;
-  bottom: -4rpx;
-  right: -8rpx;
-  width: 8rpx;
-  height: 3rpx;
-  background: currentColor;
-  border-radius: 2rpx;
-  transform: rotate(45deg);
-}
-
-/* ============================================
-   Skeleton Loading (shimmer)
-   ============================================ */
-.skeleton {
-  background: linear-gradient(90deg, #F7F3FD 25%, #EFE7FC 50%, #F7F3FD 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: var(--radius-sm);
-}
-@keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* ============================================
-   Animations
-   ============================================ */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20rpx); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.fade-in {
-  animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-.fade-in-1 { animation-delay: 0.05s; }
-.fade-in-2 { animation-delay: 0.1s; }
-.fade-in-3 { animation-delay: 0.15s; }
-.fade-in-4 { animation-delay: 0.2s; }
-
-/* Active state utility */
-.tappable:active {
-  transform: scale(0.97);
-  transition: transform 0.15s ease;
 }

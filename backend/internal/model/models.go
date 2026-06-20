@@ -17,13 +17,14 @@ type User struct {
 
 // Deck is a collection of flashcards created by a user.
 type Deck struct {
-	ID        string    `json:"id" gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
-	UserID    string    `json:"user_id" gorm:"index;not null"`
-	Title     string    `json:"title" gorm:"not null;size:200"`
-	CardCount int       `json:"card_count" gorm:"default:0"`
-	Source    string    `json:"source"` // "text" or "pdf"
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID         string    `json:"id" gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	UserID     string    `json:"user_id" gorm:"index;not null"`
+	Title      string    `json:"title" gorm:"not null;size:200"`
+	CardCount  int       `json:"card_count" gorm:"default:0"`
+	Source     string    `json:"source"` // "text" or "pdf"
+	SourceName string    `json:"source_name" gorm:"default:''"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
 
 	Cards []Card `json:"cards,omitempty" gorm:"foreignKey:DeckID"`
 }
@@ -34,7 +35,8 @@ type Card struct {
 	DeckID       string    `json:"deck_id" gorm:"index;not null"`
 	Question     string    `json:"question" gorm:"type:text;not null"`
 	Answer       string    `json:"answer" gorm:"type:text;not null"`
-	TagsJSON     string    `json:"-" gorm:"column:tags;type:text"`      // stored as JSON array
+	TagsJSON     string    `json:"-" gorm:"column:tags;type:text"` // stored as JSON array
+	DocumentName string    `json:"document_name" gorm:"default:''"`
 	Stability    float64   `json:"stability" gorm:"default:0"`
 	Difficulty   float64   `json:"difficulty" gorm:"default:0.5"`
 	NextReviewAt time.Time `json:"next_review_at"`
@@ -65,11 +67,11 @@ type CardFeedback struct {
 
 // Achievement represents a milestone badge earned by a user.
 type Achievement struct {
-	ID          string    `json:"id" gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
-	UserID      string    `json:"user_id" gorm:"index;not null"`
-	Key         string    `json:"key" gorm:"not null"` // "first_review", "cards_10", "cards_50", "cards_100", "streak_7", "streak_30"
-	EarnedAt    time.Time `json:"earned_at"`
-	NotifiedAt  time.Time `json:"notified_at"` // null until user sees toast
+	ID         string    `json:"id" gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	UserID     string    `json:"user_id" gorm:"index;not null"`
+	Key        string    `json:"key" gorm:"not null"` // "first_review", "cards_10", "cards_50", "cards_100", "streak_7", "streak_30"
+	EarnedAt   time.Time `json:"earned_at"`
+	NotifiedAt time.Time `json:"notified_at"` // null until user sees toast
 }
 
 // AchievementDef defines a milestone's metadata (not stored in DB).

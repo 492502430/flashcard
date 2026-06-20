@@ -40,17 +40,25 @@ func (h *Handler) GetDueCards(w http.ResponseWriter, r *http.Request) {
 	var reviewedToday int
 	h.DB.Raw(`
 		SELECT COUNT(*) FROM review_records
-		WHERE user_id = ? AND created_at::date = CURRENT_DATE
+		WHERE user_id = ?
+			AND timezone('Asia/Shanghai', created_at)::date = timezone('Asia/Shanghai', NOW())::date
 	`, userID).Scan(&reviewedToday)
+
+	// Count all submitted reviews for profile and lifetime stats.
+	var reviewedTotal int
+	h.DB.Raw(`
+		SELECT COUNT(*) FROM review_records
+		WHERE user_id = ?
+	`, userID).Scan(&reviewedTotal)
 
 	// Count streak (consecutive days with reviews)
 	var streak int
 	h.DB.Raw(`
 		WITH RECURSIVE dates AS (
-			SELECT DISTINCT created_at::date AS review_date
+			SELECT DISTINCT timezone('Asia/Shanghai', created_at)::date AS review_date
 			FROM review_records WHERE user_id = ?
 		), streak AS (
-			SELECT review_date, 1 AS n FROM dates WHERE review_date = CURRENT_DATE
+			SELECT review_date, 1 AS n FROM dates WHERE review_date = timezone('Asia/Shanghai', NOW())::date
 			UNION ALL
 			SELECT d.review_date, s.n + 1
 			FROM dates d JOIN streak s ON d.review_date = s.review_date - 1
@@ -62,6 +70,7 @@ func (h *Handler) GetDueCards(w http.ResponseWriter, r *http.Request) {
 		"cards":          cards,
 		"total":          len(cards),
 		"reviewed_today": reviewedToday,
+		"reviewed_total": reviewedTotal,
 		"streak":         streak,
 	})
 }

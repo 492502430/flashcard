@@ -1,88 +1,91 @@
-<!-- review.wxml — 复习页 | UI UX Pro Max -->
-<view class="page">
-  <view class="top-bar" wx:if="{{card}}">
-    <view class="exit-btn tappable" bindtap="goHome"><view class="geo-close" style="color:#475569;"></view></view>
-    <view class="progress-wrap">
-      <view class="progress-track"><view class="progress-fill" style="width:{{(current - 1) / total * 100}}%"></view></view>
-      <text class="progress-text">{{current}}<text class="progress-sep">/</text>{{total}}</text>
+<!-- review.wxml — 复习 | 参考图重做 -->
+<view class="page review-page">
+  <block wx:if="{{card}}">
+    <view class="plain-topbar">
+      <view class="back-btn tappable" bindtap="goHome"><view class="geo-chevron-left"></view></view>
+      <text class="top-title">复习</text>
+      <view class="more">••• 更多</view>
     </view>
-  </view>
 
-  <view class="card-stage" wx:if="{{card}}">
-    <text class="flip-hint" wx:if="{{!flipped}}">点击卡片显示答案</text>
-    <view class="card-3d {{flipped ? 'is-flipped' : ''}} {{flipping ? 'is-flipping' : ''}}" bindtap="flipCard">
-      <view class="card-face card-front">
-        <view class="card-face-inner">
-          <view class="card-label-row"><view class="card-label-dot front-dot"></view><text class="card-label">问题</text></view>
-          <text class="card-deck-title" wx:if="{{card.deck_title}}">{{card.deck_title}}</text>
-          <view class="card-text-wrap"><text class="card-text">{{card.question}}</text></view>
-          <view class="card-tap-hint" wx:if="{{!flipped}}">
-            <view class="geo-rotate" style="color:#94A3B8;width:20rpx;height:20rpx;"></view>
-            <text class="tap-text">点击翻转</text>
+    <view class="progress-row">
+      <view>
+        <text class="progress-label">进度</text>
+        <text class="progress-num">{{current}} / {{total}}</text>
+      </view>
+      <view class="progress-track"><view class="progress-fill" style="width:{{(current - 1) / total * 100}}%"></view></view>
+      <view>
+        <text class="progress-label">剩余</text>
+        <text class="progress-num">{{total - current + 1}}</text>
+      </view>
+    </view>
+
+    <view class="flip-stage" bindtap="flipCard">
+      <view class="flashcard-flip {{flipped ? 'is-flipped' : ''}}">
+        <view class="flashcard card-face card-front">
+          <text class="concept-chip">概念理解</text>
+          <view class="qa">
+            <text class="question">问：{{card.question}}</text>
+            <view class="divider"></view>
+            <text class="answer placeholder">点击卡片查看答案</text>
+          </view>
+          <view class="card-foot">
+            <text>{{card.deck_title || '当前牌组'}}</text>
+            <text>点击翻卡</text>
+          </view>
+        </view>
+        <view class="flashcard card-face card-back">
+          <text class="concept-chip">参考答案</text>
+          <view class="qa">
+            <text class="question">问：{{card.question}}</text>
+            <view class="divider"></view>
+            <text class="answer">答：{{card.answer}}</text>
+          </view>
+          <view class="card-foot">
+            <text>{{card.deck_title || '当前牌组'}}</text>
+            <text>答案已显示</text>
           </view>
         </view>
       </view>
-      <view class="card-face card-back">
-        <view class="card-face-inner">
-          <view class="card-label-row"><view class="card-label-dot back-dot"></view><text class="card-label">答案</text></view>
-          <view class="card-text-wrap"><text class="card-text">{{card.answer}}</text></view>
-        </view>
+    </view>
+
+    <text class="next-review">下次复习：4 天后（5月27日）</text>
+
+    <view class="rating-grid">
+      <button class="rate-card rate-red" bindtap="rate" data-r="1"><text>1</text><view>忘记</view><view>＜1天</view></button>
+      <button class="rate-card rate-orange" bindtap="rate" data-r="2"><text>2</text><view>困难</view><view>1天</view></button>
+      <button class="rate-card rate-blue" bindtap="rate" data-r="3"><text>3</text><view>一般</view><view>3天</view></button>
+      <button class="rate-card rate-green" bindtap="rate" data-r="4"><text>4</text><view>容易</view><view>4天</view></button>
+    </view>
+
+    <view class="feedback-panel">
+      <view class="feedback-head">
+        <text>AI 质量反馈</text>
+        <text>可选</text>
       </view>
-    </view>
-    <view class="card-gloss" wx:if="{{!flipped}}"></view>
-  </view>
-
-  <view class="ratings-section {{flipped ? 'ratings-visible' : ''}}" wx:if="{{card}}">
-    <text class="ratings-label">你记得怎么样？</text>
-    <view class="ratings-grid">
-      <button class="rate-btn rate-again" bindtap="rate" data-r="1">
-        <view class="rate-geo rate-geo-red"><view class="geo-close" style="width:20rpx;height:20rpx;color:#DC2626;"></view></view>
-        <text class="rate-title">忘了</text>
-        <text class="rate-sub">1分钟后复习</text>
-      </button>
-      <button class="rate-btn rate-hard" bindtap="rate" data-r="2">
-        <view class="rate-geo rate-geo-amber"><view class="geo-triangle-up" style="color:#D97706;"></view></view>
-        <text class="rate-title">困难</text>
-        <text class="rate-sub">10分钟后复习</text>
-      </button>
-      <button class="rate-btn rate-good" bindtap="rate" data-r="3">
-        <view class="rate-geo rate-geo-green"><view class="geo-check" style="color:#059669;"></view></view>
-        <text class="rate-title">记得</text>
-        <text class="rate-sub">1天后复习</text>
-      </button>
-      <button class="rate-btn rate-easy" bindtap="rate" data-r="4">
-        <view class="rate-geo rate-geo-blue">
-          <view class="geo-triangle-up" style="color:#3B82F6;"></view>
-        </view>
-        <text class="rate-title">简单</text>
-        <text class="rate-sub">4天后复习</text>
-      </button>
-    </view>
-
-    <!-- Card Quality Feedback -->
-    <view class="feedback-bar {{showFeedback ? 'feedback-visible' : ''}}">
-      <text class="feedback-label">卡片有问题？</text>
       <view class="feedback-options">
-        <text class="feedback-option tappable" wx:for="{{feedbackOptions}}" wx:key="type" bindtap="submitFeedback" data-type="{{item.type}}">{{item.label}}</text>
-        <text class="feedback-dismiss tappable" bindtap="dismissFeedback">✕</text>
+        <view class="feedback-item" wx:for="{{feedbackOptions}}" wx:key="type" bindtap="submitFeedback" data-type="{{item.type}}">
+          <view class="feedback-icon"></view>
+          <view>
+            <text>{{item.label}}</text>
+            <text>{{item.type === 'content_error' ? '存在事实或表述错误' : item.type === 'answer_too_brief' ? '信息不足，需要更完整' : 'AI 生成此卡太泛'}}</text>
+          </view>
+        </view>
       </view>
     </view>
-  </view>
+
+    <view class="bottom-actions">
+      <button class="skip-btn" bindtap="dismissFeedback">跳过反馈</button>
+      <button class="submit-btn" bindtap="dismissFeedback">提交反馈</button>
+    </view>
+  </block>
 
   <view class="done-state" wx:else>
-    <view class="done-visual">
-      <view class="done-ring-outer"><view class="done-ring-inner"><view class="geo-check" style="color:#FFFFFF;width:36rpx;height:20rpx;border-width:6rpx;"></view></view></view>
-    </view>
-    <text class="done-title">复习完成</text>
-    <text class="done-desc">本次复习了 <text class="done-highlight">{{reviewedSession}}</text> 张卡片<text style="display:block">继续保持！</text></text>
-    <view class="done-stats">
-      <view class="done-stat"><text class="done-stat-num">{{reviewedSession}}</text><text class="done-stat-label">本次复习</text></view>
-      <view class="done-stat"><text class="done-stat-num">{{streak}}</text><text class="done-stat-label">连续天数</text></view>
-    </view>
-    <button class="btn-primary done-btn" bindtap="goHome">返回首页</button>
-    <button class="btn-share" bindtap="generatePoster">分享成就</button>
+    <view class="done-check"><view class="geo-check"></view></view>
+    <text class="done-title">今日复习完成</text>
+    <text class="done-desc">本次完成 {{reviewedSession}} 张主动回忆</text>
+    <button class="submit-btn done-btn" bindtap="goHome">返回首页</button>
+    <button class="skip-btn share-btn" bindtap="generatePoster">分享成就</button>
   </view>
 
-  <!-- Hidden canvas for poster generation -->
   <canvas type="2d" id="posterCanvas" class="poster-canvas" wx:if="{{showPosterCanvas}}"></canvas>
 </view>

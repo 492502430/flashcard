@@ -19,8 +19,9 @@
       <view class="template-grid">
         <view class="template-card fade-in tappable" wx:for="{{item.items}}" wx:for-item="tpl" wx:key="id"
               bindtap="previewTemplate" data-id="{{tpl.id}}">
-          <view class="tpl-cover">
-            <view class="tpl-cover-shape"></view>
+          <view class="tpl-cover {{tpl.coverClass}}">
+            <view class="tpl-cover-image"></view>
+            <view class="tpl-cover-blur"></view>
             <view class="tpl-icon-wrap">
               <view class="geo-{{tpl.icon || 'diamond'}} tpl-icon-inner"></view>
             </view>

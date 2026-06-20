@@ -1,212 +1,104 @@
-<!-- index.wxml — 首页 | UI UX Pro Max -->
-<view class="page">
-  <!-- Search Bar -->
-  <view class="search-bar" bindtap="openSearch">
-    <view class="search-bar-inner">
-      <view class="geo-magnify"></view>
-      <text class="search-placeholder">搜索卡片...</text>
+<!-- index.wxml — 首页 | 参考图重做 -->
+<view class="page home-page">
+  <view class="app-top">
+    <view>
+      <text class="brand">闪卡记忆</text>
+      <text class="subtle-title">今日学习工作台</text>
+    </view>
+    <view class="top-actions">
+      <view class="icon-btn tappable" bindtap="openSearch"><view class="geo-magnify"></view></view>
+      <text class="more">•••</text>
     </view>
   </view>
 
-  <!-- Hero -->
-  <view class="hero">
-    <view class="hero-gradient"></view>
-    <view class="hero-shape hero-shape-1"></view>
-    <view class="hero-shape hero-shape-2"></view>
-    <view class="hero-content">
-      <view class="hero-label-row">
-        <view class="hero-label-dot"></view>
-        <text class="hero-greeting">今日待复习</text>
-        <view class="streak-pill" wx:if="{{streak > 0}}">
-          <view class="streak-flame"><view class="streak-flame-core"></view></view>
-          <text class="streak-pill-text">已连续 {{streak}} 天</text>
-        </view>
-      </view>
-      <view class="hero-count-wrap">
-        <text class="hero-count">{{count}}</text>
-        <text class="hero-unit">张</text>
-      </view>
-      <text class="hero-sub">待复习卡片</text>
+  <view class="work-title-row">
+    <text class="work-title">今日学习工作台</text>
+    <view class="setting"><view class="setting-dot"></view><text>学习设置</text></view>
+  </view>
+
+  <view class="status-grid">
+    <view class="status-card status-purple">
+      <view class="status-top"><text>待复习</text><view class="status-icon check-small"></view></view>
+      <text class="status-num">{{count}}</text>
+      <text class="status-copy">到期卡片</text>
+    </view>
+    <view class="status-card status-blue">
+      <view class="status-top"><text>AI生成中</text><view class="status-icon bot-small"></view></view>
+      <text class="status-num">{{generatingDecks}}</text>
+      <text class="status-copy">处理中</text>
+    </view>
+    <view class="status-card status-orange">
+      <view class="status-top"><text>待优化</text><view class="status-icon warn-small"></view></view>
+      <text class="status-num">{{optimizeCards}}</text>
+      <text class="status-copy">质量待提升</text>
     </view>
   </view>
 
-  <!-- Review button — always visible -->
-  <view class="actions">
-    <button class="btn-review" bindtap="startReview">
-      <view class="btn-review-icon-circle"><view class="geo-play"></view></view>
-      <text class="btn-review-text">开始复习</text>
-    </button>
-  </view>
+  <button class="continue-btn" bindtap="startReview">
+    <text>继续复习</text>
+    <text class="continue-sub">预计用时 15 分钟</text>
+  </button>
 
-  <!-- Stats — ALWAYS visible -->
-  <view class="stats-section">
-    <text class="stats-heading">学习统计<text wx:if="{{reviewedToday > 0}}" class="stats-heading-sub"> · 今日已复习 {{reviewedToday}} 张</text></text>
-    <view class="week-chart" wx:if="{{weekStats.length > 0}}">
-      <view class="week-bars">
-        <view class="week-bar-item" wx:for="{{weekStats}}" wx:key="date">
-          <view class="week-bar-fill" style="height:{{item.height}}rpx;background:{{index === weekStats.length-1 ? 'linear-gradient(180deg,#7C3AED,#A78BFA)' : 'linear-gradient(180deg,rgba(124,58,237,0.3),rgba(167,139,250,0.3))'}};"></view>
-          <text class="week-bar-label">{{item.label}}</text>
-        </view>
-      </view>
+  <view class="quick-actions">
+    <view class="quick-action tappable" bindtap="goCreate">
+      <view class="quick-icon quick-purple"><view class="geo-upload-arrow"></view></view>
+      <view><text>导入资料</text><text>文本/PDF/图片等</text></view>
     </view>
-    <view class="stats-grid">
-      <view class="stat-card fade-in fade-in-1 tappable">
-        <view class="stat-icon-box stat-icon-box-cards">
-          <view class="geo-stack"><view class="geo-stack-card"></view><view class="geo-stack-card"></view><view class="geo-stack-card"></view></view>
-        </view>
-        <text class="stat-num">{{totalCards}}</text>
-        <text class="stat-label">总卡片数</text>
-      </view>
-      <view class="stat-card fade-in fade-in-2 tappable" bindtap="goDecks">
-        <view class="stat-icon-box stat-icon-box-decks">
-          <view class="geo-square" style="background:#059669;"></view>
-          <view class="geo-square" style="background:#10B981;position:absolute;top:4rpx;left:4rpx;"></view>
-        </view>
-        <text class="stat-num">{{totalDecks}}</text>
-        <text class="stat-label">牌组</text>
-      </view>
-      <view class="stat-card fade-in fade-in-3 tappable">
-        <view class="stat-icon-box stat-icon-box-reviewed">
-          <view class="geo-check" style="color:#059669;"></view>
-        </view>
-        <text class="stat-num">{{reviewedToday}}</text>
-        <text class="stat-label">已复习</text>
-      </view>
+    <view class="quick-action tappable" bindtap="goDecks">
+      <view class="quick-icon quick-green"><view class="geo-plus"></view></view>
+      <view><text>新建牌组</text><text>空白牌组</text></view>
+    </view>
+    <view class="quick-action">
+      <view class="quick-icon quick-gray"><view class="plan-dot"></view></view>
+      <view><text>智能复习计划</text><text>FSRS 调度</text></view>
     </view>
   </view>
 
-  <!-- 30-Day Calendar Heatmap -->
-  <view class="heatmap-section" wx:if="{{checkinDays.length > 0}}">
-    <text class="stats-heading">打卡日历</text>
-    <view class="heatmap-grid">
-      <view class="heatmap-cell {{item.isToday ? 'heatmap-cell--today' : ''}}"
-        wx:for="{{checkinDays}}" wx:key="date"
-        data-date="{{item.date}}" data-count="{{item.count}}">
-        <view class="heatmap-square heatmap-l{{item.level}}"></view>
-        <text class="heatmap-day">{{item.dayOfWeek}}</text>
+  <view class="recent-panel">
+    <view class="panel-header">
+      <text>最近导入</text>
+      <text bindtap="goDecks">全部 ›</text>
+    </view>
+    <view class="recent-row tappable" wx:for="{{readyDecks}}" wx:key="id" bindtap="openDeck" data-id="{{item.id}}">
+      <view class="file-badge pdf">25</view>
+      <view class="recent-main">
+        <text class="recent-title">{{item.title}}</text>
+        <text class="recent-meta">{{item.card_count}} 卡 · 可开始复习</text>
+      </view>
+      <view class="recent-score">
+        <text>生成完成</text>
+        <text>{{item.card_count}} 卡</text>
       </view>
     </view>
-    <view class="heatmap-legend">
-      <text class="heatmap-legend-label">少</text>
-      <view class="heatmap-square heatmap-l0" style="width:20rpx;height:20rpx;border-radius:4rpx;"></view>
-      <view class="heatmap-square heatmap-l1" style="width:20rpx;height:20rpx;border-radius:4rpx;"></view>
-      <view class="heatmap-square heatmap-l2" style="width:20rpx;height:20rpx;border-radius:4rpx;"></view>
-      <view class="heatmap-square heatmap-l3" style="width:20rpx;height:20rpx;border-radius:4rpx;"></view>
-      <view class="heatmap-square heatmap-l4" style="width:20rpx;height:20rpx;border-radius:4rpx;"></view>
-      <text class="heatmap-legend-label">多</text>
-    </view>
-  </view>
-
-  <!-- New User Onboarding Banner — prominent purple banner with arrow -->
-  <view class="onboard-banner" wx:if="{{totalDecks === 0}}" bindtap="goCreate">
-    <view class="onboard-banner-glow"></view>
-    <view class="onboard-banner-content">
-      <view class="onboard-banner-icon">
-        <view class="geo-sparkle"></view>
+    <view class="recent-row muted" wx:if="{{readyDecks.length === 0}}">
+      <view class="file-badge pdf">AI</view>
+      <view class="recent-main">
+        <text class="recent-title">导入第一份资料</text>
+        <text class="recent-meta">AI 会生成可复习闪卡</text>
       </view>
-      <view class="onboard-banner-text">
-        <text class="onboard-banner-title">首次使用？点击导入资料开始</text>
-        <text class="onboard-banner-desc">AI 自动生成闪卡，轻松高效记忆</text>
-      </view>
-      <view class="onboard-banner-arrow">
-        <text class="onboard-banner-arrow-text">导入资料</text>
-        <view class="geo-arrow-right"></view>
-      </view>
-    </view>
-    <!-- Arrow pointing down to the 导入资料 button below -->
-    <view class="onboard-arrow-down">
-      <view class="onboard-arrow-down-line"></view>
-      <view class="onboard-arrow-down-tip"></view>
+      <view class="geo-chevron-right"></view>
     </view>
   </view>
 
-  <!-- Empty state — only when no cards at all -->
-  <view class="empty-state fade-in" wx:if="{{totalCards === 0}}">
-    <view class="empty-state-geo">
-      <view class="geo-diamond" style="width:48rpx;height:48rpx;background:linear-gradient(135deg,#059669,#10B981);"></view>
-    </view>
-    <text class="empty-state-title">开始你的学习之旅</text>
-    <text class="empty-state-desc">导入资料，AI 自动生成闪卡</text>
-    <button class="btn-outline" bindtap="goCreate">
-      <view class="geo-plus" style="width:22rpx;height:22rpx;margin-right:10rpx;"></view>
-      <text>导入资料</text>
-    </button>
-  </view>
+  <view class="hint-bar">AI 生成完成后将自动进入预览优化阶段</view>
 
-  <!-- Quick links — only when has content -->
-  <view class="quick-links" wx:if="{{totalCards > 0}}">
-    <text class="stats-heading">快捷操作</text>
-    <view class="link-cards">
-      <view class="link-card fade-in tappable" bindtap="goDecks">
-        <view class="link-icon-box link-icon-box-decks">
-          <view class="geo-square" style="background:linear-gradient(135deg,#059669,#10B981);width:28rpx;height:28rpx;border-radius:6rpx;"></view>
-        </view>
-        <view class="link-info">
-          <text class="link-title">我的牌组</text>
-          <text class="link-desc">管理所有卡片</text>
-        </view>
-        <view class="geo-chevron-right" style="color:#94A3B8;"></view>
-      </view>
-      <view class="link-card fade-in tappable" bindtap="goCreate">
-        <view class="link-icon-box link-icon-box-create">
-          <view class="geo-star" style="background:linear-gradient(135deg,#D97706,#F59E0B);width:32rpx;height:32rpx;"></view>
-        </view>
-        <view class="link-info">
-          <text class="link-title">导入资料</text>
-          <text class="link-desc">AI 自动生成闪卡</text>
-        </view>
-        <view class="geo-chevron-right" style="color:#94A3B8;"></view>
-      </view>
-    </view>
-  </view>
-
-  <view class="bottom-spacer"></view>
-
-  <!-- Search Modal Overlay -->
   <view class="search-overlay {{showSearch ? 'search-overlay--visible' : ''}}" catchtouchmove="preventTouchMove">
     <view class="search-modal">
-      <!-- Search header -->
       <view class="search-modal-header">
         <view class="search-input-wrap">
-          <view class="geo-magnify" style="color:#94A3B8;margin-right:16rpx;"></view>
-          <input class="search-input"
-            placeholder="输入关键词搜索"
-            value="{{keyword}}"
-            focus="{{showSearch}}"
-            bindinput="onSearchInput"
-            confirm-type="search"
-            bindconfirm="doSearch"
-            placeholder-style="color:#94A3B8;"
-          />
-          <view class="search-clear" wx:if="{{keyword}}" catchtap="clearSearch">
-            <view class="geo-close" style="width:20rpx;height:20rpx;color:#94A3B8;"></view>
-          </view>
+          <view class="geo-magnify"></view>
+          <input class="search-input" placeholder="搜索问题或答案" value="{{keyword}}" focus="{{showSearch}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="doSearch"/>
         </view>
         <text class="search-cancel" bindtap="closeSearch">取消</text>
       </view>
-
-      <!-- Results -->
       <scroll-view class="search-results" scroll-y wx:if="{{keyword && searched}}">
-        <view wx:if="{{searchResults.length === 0}}" class="search-empty">
-          <text class="search-empty-text">未找到匹配的卡片</text>
-        </view>
+        <view wx:if="{{searchResults.length === 0}}" class="search-empty">未找到匹配的卡片</view>
         <view wx:for="{{searchResults}}" wx:key="id" class="search-card">
-          <view class="search-card-deck">
-            <view class="geo-square" style="background:#7C3AED;width:20rpx;height:20rpx;border-radius:4rpx;margin-right:10rpx;"></view>
-            <text class="search-card-deck-text">{{item.deck_title}}</text>
-          </view>
+          <text class="search-card-deck-text">{{item.deck_title}}</text>
           <view class="search-card-q">{{item.question}}</view>
           <view class="search-card-a">{{item.answer}}</view>
         </view>
       </scroll-view>
-
-      <!-- Initial hint -->
-      <view class="search-hint" wx:if="{{!keyword || !searched}}">
-        <view class="search-hint-icon">
-          <view class="geo-magnify" style="width:48rpx;height:48rpx;color:#C4B5FD;"></view>
-        </view>
-        <text class="search-hint-text">输入关键词搜索所有卡片</text>
-      </view>
     </view>
   </view>
 </view>

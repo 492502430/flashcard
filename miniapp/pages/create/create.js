@@ -10,11 +10,101 @@ Page({
     uploading: false,
     uploadProgress: 0,
     generating: false,
-    submitFailed: false
+    submitFailed: false,
+    charPercent: 0,
+    canGenerate: false,
+    cardCountLabel: '约 300 张',
+    difficultyLabel: '中等',
+    directionLabel: '概念理解 + 应用',
+    otherSettingLabel: '标签、备注等',
+    tags: '',
+    note: '',
+    titleFocus: false,
+    textFocus: false
   },
 
-  onTitle(e) { this.setData({ title: e.detail.value }); },
-  onText(e) { this.setData({ text: e.detail.value }); },
+  onTitle(e) { this.setData({ title: e.detail.value, titleFocus: true, textFocus: false }); },
+  onText(e) {
+    const text = e.detail.value;
+    this.updateContentState(text, { titleFocus: false, textFocus: true });
+  },
+
+  focusTitle() {
+    this.setData({ titleFocus: true, textFocus: false });
+  },
+
+  focusText() {
+    this.setData({ titleFocus: false, textFocus: true });
+  },
+
+  updateContentState(text, extra = {}) {
+    this.setData({
+      text,
+      charPercent: Math.min(text.length / 50 * 100, 100),
+      canGenerate: text.length >= 50 || !!this.data.filePath,
+      ...extra
+    });
+  },
+
+  pasteFromClipboard() {
+    wx.getClipboardData({
+      success: (res) => {
+        const text = (res.data || '').trim();
+        if (!text) {
+          wx.showToast({ title: '剪贴板没有文本', icon: 'none' });
+          return;
+        }
+        const clipped = text.substring(0, 5000);
+        this.updateContentState(clipped);
+        wx.showToast({ title: '已粘贴文本', icon: 'success' });
+      },
+      fail: () => {
+        wx.showToast({ title: '无法读取剪贴板', icon: 'none' });
+      }
+    });
+  },
+
+  chooseCardCount() {
+    const options = ['约 100 张', '约 300 张', '约 500 张', '自动识别'];
+    wx.showActionSheet({
+      itemList: options,
+      success: (res) => this.setData({ cardCountLabel: options[res.tapIndex] })
+    });
+  },
+
+  chooseDifficulty() {
+    const options = ['简单', '中等', '较难', '考试强化'];
+    wx.showActionSheet({
+      itemList: options,
+      success: (res) => this.setData({ difficultyLabel: options[res.tapIndex] })
+    });
+  },
+
+  chooseDirection() {
+    const options = ['概念理解 + 应用', '定义记忆', '题目解析', '中英互译'];
+    wx.showActionSheet({
+      itemList: options,
+      success: (res) => this.setData({ directionLabel: options[res.tapIndex] })
+    });
+  },
+
+  editOtherSettings() {
+    wx.showModal({
+      title: '其他设置',
+      editable: true,
+      placeholderText: '输入标签或备注',
+      content: this.data.tags || this.data.note || '',
+      success: (res) => {
+        if (!res.confirm) return;
+        const value = (res.content || '').trim();
+        this.setData({
+          tags: value,
+          note: value,
+          otherSettingLabel: value || '标签、备注等'
+        });
+      }
+    });
+  },
 
   chooseFile() {
     wx.chooseMessageFile({
@@ -36,7 +126,8 @@ Page({
           filePath: file.path,
           fileName: file.name,
           fileSize: size,
-          text: ''
+          text: '',
+          canGenerate: true
         });
 
         this.uploadAndExtract(file.path);
@@ -62,7 +153,7 @@ Page({
           this.doUpload(filePath, retryToken);
         } else {
           wx.showToast({ title: '登录失败，请重启小程序', icon: 'none' });
-          this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
+          this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '', canGenerate: false });
         }
       }, 2500);
       return;
@@ -100,30 +191,32 @@ Page({
             const data = resp.data || {};
             const extracted = (data.text || '').trim();
             if (extracted) {
-              this.setData({ text: extracted.substring(0, 5000), uploading: false });
+              const text = extracted.substring(0, 5000);
+              this.setData({ uploading: false });
+              this.updateContentState(text);
               wx.showToast({ title: `已解析 ${extracted.length} 字`, icon: 'success' });
             } else {
               wx.showToast({ title: '文件没有可识别的文字', icon: 'none' });
-              this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
+              this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '', canGenerate: false });
             }
           },
           fail: (err) => {
             console.error('[upload] HTTP error:', JSON.stringify(err));
             wx.showToast({ title: '上传失败: ' + (err.errMsg || '网络错误'), icon: 'none' });
-            this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
+            this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '', canGenerate: false });
           }
         });
       },
       fail: (err) => {
         console.error('[upload] ReadFile error:', JSON.stringify(err));
         wx.showToast({ title: '读取文件失败', icon: 'none' });
-        this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '' });
+        this.setData({ uploading: false, filePath: '', fileName: '', fileSize: '', canGenerate: false });
       }
     });
   },
 
   removeFile() {
-    this.setData({ filePath: '', fileName: '', fileSize: '', text: '' });
+    this.setData({ filePath: '', fileName: '', fileSize: '', text: '', charPercent: 0, canGenerate: false });
   },
 
   submit() {
@@ -150,7 +243,11 @@ Page({
       url: app.globalData.apiBase + '/api/decks',
       method: 'POST',
       header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
-      data: { title: deckTitle, text: this.data.text },
+      data: {
+        title: deckTitle,
+        text: this.data.text,
+        source_name: this.data.fileName || deckTitle
+      },
       success: (res) => {
         this.setData({ generating: false, submitFailed: false });
         if (res.data && res.data.id) {

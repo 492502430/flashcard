@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -11,8 +13,9 @@ import (
 
 // CreateDeckRequest is the payload for creating a new deck.
 type CreateDeckRequest struct {
-	Title string `json:"title"`
-	Text  string `json:"text"`
+	Title      string `json:"title"`
+	Text       string `json:"text"`
+	SourceName string `json:"source_name"`
 }
 
 // CreateDeck creates a new deck. If text is provided, AI generates cards.
@@ -27,15 +30,16 @@ func (h *Handler) CreateDeck(w http.ResponseWriter, r *http.Request) {
 
 	// 1. Create deck
 	var deck struct {
-		ID        string `json:"id"`
-		Title     string `json:"title"`
-		CardCount int    `json:"card_count"`
+		ID         string `json:"id"`
+		Title      string `json:"title"`
+		CardCount  int    `json:"card_count"`
+		SourceName string `json:"source_name"`
 	}
 
 	err := h.DB.Raw(`
-		INSERT INTO decks (user_id, title) VALUES (?, ?)
-		RETURNING id, title, card_count
-	`, userID, req.Title).Scan(&deck).Error
+		INSERT INTO decks (user_id, title, source_name) VALUES (?, ?, ?)
+		RETURNING id, title, card_count, source_name
+	`, userID, req.Title, req.SourceName).Scan(&deck).Error
 
 	if err != nil {
 		writeError(w, 500, "failed to create deck")
@@ -44,14 +48,18 @@ func (h *Handler) CreateDeck(w http.ResponseWriter, r *http.Request) {
 
 	// 2. If text provided, generate cards via AI
 	if req.Text != "" {
-		go h.generateCardsAsync(deck.ID, userID, req.Text)
+		sourceName := req.SourceName
+		if sourceName == "" {
+			sourceName = req.Title
+		}
+		go h.generateCardsAsync(deck.ID, userID, req.Text, sourceName)
 	}
 
 	writeJSON(w, 201, deck)
 }
 
 // generateCardsAsync calls the AI service and inserts cards into the deck.
-func (h *Handler) generateCardsAsync(deckID, userID, text string) {
+func (h *Handler) generateCardsAsync(deckID, userID, text, sourceName string) {
 	aiClient := ai.NewClient("http://localhost:8001")
 
 	result, err := aiClient.GenerateCards(text, deckID)
@@ -64,9 +72,9 @@ func (h *Handler) generateCardsAsync(deckID, userID, text string) {
 	for _, card := range result.Cards {
 		tags, _ := json.Marshal(card.Tags)
 		h.DB.Exec(`
-			INSERT INTO cards (deck_id, question, answer, tags, next_review_at)
-			VALUES (?, ?, ?, ?, NOW())
-		`, deckID, card.Question, card.Answer, string(tags))
+			INSERT INTO cards (deck_id, question, answer, tags, document_name, next_review_at)
+			VALUES (?, ?, ?, ?, ?, NOW())
+		`, deckID, card.Question, card.Answer, string(tags), sourceName)
 	}
 
 	// Update card count
@@ -87,14 +95,15 @@ func (h *Handler) ListDecks(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value("user_id").(string)
 
 	var decks []struct {
-		ID        string `json:"id"`
-		Title     string `json:"title"`
-		CardCount int    `json:"card_count"`
-		CreatedAt string `json:"created_at"`
+		ID         string `json:"id"`
+		Title      string `json:"title"`
+		CardCount  int    `json:"card_count"`
+		SourceName string `json:"source_name"`
+		CreatedAt  string `json:"created_at"`
 	}
 
 	h.DB.Raw(`
-		SELECT id, title, card_count, created_at
+		SELECT id, title, card_count, source_name, created_at
 		FROM decks WHERE user_id = ? ORDER BY created_at DESC
 	`, userID).Scan(&decks)
 
@@ -107,13 +116,14 @@ func (h *Handler) GetDeck(w http.ResponseWriter, r *http.Request) {
 	deckID := chi.URLParam(r, "id")
 
 	var deck struct {
-		ID        string `json:"id"`
-		Title     string `json:"title"`
-		CardCount int    `json:"card_count"`
+		ID         string `json:"id"`
+		Title      string `json:"title"`
+		CardCount  int    `json:"card_count"`
+		SourceName string `json:"source_name"`
 	}
 
 	err := h.DB.Raw(`
-		SELECT id, title, card_count FROM decks WHERE id = ? AND user_id = ?
+		SELECT id, title, card_count, source_name FROM decks WHERE id = ? AND user_id = ?
 	`, deckID, userID).Scan(&deck).Error
 
 	if err != nil || deck.ID == "" {
@@ -122,12 +132,14 @@ func (h *Handler) GetDeck(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var cards []struct {
-		ID       string `json:"id"`
-		Question string `json:"question"`
-		Answer   string `json:"answer"`
-		State    string `json:"state"`
+		ID           string `json:"id"`
+		Question     string `json:"question"`
+		Answer       string `json:"answer"`
+		State        string `json:"state"`
+		Tags         string `json:"tags"`
+		DocumentName string `json:"document_name"`
 	}
-	h.DB.Raw(`SELECT id, question, answer, state FROM cards WHERE deck_id = ? ORDER BY created_at`, deckID).Scan(&cards)
+	h.DB.Raw(`SELECT id, question, answer, state, tags, document_name FROM cards WHERE deck_id = ? ORDER BY created_at`, deckID).Scan(&cards)
 
 	writeJSON(w, 200, map[string]interface{}{"deck": deck, "cards": cards})
 }
@@ -143,4 +155,34 @@ func (h *Handler) DeleteDeck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, 200, map[string]bool{"deleted": true})
+}
+
+// OptimizeCards proxies the AI card optimization request.
+func (h *Handler) OptimizeCards(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Cards []map[string]interface{} `json:"cards"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, 400, "invalid body")
+		return
+	}
+
+	body, _ := json.Marshal(map[string]interface{}{"cards": req.Cards})
+
+	resp, err := http.Post("http://localhost:8001/optimize", "application/json", bytes.NewReader(body))
+	if err != nil {
+		writeError(w, 500, "AI service unreachable")
+		return
+	}
+	defer resp.Body.Close()
+
+	var result map[string]interface{}
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	if resp.StatusCode != 200 {
+		writeError(w, resp.StatusCode, fmt.Sprintf("optimize failed: %v", result))
+		return
+	}
+
+	writeJSON(w, 200, result)
 }

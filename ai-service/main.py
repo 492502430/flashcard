@@ -1,17 +1,16 @@
 """
 FlashCard AI Service — Card Generation via DeepSeek API.
 POST /generate  →  text, deck_id  →  structured flashcard array
+POST /extract   →  file upload     →  extracted text
+POST /optimize  →  cards array     →  optimized cards
 """
-import json
-import os
-import io
+import json, os, io
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from pydantic import BaseModel
 from openai import OpenAI
 
 app = FastAPI(title="FlashCard AI Service", version="1.0.0")
 
-# Load key from .env file or environment
 def _load_key():
     env_file = os.path.join(os.path.dirname(__file__), ".env")
     if os.path.exists(env_file):
@@ -20,113 +19,85 @@ def _load_key():
                 return line.strip().split("=", 1)[1]
     return os.environ.get("DEEPSEEK_API_KEY", "")
 
-client = OpenAI(
-    api_key=_load_key(),
-    base_url="https://api.deepseek.com/v1",
-)
+client = OpenAI(api_key=_load_key(), base_url="https://api.deepseek.com/v1")
 
-PROMPT = """你是一位资深教育内容设计师。请根据以下文本生成高质量的学习闪卡。
-
-## 题型要求（混合使用）
-1. **概念问答**（占 40%）：针对核心概念、定理、定义提问
-2. **填空题**（占 30%）：将关键术语或数字挖空，用「______」表示。q 字段填完整句子（含空），a 字段填答案
-3. **应用题/场景题**（占 30%）：设计一个具体场景，让学习者运用知识点解决问题
-
-## 内容筛选规则
-- 只选取考试常考点、易错点、核心定义，忽略叙述性铺垫
-- 如果原文描述了因果关系或对比关系，必须出题
-- 如果原文有具体数字、日期、公式，优先出题
-- 如果原文案例有实际应用价值，转化为场景题
-
-## ⚠️ 输出格式（极其重要）
-你必须且只能返回一个 JSON 数组，不要任何其他文字。不要加 ```json 标记。不要加任何解释。直接返回数组本身。
-
-格式示例：
-[{"q":"什么是辩证唯物主义？","a":"认为物质决定意识的哲学观点","tags":["哲学","唯物主义"],"type":"qa"}, {"q":"唯物辩证法的三大规律是______、______和否定之否定规律","a":"对立统一、量变质变","tags":["辩证法"],"type":"fill"}]
-
-type 必须是 "qa"、"fill"、"scenario" 之一。"""
-
-GENERATE_USER = """请根据以下文本生成 {card_count} 张闪卡：
-
-{text}"""
-
+# ── Generate ──
 
 class GenerateRequest(BaseModel):
     text: str
     deck_id: str
 
-
 class Card(BaseModel):
     q: str
     a: str
     tags: list[str] = []
-    type: str = "qa"
-
 
 class GenerateResponse(BaseModel):
     deck_id: str
     cards: list[Card]
     count: int
-    tokens_used: int = 0
 
+PROMPT = """你是一个教育专家。请根据以下文本生成闪卡（问答题卡片）。
+
+规则：
+1. 只提取文本中的核心知识点和关键概念，忽略铺垫和废话
+2. 每张卡一个问题，答案简洁但完整
+3. 一般生成 8-20 张卡片，质量优先，不要凑数
+4. 返回 JSON 数组：每项必须包含 q（问题）、a（答案）、tags（标签数组）三个字段，字段名必须是英文 q、a、tags
+
+文本：
+{text}
+
+请返回纯 JSON 数组，不要加 markdown 代码块标记。"""
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-
 @app.post("/generate", response_model=GenerateResponse)
 def generate(req: GenerateRequest):
-    if len(req.text) < 50:
-        raise HTTPException(400, "text too short (min 50 chars)")
-
-    card_count = max(8, min(25, len(req.text) // 80))
+    if not req.text or len(req.text) < 50:
+        raise HTTPException(400, f"text too short (min 50 chars, got {len(req.text)})")
 
     try:
         response = client.chat.completions.create(
             model="deepseek-chat",
             messages=[
                 {"role": "system", "content": PROMPT},
-                {"role": "user", "content": GENERATE_USER.format(card_count=card_count, text=req.text)},
+                {"role": "user", "content": req.text},
             ],
-            temperature=0.4,
-            max_tokens=3000,
+            temperature=0.3,
+            max_tokens=2000,
         )
         content = response.choices[0].message.content
         cards = json.loads(content)
-        usage = response.usage.total_tokens if response.usage else 0
-        return GenerateResponse(deck_id=req.deck_id, cards=cards, count=len(cards), tokens_used=usage)
+        return GenerateResponse(deck_id=req.deck_id, cards=cards, count=len(cards))
     except json.JSONDecodeError:
         raise HTTPException(500, "AI returned invalid JSON")
     except Exception as e:
         raise HTTPException(500, f"AI generation failed: {str(e)}")
 
+# ── Extract ──
 
 @app.post("/extract")
 async def extract_text(file: UploadFile = File(...)):
-    """Extract text from uploaded file (PDF, TXT, DOCX)."""
     content = await file.read()
     filename = file.filename or ""
 
-    # TXT — direct read
     if filename.lower().endswith(".txt"):
         text = content.decode("utf-8", errors="ignore")
         return {"text": text, "filename": filename, "size": len(text)}
 
-    # PDF — PyMuPDF
     if filename.lower().endswith(".pdf"):
         try:
-            import fitz  # PyMuPDF
+            import fitz
             doc = fitz.open(stream=content, filetype="pdf")
-            text = ""
-            for page in doc:
-                text += page.get_text()
+            text = "".join(page.get_text() for page in doc)
             doc.close()
             return {"text": text, "filename": filename, "size": len(text)}
         except ImportError:
-            raise HTTPException(500, "PDF support requires PyMuPDF: pip install PyMuPDF")
+            raise HTTPException(500, "PDF requires: pip install PyMuPDF")
 
-    # DOCX — python-docx
     if filename.lower().endswith(".docx"):
         try:
             from docx import Document
@@ -134,16 +105,15 @@ async def extract_text(file: UploadFile = File(...)):
             text = "\n".join(p.text for p in doc.paragraphs)
             return {"text": text, "filename": filename, "size": len(text)}
         except ImportError:
-            raise HTTPException(500, "DOCX support requires python-docx: pip install python-docx")
+            raise HTTPException(500, "DOCX requires: pip install python-docx")
 
-    # Image — OCR via PaddleOCR (best Chinese handwriting support)
     if filename.lower().endswith((".png", ".jpg", ".jpeg")):
         try:
             from paddleocr import PaddleOCR
-            ocr = PaddleOCR(use_angle_cls=True, lang='ch')
+            ocr = PaddleOCR(lang='ch')
             from PIL import Image
             img = Image.open(io.BytesIO(content))
-            import tempfile, os
+            import tempfile
             with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
                 img.save(tmp.name)
             result = ocr.predict(tmp.name)
@@ -155,8 +125,6 @@ async def extract_text(file: UploadFile = File(...)):
                     rec = j.get("res", {}).get("rec_texts", "")
                     if rec and rec != "00":
                         text += rec + "\n"
-                    elif hasattr(r, "rec_texts") and r.rec_texts:
-                        text += "\n".join(r.rec_texts) + "\n"
             return {"text": text, "filename": filename, "size": len(text)}
         except ImportError:
             raise HTTPException(500, "Image OCR requires: pip install paddleocr paddlepaddle pillow")
@@ -164,3 +132,44 @@ async def extract_text(file: UploadFile = File(...)):
             raise HTTPException(500, f"OCR failed: {str(e)}")
 
     raise HTTPException(400, f"unsupported format: {filename}")
+
+# ── Optimize ──
+
+class OptimizeRequest(BaseModel):
+    cards: list[dict]
+
+OPTIMIZE_PROMPT = """你是闪卡优化专家。以下卡片需要优化，原因已标注。请改进每张卡：
+
+规则：
+1. 如果问题过长，拆成单一知识点
+2. 如果答案过短，补充关键信息（但保持简洁）
+3. 如果答案过长，提炼核心要点
+4. 如果与其他卡片重复，合并或差异化
+5. 保持原卡片的核心知识点不变
+
+原卡片：
+{cards_json}
+
+返回纯 JSON 数组，每项包含 q（问题）、a（答案），字段名必须是英文 q、a。"""
+
+@app.post("/optimize")
+def optimize(req: OptimizeRequest):
+    if not req.cards:
+        raise HTTPException(400, "cards is required")
+
+    try:
+        response = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[{"role": "user", "content": OPTIMIZE_PROMPT.format(
+                cards_json=json.dumps(req.cards, ensure_ascii=False)
+            )}],
+            temperature=0.3,
+            max_tokens=2000,
+        )
+        content = response.choices[0].message.content
+        cards = json.loads(content)
+        return {"cards": cards, "count": len(cards)}
+    except json.JSONDecodeError:
+        raise HTTPException(500, "AI returned invalid JSON")
+    except Exception as e:
+        raise HTTPException(500, f"AI optimization failed: {str(e)}")

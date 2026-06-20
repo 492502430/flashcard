@@ -153,7 +153,7 @@ Page({
       setTimeout(() => {
         const title = defs[key] || key;
         wx.showToast({
-          title: '🏆 获得成就：「' + title + '」',
+          title: '获得成就：「' + title + '」',
           icon: 'none',
           duration: 2500
         });
@@ -250,7 +250,7 @@ Page({
           // Streak info
           ctx.fillStyle = '#FFFFFF';
           ctx.font = 'bold 36px PingFang SC, sans-serif';
-          ctx.fillText('🔥 ' + String(that.data.streak), width / 2, 320);
+          ctx.fillText(String(that.data.streak), width / 2, 320);
           ctx.fillStyle = 'rgba(255,255,255,0.55)';
           ctx.font = '16px PingFang SC, sans-serif';
           ctx.fillText('连续打卡天数', width / 2, 348);

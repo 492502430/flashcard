@@ -1,118 +1,88 @@
-<!-- create.wxml — 导入资料 | UI UX Pro Max -->
-<view class="page">
-  <view class="header">
-    <view class="back-btn tappable" bindtap="goBack">
-      <view class="geo-chevron-left" style="color:#7C3AED;"></view>
-    </view>
-    <text class="header-title">导入资料</text>
-    <view class="header-spacer"></view>
+<!-- create.wxml — 导入资料 | 参考图重做 -->
+<view class="page create-page">
+  <view class="plain-topbar">
+    <view class="back-btn tappable" bindtap="goBack"><view class="geo-chevron-left"></view></view>
+    <text class="top-title">导入资料</text>
+    <view class="help-dot">?</view>
   </view>
 
-  <view class="form fade-in">
+  <view class="steps">
+    <view class="step active"><text>1</text><view>选择资料</view></view>
+    <view class="step-line"></view>
+    <view class="step"><text>2</text><view>AI生成</view></view>
+    <view class="step-line"></view>
+    <view class="step"><text>3</text><view>预览优化</view></view>
+  </view>
 
-    <!-- 牌组名称 -->
-    <view class="form-group">
-      <text class="form-label">牌组名称</text>
-      <view class="input-wrap">
-        <view class="input-geo">
-          <view class="geo-square" style="width:24rpx;height:24rpx;background:#059669;border-radius:5rpx;"></view>
+  <view class="upload-box tappable" bindtap="chooseFile">
+    <block wx:if="{{!filePath}}">
+      <view class="upload-cloud"><view class="geo-upload-arrow"></view></view>
+      <text class="upload-title">点击上传或拖拽文件到此处</text>
+      <text class="upload-desc">支持 PDF / Word / 图片 / 文本</text>
+      <text class="upload-desc">单个文件 ≤ 50MB</text>
+    </block>
+    <block wx:else>
+      <view class="file-preview">
+        <view class="file-icon"><view class="geo-doc"></view></view>
+        <view class="file-info">
+          <text class="file-name">{{fileName}}</text>
+          <text class="file-size">{{fileSize}}</text>
         </view>
-        <input class="form-input" placeholder="如：考研政治、英语单词" placeholder-class="input-placeholder" value="{{title}}" bindinput="onTitle" maxlength="50"/>
+        <view class="file-remove tappable" catchtap="removeFile"><view class="geo-close"></view></view>
+      </view>
+      <view class="upload-progress" wx:if="{{uploading}}"><view style="width:{{uploadProgress}}%"></view></view>
+    </block>
+  </view>
+
+  <view class="paste-card tappable" bindtap="pasteFromClipboard">
+    <view class="paste-icon"><view class="geo-doc"></view></view>
+    <view>
+      <text class="paste-title">粘贴文本</text>
+      <text class="paste-copy">从剪贴板粘贴文本内容</text>
+    </view>
+    <view class="geo-chevron-right"></view>
+  </view>
+
+  <view class="settings-title">高级设置</view>
+  <view class="settings-list">
+    <view class="setting-row tappable" bindtap="chooseCardCount">
+      <text>卡片数量（预估）</text>
+      <view><text>{{cardCountLabel}}</text><view class="geo-chevron-right"></view></view>
+    </view>
+    <view class="setting-row tappable" bindtap="chooseDifficulty">
+      <text>难度</text>
+      <view><text>{{difficultyLabel}}</text><view class="geo-chevron-right"></view></view>
+    </view>
+    <view class="setting-row tappable" bindtap="chooseDirection">
+      <text>生成方向</text>
+      <view><text>{{directionLabel}}</text><view class="geo-chevron-right"></view></view>
+    </view>
+    <view class="setting-row tappable" bindtap="focusTitle">
+      <text>牌组名称</text>
+      <view class="setting-input">
+        <input value="{{title}}" placeholder="自动识别" bindinput="onTitle" maxlength="50" focus="{{titleFocus}}"/>
       </view>
     </view>
-
-    <!-- 上传文件 -->
-    <view class="form-group">
-      <text class="form-label">上传文件</text>
-      <view class="upload-area tappable" bindtap="chooseFile">
-        <block wx:if="{{!filePath}}">
-          <view class="upload-icon-wrap">
-            <view class="geo-upload-arrow"></view>
-          </view>
-          <text class="upload-title">点击选择文件</text>
-          <text class="upload-desc">支持 PDF、Word、TXT、图片</text>
-        </block>
-        <block wx:else>
-          <view class="file-preview">
-            <view class="file-icon-box">
-              <view class="geo-doc"></view>
-            </view>
-            <view class="file-info">
-              <text class="file-name">{{fileName}}</text>
-              <text class="file-size">{{fileSize}}</text>
-            </view>
-            <view class="file-remove tappable" catchtap="removeFile">
-              <view class="geo-close" style="width:20rpx;height:20rpx;color:#94A3B8;"></view>
-            </view>
-          </view>
-          <view class="upload-progress" wx:if="{{uploading}}">
-            <view class="upload-progress-fill" style="width:{{uploadProgress}}%"></view>
-          </view>
-        </block>
-      </view>
+    <view class="setting-row textarea-row tappable" bindtap="focusText">
+      <text>资料文本</text>
+      <textarea value="{{text}}" placeholder="也可以直接粘贴资料正文，至少 50 字" bindinput="onText" maxlength="5000" focus="{{textFocus}}"></textarea>
     </view>
-
-    <!-- 分割线 -->
-    <view class="divider-row">
-      <view class="divider-line"></view>
-      <text class="divider-text">或直接粘贴文本</text>
-      <view class="divider-line"></view>
-    </view>
-
-    <!-- 文本输入 -->
-    <view class="form-group">
-      <text class="form-label">粘贴内容</text>
-      <view class="textarea-wrap">
-        <textarea class="form-textarea" placeholder="粘贴要记忆的文本（至少50字）&#10;&#10;AI 将自动分析并生成问答闪卡..." placeholder-class="textarea-placeholder" value="{{text}}" bindinput="onText" maxlength="5000" auto-height="{{false}}"/>
-        <view class="char-count">
-          <view class="char-count-bar"><view class="char-count-fill {{text.length >= 50 ? 'fill-ready' : ''}}" style="width:{{Math.min(text.length / 50 * 100, 100)}}%"></view></view>
-          <text class="char-count-text {{text.length >= 50 ? 'count-ready' : ''}}">{{text.length}}<text class="char-min"> / 50 字</text></text>
-        </view>
-      </view>
-    </view>
-
-    <!-- 提示 -->
-    <view class="tips-card" wx:if="{{text.length < 50 && !filePath}}">
-      <view class="tips-header">
-        <view class="tips-geo-bulb"><view class="tips-bulb-circle"></view><view class="tips-bulb-base"></view></view>
-        <text class="tips-title">小提示</text>
-      </view>
-      <view class="tips-list">
-        <text class="tip-item">上传 PDF/Word/TXT 文件，自动提取文字</text>
-        <text class="tip-item">或直接粘贴课堂笔记、讲义内容</text>
-        <text class="tip-item">支持中英文混合文本</text>
-      </view>
-    </view>
-
-    <!-- 提交按钮 -->
-    <button class="btn-submit {{(text.length >= 50 || filePath) ? 'btn-ready' : ''}}" bindtap="submit" disabled="{{text.length < 50 && !filePath}}">
-      <view class="btn-submit-geo"><view class="geo-star" style="width:40rpx;height:40rpx;background:{{(text.length >= 50 || filePath) ? 'rgba(255,255,255,0.3)' : '#CBD5E1'}};"></view></view>
-      <view class="btn-submit-content">
-        <text class="btn-submit-title">AI 生成闪卡</text>
-        <text class="btn-submit-sub" wx:if="{{text.length >= 50 || filePath}}">智能分析{{filePath ? '文件' : '文本'}}并生成卡片</text>
-        <text class="btn-submit-sub" wx:else>输入 50 字以上或上传文件</text>
-      </view>
-    </button>
-
-    <view class="generating" wx:if="{{generating}}">
-      <view class="gen-dots"><view class="gen-dot"></view><view class="gen-dot"></view><view class="gen-dot"></view></view>
-      <text class="gen-text">{{filePath ? 'AI 正在解析文件并生成卡片...' : 'AI 正在分析文本并生成卡片...'}}</text>
-    </view>
-
-    <!-- Failure fallback — retry button -->
-    <view class="retry-section" wx:if="{{submitFailed && !generating}}">
-      <view class="retry-card">
-        <view class="retry-icon-wrap">
-          <view class="geo-rotate" style="width:48rpx;height:48rpx;color:var(--color-warning);border-width:4rpx;"></view>
-        </view>
-        <text class="retry-title">AI 生成失败</text>
-        <text class="retry-desc">网络异常或服务繁忙，请点击下方按钮重试</text>
-        <button class="retry-btn" bindtap="retrySubmit">
-          <view class="geo-rotate" style="width:28rpx;height:28rpx;color:#FFFFFF;margin-right:12rpx;"></view>
-          <text class="retry-btn-text">重新生成</text>
-        </button>
-      </view>
+    <view class="setting-row tappable" bindtap="editOtherSettings">
+      <text>其他设置</text>
+      <view><text>{{otherSettingLabel}}</text><view class="geo-chevron-right"></view></view>
     </view>
   </view>
-  <view class="bottom-spacer"></view>
+
+  <button class="generate-btn {{canGenerate ? 'generate-ready' : ''}}" bindtap="submit" disabled="{{!canGenerate}}">
+    <text>{{generating ? 'AI 生成中...' : '开始 AI 生成'}}</text>
+    <text>预计耗时 2-5 分钟</text>
+  </button>
+  <text class="footer-note">生成后可在「预览优化」阶段调整</text>
+
+  <view class="retry-section" wx:if="{{submitFailed && !generating}}">
+    <view class="retry-card">
+      <text>AI 生成失败</text>
+      <button bindtap="retrySubmit">重新生成</button>
+    </view>
+  </view>
 </view>

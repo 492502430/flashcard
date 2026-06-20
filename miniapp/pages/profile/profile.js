@@ -20,6 +20,8 @@ Page({
   },
 
   loadUserData() {
+    const token = app.globalData.token || wx.getStorageSync('token');
+
     // Load from local storage
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo && userInfo.nickName) {
@@ -33,7 +35,7 @@ Page({
     // Load deck stats
     wx.request({
       url: app.globalData.apiBase + '/api/decks',
-      header: { Authorization: 'Bearer ' + app.globalData.token },
+      header: { Authorization: 'Bearer ' + token },
       success: (res) => {
         const decks = res.data || [];
         const cards = decks.reduce((s, d) => s + (d.card_count || 0), 0);
@@ -50,11 +52,10 @@ Page({
     // Load review stats
     wx.request({
       url: app.globalData.apiBase + '/api/review/today',
-      header: { Authorization: 'Bearer ' + app.globalData.token },
+      header: { Authorization: 'Bearer ' + token },
       success: (res) => {
         const data = res.data || {};
-        // Use reviewed_today (actual reviews done), not total (due cards)
-        this.setData({ reviewedTotal: data.reviewed_today || 0 });
+        this.setData({ reviewedTotal: data.reviewed_total || data.reviewed_today || 0 });
       }
     });
   },

@@ -1,100 +1,100 @@
-<!-- deck-detail.wxml — 牌组详情 | UI UX Pro Max -->
-<view class="page">
-  <view class="deck-header">
-    <view class="deck-header-glow"></view>
-    <view class="deck-header-shape"></view>
-    <view class="deck-header-content">
-      <view class="deck-header-top">
-        <view class="back-btn tappable" bindtap="goBack">
-          <view class="geo-chevron-left" style="color:#FFFFFF;"></view>
-        </view>
-        <view class="deck-header-geo {{deck.geoStyle || 'geo-a'}}"></view>
-        <view class="header-spacer"></view>
-        <view class="delete-btn tappable" bindtap="confirmDelete">
-          <view class="geo-close" style="width:20rpx;height:20rpx;color:#FCA5A5;"></view>
-        </view>
+<!-- deck-detail.wxml — 牌组详情 | 参考图重做 -->
+<view class="page deck-page">
+  <view class="plain-topbar">
+    <view class="back-btn tappable" bindtap="goBack"><view class="geo-chevron-left"></view></view>
+    <text class="top-title">{{deck.title || '牌组详情'}}</text>
+    <view class="more tappable" bindtap="confirmDelete">••• 更多</view>
+  </view>
+
+  <view class="summary-card">
+    <view class="quality-ring">
+      <view class="ring-inner">
+        <text>卡片质量</text>
+        <text>{{qualityScoreText}}分</text>
+        <text>{{qualityLabel}}</text>
       </view>
-      <text class="deck-header-title">{{deck.title}}</text>
-      <view class="deck-header-meta">
-        <view class="meta-item">
-          <text class="meta-num">{{deck.card_count || cards.length}}</text>
-          <text class="meta-label">卡片</text>
-        </view>
-        <view class="meta-divider"></view>
-        <view class="meta-item">
-          <text class="meta-num meta-new">{{newCount}}</text>
-          <text class="meta-label">新增</text>
-        </view>
-        <view class="meta-divider"></view>
-        <view class="meta-item">
-          <text class="meta-num meta-due">{{dueCount}}</text>
-          <text class="meta-label">待复习</text>
-        </view>
-      </view>
-      <button class="btn-start-review" bindtap="startReview" wx:if="{{dueCount > 0}}">
-        <view class="btn-start-icon-circle"><view class="geo-play"></view></view>
-        <text>开始复习</text>
-      </button>
+    </view>
+    <view class="summary-stats">
+      <view><text>总卡片数</text><text>{{cards.length}}</text></view>
+      <view><text>待复习</text><text>{{dueCount}}</text></view>
+      <view><text>已学习</text><text>{{masteredCount}}</text></view>
+      <view><text>牌组标签</text><text>{{deckTagLabel}}</text></view>
+    </view>
+    <view class="schedule-row">
+      <text>基于 FSRS 调度，下一轮复习预计明天</text>
+      <button bindtap="showLowQualityCards" wx:if="{{cards.length > 0}}">查看待优化卡片</button>
     </view>
   </view>
 
-  <view class="card-list-header">
-    <text class="card-list-title">所有卡片</text>
-    <text class="card-list-count">{{cards.length}} 张</text>
+  <view class="tabs">
+    <text class="active">卡片列表</text>
+    <text>统计</text>
+    <text>设置</text>
   </view>
 
-  <view class="card-list" wx:if="{{cards.length > 0}}">
-    <view class="card-item fade-in tappable" wx:for="{{cards}}" wx:key="id" style="animation-delay:{{index * 0.03}}s" bindtap="openEditModal" data-id="{{item.id}}" data-question="{{item.question}}" data-answer="{{item.answer}}">
-      <view class="card-state-bar {{item.state === 'new' ? 'state-new' : item.state === 'learning' ? 'state-learning' : 'state-review'}}"></view>
-      <view class="card-item-body">
-        <text class="card-item-question">{{item.question}}</text>
-        <text class="card-item-answer">{{item.answer}}</text>
+  <view class="filters">
+    <text class="{{activeFilter === 'all' ? 'filter-active' : ''}}" data-filter="all" bindtap="setFilter">全部 {{cards.length}}</text>
+    <text class="{{activeFilter === 'good' ? 'filter-active' : ''}}" data-filter="good" bindtap="setFilter">优秀 {{clearCount}}</text>
+    <text class="{{activeFilter === 'optimize' ? 'filter-active' : ''}}" data-filter="optimize" bindtap="setFilter">待优化 {{optimizeCount}}</text>
+    <text class="{{activeFilter === 'duplicate' ? 'filter-active' : ''}}" data-filter="duplicate" bindtap="setFilter">重复疑似 {{duplicateCount}}</text>
+  </view>
+
+  <view class="table-head">
+    <text>卡片内容（预览）</text>
+    <text>质量</text>
+    <text>操作</text>
+  </view>
+
+  <view class="document-groups" wx:if="{{documentGroups.length > 0}}">
+    <view class="document-group" wx:for="{{documentGroups}}" wx:key="name">
+      <view class="document-head">
+        <view>
+          <text class="document-title">{{item.name}}</text>
+          <text class="document-meta">{{item.cardCount}} 张卡片 · {{item.optimizeCount}} 张待优化</text>
+        </view>
       </view>
-      <view class="card-item-badge">
-        <text class="card-state-label {{item.state === 'new' ? 'state-label-new' : item.state === 'learning' ? 'state-label-learning' : 'state-label-review'}}">
-          {{item.state === 'new' ? '新' : item.state === 'learning' ? '学习中' : '已掌握'}}
-        </text>
-      </view>
-      <view class="card-delete-icon tappable" catchtap="confirmDeleteCard" data-id="{{item.id}}">
-        <view class="geo-close" style="width:18rpx;height:18rpx;color:#DC2626;"></view>
+
+      <view class="card-list">
+        <view class="card-row tappable" wx:for="{{item.cards}}" wx:for-item="card" wx:key="id" bindtap="openEditModal" data-id="{{card.id}}" data-question="{{card.question}}" data-answer="{{card.answer}}">
+          <view class="card-main">
+            <text class="card-question">{{card.question}}</text>
+            <text class="card-answer">{{card.answer}}</text>
+            <text class="card-reason" wx:if="{{card.qualityReasons.length > 0}}">{{card.qualityReasonText}}</text>
+          </view>
+          <text class="quality-chip {{card.qualityClass}}">{{card.qualityLabel}}</text>
+          <view class="edit-icon"></view>
+        </view>
       </view>
     </view>
   </view>
 
-  <!-- AI 正在生成中 -->
-  <view class="generating-state fade-in" wx:if="{{cards.length === 0 && generating}}">
-    <view class="gen-animation">
-      <view class="gen-spinner"></view>
-    </view>
-    <text class="gen-title">AI 正在生成卡片</text>
-    <text class="gen-desc">正在分析文本内容，自动提取知识点生成闪卡，请稍候...</text>
-    <view class="gen-dots-row">
-      <view class="gen-dot-bounce"></view>
-      <view class="gen-dot-bounce"></view>
-      <view class="gen-dot-bounce"></view>
-    </view>
-    <text class="gen-back-hint">可返回首页，AI 后台继续生成</text>
+  <view class="empty-filter" wx:if="{{cards.length > 0 && documentGroups.length === 0}}">
+    当前筛选下没有卡片
   </view>
 
-  <!-- 真的没卡片 -->
-  <view class="empty-state fade-in" wx:elif="{{cards.length === 0}}">
-    <view class="empty-state-geo">
-      <view class="geo-rect-stack"><view class="geo-rect"></view><view class="geo-rect"></view></view>
-    </view>
-    <text class="empty-state-title">没有卡片</text>
-    <text class="empty-state-desc">这个牌组还没有生成卡片</text>
+  <view class="generating-state" wx:if="{{cards.length === 0 && generating}}">
+    <view class="spinner"></view>
+    <text>AI 正在生成闪卡</text>
+    <text>生成完成后会出现在卡片列表中</text>
   </view>
+
+  <view class="empty-state" wx:elif="{{cards.length === 0}}">
+    <text class="empty-state-title">暂无闪卡</text>
+    <text class="empty-state-desc">这个牌组还没有可复习的卡片</text>
+  </view>
+
+  <button class="bulk-btn" wx:if="{{cards.length > 0}}">批量管理卡片</button>
+  <button class="optimize-btn" wx:if="{{optimizeCount > 0 || duplicateCount > 0}}" bindtap="aiOptimizeCards">
+    ✦ AI 一键优化 {{optimizeCount + duplicateCount}} 张卡片
+  </button>
   <view class="bottom-spacer"></view>
 </view>
 
-<!-- 编辑卡片弹窗 -->
 <view class="modal-mask" wx:if="{{showEditModal}}" bindtap="closeEditModal"></view>
 <view class="edit-modal {{showEditModal ? 'edit-modal-show' : ''}}">
   <view class="edit-modal-header">
-    <text class="edit-modal-title">编辑卡片</text>
-    <view class="edit-modal-close tappable" bindtap="closeEditModal">
-      <view class="geo-close" style="width:20rpx;height:20rpx;color:var(--color-text-muted);"></view>
-    </view>
+    <text class="edit-modal-title">编辑闪卡</text>
+    <view class="edit-modal-close tappable" bindtap="closeEditModal"><view class="geo-close"></view></view>
   </view>
   <view class="edit-modal-body">
     <view class="edit-field">
