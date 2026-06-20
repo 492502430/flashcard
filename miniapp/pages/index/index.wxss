@@ -431,3 +431,11 @@
   text-align: center;
   color: #8A94A6;
 }
+
+.quick-blue { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); }
+.plan-icon-text {
+  font-size: 20rpx;
+  font-weight: 800;
+  color: #3B82F6;
+  letter-spacing: 1rpx;
+}

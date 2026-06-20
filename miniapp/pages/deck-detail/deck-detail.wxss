@@ -546,3 +546,29 @@
   justify-content: center;
 }
 .optimize-btn::after { border: none; }
+
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  margin-left: 12rpx;
+}
+.action-edit, .action-delete {
+  font-size: 22rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 8rpx;
+  text-align: center;
+}
+.action-edit { background: #EDE9FE; color: #5B4BDB; }
+.action-delete { background: #FEE2E2; color: #DC2626; }
+.home-btn {
+  margin-top: 28rpx;
+  padding: 16rpx 48rpx;
+  border-radius: 16rpx;
+  background: #FFFFFF;
+  color: #374151;
+  font-size: 26rpx;
+  font-weight: 600;
+  border: 1rpx solid #E5E7EB;
+}
+.home-btn::after { border: none; }

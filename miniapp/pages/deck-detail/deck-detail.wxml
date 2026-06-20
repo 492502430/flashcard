@@ -55,14 +55,17 @@
       </view>
 
       <view class="card-list">
-        <view class="card-row tappable" wx:for="{{item.cards}}" wx:for-item="card" wx:key="id" bindtap="openEditModal" data-id="{{card.id}}" data-question="{{card.question}}" data-answer="{{card.answer}}">
-          <view class="card-main">
+        <view class="card-row" wx:for="{{item.cards}}" wx:for-item="card" wx:key="id">
+          <view class="card-main tappable" bindtap="openEditModal" data-id="{{card.id}}" data-question="{{card.question}}" data-answer="{{card.answer}}">
             <text class="card-question">{{card.question}}</text>
             <text class="card-answer">{{card.answer}}</text>
             <text class="card-reason" wx:if="{{card.qualityReasons.length > 0}}">{{card.qualityReasonText}}</text>
           </view>
           <text class="quality-chip {{card.qualityClass}}">{{card.qualityLabel}}</text>
-          <view class="edit-icon"></view>
+          <view class="card-actions">
+            <view class="action-edit tappable" bindtap="openEditModal" data-id="{{card.id}}" data-question="{{card.question}}" data-answer="{{card.answer}}">编辑</view>
+            <view class="action-delete tappable" bindtap="confirmDeleteCard" data-id="{{card.id}}">删除</view>
+          </view>
         </view>
       </view>
     </view>
@@ -76,6 +79,7 @@
     <view class="spinner"></view>
     <text>AI 正在生成闪卡</text>
     <text>生成完成后会出现在卡片列表中</text>
+    <button class="home-btn" bindtap="goHome">返回首页</button>
   </view>
 
   <view class="empty-state" wx:elif="{{cards.length === 0}}">

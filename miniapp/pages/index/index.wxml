@@ -48,9 +48,9 @@
       <view class="quick-icon quick-green"><view class="geo-plus"></view></view>
       <view><text>新建牌组</text><text>空白牌组</text></view>
     </view>
-    <view class="quick-action">
-      <view class="quick-icon quick-gray"><view class="plan-dot"></view></view>
-      <view><text>智能复习计划</text><text>FSRS 调度</text></view>
+    <view class="quick-action tappable" bindtap="startReview">
+      <view class="quick-icon quick-blue"><view class="plan-icon-text">FSRS</view></view>
+      <view><text>智能复习</text><text>开始今日复习</text></view>
     </view>
   </view>
 
