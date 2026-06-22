@@ -13,14 +13,8 @@ Page({
   onShow() {
     this.loadFromStorage();
     this.loadStats();
-    loadAchievements() {
-      var def = [{key:"first_review",title:"初次记忆",description:"完成第一次复习",icon:"star",earned:false},{key:"cards_10",title:"十卡入门",description:"累计复习10张",icon:"diamond",earned:false},{key:"cards_50",title:"勤学不辍",description:"累计复习50张",icon:"fire",earned:false},{key:"streak_3",title:"三日坚持",description:"连续3天复习",icon:"streak",earned:false},{key:"streak_7",title:"一周成习",description:"连续7天复习",icon:"crown",earned:false},{key:"cards_100",title:"百卡达人",description:"累计复习100张",icon:"trophy",earned:false}];
-      wx.request({ url: app.globalData.apiBase + "/api/achievements",
-        header: { Authorization: "Bearer " + (app.globalData.token || wx.getStorageSync("token")) },
-        success: (r) => this.setData({ achievements: (r.data && r.data.achievements) || def }); },
-        fail: () => this.setData({ achievements: def })
-      });
-    },
+    this.loadAchievements();
+    this.loadInviteInfo();
     const rr = wx.getStorageSync('reviewReminder');
     this.setData({ reviewReminder: !!rr });
     wx.showShareMenu({ withShareTicket: true, menus: ['shareAppMessage'] });
@@ -63,6 +57,22 @@ Page({
       url: app.globalData.apiBase + '/api/user/profile', method: 'PUT',
       data: { nickname: ui.nickName || '', avatar_url: ui.avatarUrl || '' },
       header: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) }
+    });
+  },
+
+  loadAchievements() {
+    var def = [
+      {key:"first_review",title:"初次记忆",description:"完成第一次复习",icon:"star",earned:false},
+      {key:"cards_10",title:"十卡入门",description:"累计复习10张",icon:"diamond",earned:false},
+      {key:"cards_50",title:"勤学不辍",description:"累计复习50张",icon:"fire",earned:false},
+      {key:"streak_3",title:"三日坚持",description:"连续3天复习",icon:"streak",earned:false},
+      {key:"streak_7",title:"一周成习",description:"连续7天复习",icon:"crown",earned:false},
+      {key:"cards_100",title:"百卡达人",description:"累计复习100张",icon:"trophy",earned:false}
+    ];
+    wx.request({ url: app.globalData.apiBase + "/api/achievements",
+      header: { Authorization: "Bearer " + (app.globalData.token || wx.getStorageSync("token")) },
+      success: function(r) { var data = (r.data && r.data.achievements) || def; this.setData({ achievements: data }); },
+      fail: function() { this.setData({ achievements: def }); }
     });
   },
 
