@@ -1,13 +1,14 @@
 <!-- index.wxml — 首页 -->
 <view class="page home-page">
-  <!-- 首次进入：微信原生授权 -->
-  <view class="welcome-banner" wx:if="{{showAuth}}">
-    <view class="welcome-icon"><view class="geo-diamond" style="width:36rpx;height:36rpx;background:linear-gradient(135deg,#7C3AED,#A78BFA);border-radius:8rpx;"></view></view>
-    <view class="welcome-text">
-      <text class="welcome-title">欢迎使用闪卡记忆</text>
-      <text class="welcome-sub">AI 智能记忆工具</text>
+  <!-- 首次授权（全屏遮罩） -->
+  <view class="welcome-mask" wx:if="{{showAuth}}">
+    <view class="welcome-box">
+      <view class="welcome-geo"><view class="geo-diamond" style="width:64rpx;height:64rpx;background:linear-gradient(135deg,#7C3AED,#A78BFA);border-radius:14rpx;"></view></view>
+      <text class="welcome-box-title">欢迎使用闪卡记忆</text>
+      <text class="welcome-box-desc">需要获取你的微信昵称和头像，用于展示个人信息</text>
+      <button class="welcome-box-btn" open-type="getUserInfo" bindgetuserinfo="onAuthGot">微信授权</button>
+      <text class="welcome-box-skip" bindtap="skipAuth">暂不授权</text>
     </view>
-    <button class="welcome-auth-btn" open-type="getUserInfo" bindgetuserinfo="onAuthGot">微信授权</button>
   </view>
   <view class="app-top">
     <view>
