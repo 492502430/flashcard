@@ -108,3 +108,15 @@ func (h *Handler) WxLogin(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+
+// UpdateProfile updates the user's nickname and avatar.
+func (h *Handler) UpdateProfile(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value("user_id").(string)
+	var req struct {
+		Nickname  string `json:"nickname"`
+		AvatarURL string `json:"avatar_url"`
+	}
+	json.NewDecoder(r.Body).Decode(&req)
+	h.DB.Exec(`UPDATE users SET nickname = ?, avatar_url = ? WHERE id = ?`, req.Nickname, req.AvatarURL, userID)
+	writeJSON(w, 200, map[string]string{"status": "ok"})
+}

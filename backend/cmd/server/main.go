@@ -122,14 +122,16 @@ func main() {
 		r.Post("/api/upload", h.Upload)
 		r.Get("/api/review/today", h.GetDueCards)
 		r.Post("/api/review", h.SubmitReview)
+		r.Put("/api/user/profile", h.UpdateProfile)
 		r.Post("/api/cards/{id}/feedback", h.SubmitCardFeedback)
 		r.Get("/api/achievements", h.GetAchievements)
 		r.Get("/api/checkin", h.GetCheckin)
 		r.Get("/api/invite/my-code", h.GetMyInviteCode)
 		r.Get("/api/invite/stats", h.GetInviteStats)
 		r.Post("/api/templates/{id}/import", h.ImportTemplate)
-	})
+		r.Put("/api/user/profile", h.UpdateProfile)	})
 
 	log.Printf("Server starting on :%s", cfg.Port)
 	http.ListenAndServe(":"+cfg.Port, r)
 }
+

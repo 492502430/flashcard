@@ -528,3 +528,14 @@
 .bottom-spacer {
   height: 40rpx;
 }
+.auth-btn {
+  margin-top: 20rpx;
+  padding: 16rpx 40rpx;
+  border-radius: 32rpx;
+  background: linear-gradient(135deg, #7C3AED, #6D28D9);
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 600;
+  border: none;
+}
+.auth-btn::after { border: none; }

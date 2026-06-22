@@ -216,3 +216,30 @@ Page({
     };
   }
 });
+
+  getUserProfile() {
+    wx.getUserProfile({
+      desc: '用于展示你的昵称和头像',
+      success: (res) => {
+        const userInfo = res.userInfo;
+        this.setData({
+          nickname: userInfo.nickName,
+          userInitial: (userInfo.nickName || '闪')[0],
+          avatarUrl: userInfo.avatarUrl
+        });
+        // Save to backend
+        wx.request({
+          url: app.globalData.apiBase + '/api/user/profile',
+          method: 'PUT',
+          header: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
+          },
+          data: { nickname: userInfo.nickName, avatar_url: userInfo.avatarUrl },
+          success: () => {
+            wx.setStorageSync('userInfo', userInfo);
+          }
+        });
+      }
+    });
+  }
