@@ -17,8 +17,8 @@ Page({
       var def = [{key:"first_review",title:"初次记忆",description:"完成第一次复习",icon:"star",earned:false},{key:"cards_10",title:"十卡入门",description:"累计复习10张",icon:"diamond",earned:false},{key:"cards_50",title:"勤学不辍",description:"累计复习50张",icon:"fire",earned:false},{key:"streak_3",title:"三日坚持",description:"连续3天复习",icon:"streak",earned:false},{key:"streak_7",title:"一周成习",description:"连续7天复习",icon:"crown",earned:false},{key:"cards_100",title:"百卡达人",description:"累计复习100张",icon:"trophy",earned:false}];
       wx.request({ url: app.globalData.apiBase + "/api/achievements",
         header: { Authorization: "Bearer " + (app.globalData.token || wx.getStorageSync("token")) },
-        success: function(r) { that.setData({ achievements: (r.data && r.data.achievements) || def }); },
-        fail: function() { that.setData({ achievements: def }); }
+        success: (r) => this.setData({ achievements: (r.data && r.data.achievements) || def }); },
+        fail: () => this.setData({ achievements: def })
       });
     },
     const rr = wx.getStorageSync('reviewReminder');
@@ -64,12 +64,6 @@ Page({
       data: { nickname: ui.nickName || '', avatar_url: ui.avatarUrl || '' },
       header: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) }
     });
-  },
-
-  loadAchievements() {
-    wx.request({ url: app.globalData.apiBase + '/api/achievements',
-      header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
-      success: (r) => this.setData({ achievements: (r.data && r.data.achievements) || [] }) });
   },
 
   loadInviteInfo() {
