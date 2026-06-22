@@ -28,8 +28,8 @@ Page({
 
   onShow() {
     this.loadData();
-    const userInfo = wx.getStorageSync("userInfo");
-    this.setData({ showAuth: !userInfo });
+    var userInfo = wx.getStorageSync("userInfo");
+    this.setData({ showAuth: !userInfo || (userInfo && userInfo.nickName === "闪卡用户") });
   },
   onPullDownRefresh() { this.loadData(); wx.stopPullDownRefresh(); },
 
