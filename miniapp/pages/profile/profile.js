@@ -215,24 +215,22 @@ Page({
       path: '/pages/onboard/onboard?invite_code=' + encodeURIComponent(inviteCode)
     };
   }
-});
 
   onGetUserInfo(e) {
     var userInfo = e.detail.userInfo;
     if (!userInfo) return;
     this.setData({
       nickname: userInfo.nickName,
-      userInitial: (userInfo.nickName || '闪')[0],
+      userInitial: (userInfo.nickName || "闪")[0],
       avatarUrl: userInfo.avatarUrl
     });
     wx.request({
-      url: app.globalData.apiBase + '/api/user/profile',
-      method: 'PUT',
-      header: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
-      },
+      url: app.globalData.apiBase + "/api/user/profile",
+      method: "PUT",
+      header: { "Content-Type": "application/json", Authorization: "Bearer " + (app.globalData.token || wx.getStorageSync("token")) },
       data: { nickname: userInfo.nickName, avatar_url: userInfo.avatarUrl },
-      success: function() { wx.setStorageSync('userInfo', userInfo); }
+      success: function() { wx.setStorageSync("userInfo", userInfo); }
     });
   }
+});
+
