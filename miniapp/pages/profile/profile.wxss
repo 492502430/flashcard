@@ -307,11 +307,11 @@
    Achievements Section
    ============================================ */
 .achievements-card {
-  background: var(--color-surface);
+  background: #FFFFFF;
   border-radius: 24rpx;
   padding: 28rpx;
-  margin-bottom: 24rpx;
-  box-shadow: var(--shadow-card);
+  margin: 0 28rpx 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
 }
 .achievements-grid {
   display: flex;
@@ -327,9 +327,8 @@
   align-items: center;
   padding: 20rpx 8rpx;
   border-radius: 16rpx;
-  background: #F8F6FC;
+  background: #F3F4F6;
   position: relative;
-  transition: all 0.3s ease;
   min-height: 140rpx;
 }
 .achievement-earned {
