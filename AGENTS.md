@@ -2,33 +2,38 @@
 
 ## Pre-Commit Review (MANDATORY)
 
-Before every `git commit`, you MUST:
+**Every commit MUST pass all checks below. Do NOT skip any file type.**
 
-1. **Syntax check every .js file changed** — read the full file, scan for:
-   - Missing commas between Page() methods
-   - Duplicate closing `});` or extra braces
-   - Functions placed outside `Page({...})` after `});`
-   - Unmatched `{`/`}` counts
+### 1. JS Files (.js)
+- [ ] Read entire file after edit
+- [ ] No functions placed after `});` (closing of Page/App)
+- [ ] Every `{` has matching `}`, no orphaned braces
+- [ ] Comma between every method in Page({...})
+- [ ] No duplicate method names
+- [ ] `bindtap`/`bindgetuserinfo` handlers exist in JS
 
-2. **Check every .wxml change** — verify:
-   - All `wx:if`/`wx:for` attributes are properly closed
-   - `bindtap` handlers exist in the corresponding .js file
-   - `data-*` attributes match what the handler expects
+### 2. WXML Files (.wxml)
+- [ ] All tags properly closed (`<view>` → `</view>`)
+- [ ] All `wx:if`/`wx:for`/`wx:else` properly nested
+- [ ] `data-*` attributes match handler expectations
 
-3. **Check every .wxss change** — verify:
-   - No CSS appended after `@keyframes` without proper separator
-   - Selectors match the WXML elements
+### 3. WXSS Files (.wxss) ← DO NOT SKIP
+- [ ] Read last 20 lines of file after each edit
+- [ ] No orphaned CSS properties (properties without selector)
+- [ ] Every `{` has matching `}`
+- [ ] No duplicate `}` at file end
+- [ ] After any `sed -i` on WXSS, read full file to verify
 
-4. **Verify the full file is syntactically valid** by reading from top to bottom.
+### 4. Backend (.go)
+- [ ] `go build ./cmd/server/` passes
+- [ ] No unused imports or variables
 
-## Commit Guidelines
+## Never Use sed -i for:
+- JS files — use write_file or patch
+- Complex WXSS edits — use write_file or patch
+- OK for: simple single-line replacements, deleting known line ranges
 
-- One fix per commit
-- Never use `sed -i` for JS edits — always use read_file + write_file
-- After any sed operation, re-read the file to verify correctness
-
-## Must-Have for Every UI Change
-
-- No emoji anywhere (WXML, JS strings, CSS content)
-- All user-facing text in Chinese
-- Buttons use `::after { border: none }` to remove WeChat's default button border
+## Commit Rules
+- One logical fix per commit
+- Commit message describes WHAT was fixed, not HOW
+- Push immediately after commit
