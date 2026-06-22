@@ -173,6 +173,19 @@ Page({
 
   clearSearch() { this.setData({ keyword: '', searched: false, searchResults: [] }); },
 
+
+  onAuthTap() {
+    var that = this;
+    wx.getUserProfile({
+      desc: "用于展示你的昵称和头像",
+      success: function(res) {
+        that.onAuthGot({ detail: res });
+      },
+      fail: function() {
+        wx.showToast({ title: "需要授权才能使用", icon: "none" });
+      }
+    });
+  },
   onAuthGot(e) {
     var userInfo = e.detail.userInfo;
     if (!userInfo) return;

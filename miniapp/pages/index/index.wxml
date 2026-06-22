@@ -6,7 +6,7 @@
       <view class="welcome-geo"><view class="geo-diamond" style="width:64rpx;height:64rpx;background:linear-gradient(135deg,#7C3AED,#A78BFA);border-radius:14rpx;"></view></view>
       <text class="welcome-box-title">欢迎使用闪卡记忆</text>
       <text class="welcome-box-desc">需要获取你的微信昵称和头像，用于展示个人信息</text>
-      <button class="welcome-box-btn" open-type="getUserInfo" bindgetuserinfo="onAuthGot">微信授权</button>
+      <button class="welcome-box-btn" bindtap="onAuthTap">微信授权</button>
       <text class="welcome-box-skip" bindtap="skipAuth">暂不授权</text>
     </view>
   </view>
