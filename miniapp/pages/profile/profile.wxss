@@ -558,3 +558,7 @@
   font-size: 32rpx; font-weight: 700; color: #FFFFFF;
   background: transparent; border: none; width: 300rpx; min-height: 48rpx;
 }
+.user-hero-content {
+  display: flex; flex-direction: column; align-items: center;
+  position: relative; z-index: 1;
+}
