@@ -214,7 +214,7 @@ Page({
       title: '来闪卡记忆一起高效学习吧',
       path: '/pages/onboard/onboard?invite_code=' + encodeURIComponent(inviteCode)
     };
-  }
+  },
 
   onGetUserInfo(e) {
     var userInfo = e.detail.userInfo;
