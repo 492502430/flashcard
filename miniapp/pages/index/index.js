@@ -29,7 +29,7 @@ Page({
   onShow() {
     this.loadData();
     var userInfo = wx.getStorageSync("userInfo");
-    this.setData({ showAuth: !userInfo || (userInfo && userInfo.nickName === "闪卡用户") });
+    this.setData({ showAuth: false });
   },
   onPullDownRefresh() { this.loadData(); wx.stopPullDownRefresh(); },
 

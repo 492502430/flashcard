@@ -218,6 +218,25 @@ Page({
     };
   },
 
+
+  tapGetProfile() {
+    var that = this;
+    wx.getUserProfile({
+      desc: "用于展示你的昵称和头像",
+      success: function(res) {
+        var userInfo = res.userInfo;
+        that.setData({ nickname: userInfo.nickName, userInitial: (userInfo.nickName || "闪")[0], avatarUrl: userInfo.avatarUrl });
+        wx.setStorageSync("userInfo", userInfo);
+        wx.request({
+          url: app.globalData.apiBase + "/api/user/profile",
+          method: "PUT",
+          header: { "Content-Type": "application/json", Authorization: "Bearer " + (app.globalData.token || wx.getStorageSync("token")) },
+          data: { nickname: userInfo.nickName, avatar_url: userInfo.avatarUrl }
+        });
+      },
+      fail: function() { wx.showToast({ title: "需要授权才能使用", icon: "none" }); }
+    });
+  },
   onGetUserInfo(e) {
     var userInfo = e.detail.userInfo;
     if (!userInfo) return;
