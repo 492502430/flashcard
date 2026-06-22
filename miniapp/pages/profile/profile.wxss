@@ -544,3 +544,20 @@
   height: 100%;
   border-radius: 50%;
 }
+
+.user-avatar-btn {
+  width: 120rpx; height: 120rpx; border-radius: 50%;
+  padding: 0; margin: 0; border: none;
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+}
+.user-avatar-btn::after { border: none; }
+.user-avatar-img {
+  width: 120rpx; height: 120rpx; border-radius: 50%;
+}
+.user-name-input {
+  text-align: center; font-size: 32rpx; font-weight: 600;
+  color: #FFFFFF; margin-top: 16rpx;
+  background: transparent; border: none;
+  width: 280rpx;
+}

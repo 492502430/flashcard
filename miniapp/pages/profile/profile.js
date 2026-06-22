@@ -2,8 +2,8 @@ const app = getApp();
 
 Page({
   data: {
-    nickname: "闪卡用户",
-    avatarUrl: "",
+    nickname: '闪卡用户',
+    avatarUrl: '',
     userInitial: '闪',
     totalDecks: 0,
     totalCards: 0,
@@ -19,26 +19,21 @@ Page({
     this.loadAchievements();
     this.loadInviteInfo(false);
     wx.showShareMenu({ withShareTicket: true, menus: ['shareAppMessage'] });
-    // Load reminder preference
     const reviewReminder = wx.getStorageSync('reviewReminder') || false;
     this.setData({ reviewReminder });
   },
 
   loadUserData() {
     const token = app.globalData.token || wx.getStorageSync('token');
-
-    // Load from local storage
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo && userInfo.nickName) {
-      const name = userInfo.nickName;
       this.setData({
-        nickname: name,
-        userInitial: name[0] || "闪",
-        avatarUrl: userInfo.avatarUrl || ""
+        nickname: userInfo.nickName,
+        userInitial: (userInfo.nickName || '闪')[0],
+        avatarUrl: userInfo.avatarUrl || ''
       });
     }
 
-    // Load deck stats
     wx.request({
       url: app.globalData.apiBase + '/api/decks',
       header: { Authorization: 'Bearer ' + token },
@@ -46,23 +41,56 @@ Page({
         const decks = res.data || [];
         const cards = decks.reduce((s, d) => s + (d.card_count || 0), 0);
         this.setData({ totalDecks: decks.length, totalCards: cards });
-      },
-      fail: () => {
-        // Offline — show cached data
-        const cachedDecks = wx.getStorageSync('cachedDecks') || [];
-        const cachedCards = cachedDecks.reduce((s, d) => s + (d.card_count || 0), 0);
-        this.setData({ totalDecks: cachedDecks.length, totalCards: cachedCards });
       }
     });
 
-    // Load review stats
     wx.request({
       url: app.globalData.apiBase + '/api/review/today',
       header: { Authorization: 'Bearer ' + token },
       success: (res) => {
         const data = res.data || {};
-        this.setData({ reviewedTotal: data.reviewed_total || data.reviewed_today || 0 });
+        this.setData({ reviewedTotal: data.reviewed_today || 0 });
       }
+    });
+  },
+
+  // WeChat native avatar picker
+  onChooseAvatar(e) {
+    const avatarUrl = e.detail.avatarUrl;
+    this.setData({ avatarUrl });
+    this.saveProfile({ avatarUrl });
+  },
+
+  // WeChat native nickname input
+  onNicknameBlur(e) {
+    const nickName = e.detail.value;
+    if (!nickName) return;
+    this.setData({
+      nickname: nickName,
+      userInitial: nickName[0]
+    });
+    this.saveProfile({ nickName });
+  },
+
+  saveProfile(updates) {
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    Object.assign(userInfo, updates);
+    if (updates.nickName) {
+      userInfo.nickName = updates.nickName;
+    }
+    if (updates.avatarUrl) {
+      userInfo.avatarUrl = updates.avatarUrl;
+    }
+    wx.setStorageSync('userInfo', userInfo);
+
+    wx.request({
+      url: app.globalData.apiBase + '/api/user/profile',
+      method: 'PUT',
+      header: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
+      },
+      data: { nickname: userInfo.nickName || '闪卡用户', avatar_url: userInfo.avatarUrl || '' }
     });
   },
 
@@ -73,9 +101,6 @@ Page({
       success: (res) => {
         const achievements = (res.data && res.data.achievements) || [];
         this.setData({ achievements });
-      },
-      fail: () => {
-        // Show cached or empty
       }
     });
   },
@@ -84,14 +109,11 @@ Page({
     const enabled = e.detail.value;
     this.setData({ reviewReminder: enabled });
     wx.setStorageSync('reviewReminder', enabled);
-
     if (enabled) {
-      // Mock notification — show a modal since real push needs backend
       wx.showModal({
         title: '复习提醒已开启',
-        content: '每天 20:00 将通过微信服务通知提醒你复习（模拟提示：实际推送需后端支持）。开启后，每日定时收到复习提醒。',
-        showCancel: false,
-        confirmText: '知道了'
+        content: '每天 20:00 将通过微信服务通知提醒你复习',
+        showCancel: false, confirmText: '知道了'
       });
     } else {
       wx.showToast({ title: '复习提醒已关闭', icon: 'none' });
@@ -100,25 +122,20 @@ Page({
 
   onMenuTap(e) {
     const action = e.currentTarget.dataset.action;
-    switch (action) {
-      case 'about':
-        wx.showModal({
-          title: '关于闪卡记忆',
-          content: 'AI 驱动的智能记忆工具。上传文本，AI 自动生成问答闪卡，基于间隔重复算法安排每日复习，帮助你高效记忆任何内容。',
-          showCancel: false,
-          confirmText: '知道了'
-        });
-        break;
-      case 'feedback':
-        wx.showModal({
-          title: '意见反馈',
-          content: '感谢你的反馈！请发送邮件至：feedback@flashcard.app',
-          showCancel: false,
-          confirmText: '好的'
-        });
-        break;
-      default:
-        wx.showToast({ title: '即将上线', icon: 'none' });
+    if (action === 'about') {
+      wx.showModal({
+        title: '关于闪卡记忆',
+        content: 'AI 驱动的智能记忆工具。上传文本，AI 自动生成问答闪卡，基于间隔重复算法安排每日复习。',
+        showCancel: false, confirmText: '知道了'
+      });
+    } else if (action === 'feedback') {
+      wx.showModal({
+        title: '意见反馈',
+        content: '感谢你的反馈！请发送邮件至：feedback@flashcard.app',
+        showCancel: false, confirmText: '好的'
+      });
+    } else {
+      wx.showToast({ title: '即将上线', icon: 'none' });
     }
   },
 
@@ -129,12 +146,9 @@ Page({
       header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
       success: (res) => {
         wx.hideLoading();
-        const data = JSON.stringify(res.data, null, 2);
         wx.setClipboardData({
-          data,
-          success: () => {
-            wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
-          }
+          data: JSON.stringify(res.data, null, 2),
+          success: () => wx.showToast({ title: '已复制到剪贴板', icon: 'success' })
         });
       },
       fail: () => {
@@ -150,108 +164,25 @@ Page({
       header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
       success: (res) => {
         const inviteCode = (res.data && res.data.invite_code) || '';
-        if (!inviteCode) {
-          if (showErrors) wx.showToast({ title: '获取邀请码失败，请稍后重试', icon: 'none' });
-          return;
-        }
-
+        if (!inviteCode) { if (showErrors) wx.showToast({ title: '获取邀请码失败', icon: 'none' }); return; }
         this.setData({ inviteCode });
         wx.request({
           url: app.globalData.apiBase + '/api/invite/stats',
           header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
-          success: (statsRes) => {
-            const invitedCount = (statsRes.data && statsRes.data.invited_count) || 0;
-            this.setData({ invitedCount });
-          },
-          fail: (err) => {
-            console.error('加载邀请统计失败:', err);
-            if (showErrors) wx.showToast({ title: '加载邀请统计失败: ' + (err.errMsg || '网络异常'), icon: 'none', duration: 2500 });
-          }
+          success: (sr) => this.setData({ invitedCount: (sr.data && sr.data.invited_count) || 0 })
         });
       },
-      fail: (err) => {
-        console.error('获取邀请码失败:', err);
-        if (showErrors) wx.showToast({ title: '获取邀请码失败: ' + (err.errMsg || '网络异常，请检查网络后重试'), icon: 'none', duration: 2500 });
-      }
+      fail: (e) => { if (showErrors) wx.showToast({ title: '网络异常', icon: 'none' }); }
     });
   },
 
   showInvite() {
-    const inviteCode = this.data.inviteCode;
-    if (!inviteCode) {
-      wx.showLoading({ title: '加载中...', mask: true });
-      this.loadInviteInfo(true);
-      setTimeout(() => wx.hideLoading(), 800);
-      return;
-    }
-
-    const shareText = '来闪卡记忆一起高效学习吧！\n我的邀请码：' + inviteCode + '\n已邀请 ' + this.data.invitedCount + ' 位好友加入';
-    wx.showActionSheet({
-      itemList: ['复制邀请语', '查看邀请码'],
-      success: (res) => {
-        if (res.tapIndex === 0) {
-          wx.setClipboardData({
-            data: shareText,
-            success: () => wx.showToast({ title: '已复制', icon: 'success' })
-          });
-        } else {
-          wx.showModal({
-            title: '我的邀请码',
-            content: inviteCode,
-            confirmText: '复制',
-            success: (modalRes) => {
-              if (modalRes.confirm) {
-                wx.setClipboardData({ data: inviteCode });
-              }
-            }
-          });
-        }
-      }
-    });
+    if (!this.data.inviteCode) { wx.showLoading({ title: '加载中...' }); this.loadInviteInfo(true); setTimeout(() => wx.hideLoading(), 800); return; }
+    const text = '来闪卡记忆一起高效学习吧！\n我的邀请码：' + this.data.inviteCode;
+    wx.setClipboardData({ data: text, success: () => wx.showToast({ title: '已复制', icon: 'success' }) });
   },
 
   onShareAppMessage() {
-    const inviteCode = this.data.inviteCode || 'FLASH';
-    return {
-      title: '来闪卡记忆一起高效学习吧',
-      path: '/pages/onboard/onboard?invite_code=' + encodeURIComponent(inviteCode)
-    };
-  },
-
-
-  tapGetProfile() {
-    var that = this;
-    wx.getUserProfile({
-      desc: "用于展示你的昵称和头像",
-      success: function(res) {
-        var userInfo = res.userInfo;
-        that.setData({ nickname: userInfo.nickName, userInitial: (userInfo.nickName || "闪")[0], avatarUrl: userInfo.avatarUrl });
-        wx.setStorageSync("userInfo", userInfo);
-        wx.request({
-          url: app.globalData.apiBase + "/api/user/profile",
-          method: "PUT",
-          header: { "Content-Type": "application/json", Authorization: "Bearer " + (app.globalData.token || wx.getStorageSync("token")) },
-          data: { nickname: userInfo.nickName, avatar_url: userInfo.avatarUrl }
-        });
-      },
-      fail: function() { wx.showToast({ title: "需要授权才能使用", icon: "none" }); }
-    });
-  },
-  onGetUserInfo(e) {
-    var userInfo = e.detail.userInfo;
-    if (!userInfo) return;
-    this.setData({
-      nickname: userInfo.nickName,
-      userInitial: (userInfo.nickName || "闪")[0],
-      avatarUrl: userInfo.avatarUrl
-    });
-    wx.request({
-      url: app.globalData.apiBase + "/api/user/profile",
-      method: "PUT",
-      header: { "Content-Type": "application/json", Authorization: "Bearer " + (app.globalData.token || wx.getStorageSync("token")) },
-      data: { nickname: userInfo.nickName, avatar_url: userInfo.avatarUrl },
-      success: function() { wx.setStorageSync("userInfo", userInfo); }
-    });
+    return { title: '来闪卡记忆一起高效学习吧', path: '/pages/onboard/onboard?invite_code=' + (this.data.inviteCode || 'FLASH') };
   }
 });
-
