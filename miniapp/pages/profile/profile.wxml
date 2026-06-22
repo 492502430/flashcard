@@ -8,7 +8,8 @@
     <view class="user-hero-glow"></view>
     <view class="user-avatar-wrap">
       <view class="user-avatar">
-        <text class="user-avatar-text">{{userInitial}}</text>
+        <image wx:if="{{avatarUrl}}" class="user-avatar-img" src="{{avatarUrl}}" mode="aspectFill"></image>
+        <text wx:else class="user-avatar-text">{{userInitial}}</text>
       </view>
     </view>
     <text class="user-name">{{nickname}}</text>

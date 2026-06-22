@@ -1,16 +1,14 @@
-<!-- index.wxml — 首页 | 参考图重做 -->
-<!-- 首次授权 -->
-<view class="auth-overlay" wx:if="{{showAuth}}">
-  <view class="auth-card">
-    <view class="auth-icon"><view class="geo-diamond" style="width:48rpx;height:48rpx;background:linear-gradient(135deg,#7C3AED,#A78BFA);border-radius:12rpx;"></view></view>
-    <text class="auth-title">闪卡记忆</text>
-    <text class="auth-desc">AI 驱动的智能记忆工具，需要获取你的微信昵称来展示个人信息</text>
-    <button class="auth-allow-btn" open-type="getUserInfo" bindgetuserinfo="onAuthGot">允许</button>
-    <text class="auth-skip" bindtap="skipAuth">暂不授权，跳过</text>
-  </view>
-</view>
-
+<!-- index.wxml — 首页 -->
 <view class="page home-page">
+  <!-- 首次进入：微信原生授权 -->
+  <view class="welcome-banner" wx:if="{{showAuth}}">
+    <view class="welcome-icon"><view class="geo-diamond" style="width:36rpx;height:36rpx;background:linear-gradient(135deg,#7C3AED,#A78BFA);border-radius:8rpx;"></view></view>
+    <view class="welcome-text">
+      <text class="welcome-title">欢迎使用闪卡记忆</text>
+      <text class="welcome-sub">AI 智能记忆工具</text>
+    </view>
+    <button class="welcome-auth-btn" open-type="getUserInfo" bindgetuserinfo="onAuthGot">微信授权</button>
+  </view>
   <view class="app-top">
     <view>
       <text class="brand">闪卡记忆</text>

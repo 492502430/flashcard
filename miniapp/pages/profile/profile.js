@@ -2,7 +2,8 @@ const app = getApp();
 
 Page({
   data: {
-    nickname: '闪卡用户',
+    nickname: "闪卡用户",
+    avatarUrl: "",
     userInitial: '闪',
     totalDecks: 0,
     totalCards: 0,
@@ -32,8 +33,10 @@ Page({
       const name = userInfo.nickName;
       this.setData({
         nickname: name,
-        userInitial: name[0] || '闪'
+        userInitial: name[0] || "闪",
+        avatarUrl: userInfo.avatarUrl || ""
       });
+    }      });
     }
 
     // Load deck stats
