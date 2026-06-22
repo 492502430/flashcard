@@ -2,10 +2,12 @@
   <view class="user-hero">
     <view class="user-hero-glow"></view>
     <view class="user-hero-content">
-      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-        <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill"/>
-        <view wx:else class="avatar-empty"><view class="geo-camera"></view></view>
-      </button>
+      <view class="user-avatar-wrap">
+        <button class="user-avatar avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill"/>
+          <text wx:else class="user-avatar-text">闪</text>
+        </button>
+      </view>
       <input class="nickname-input" type="nickname" placeholder="点击设置昵称" value="{{nickname}}" bindblur="onNicknameBlur"/>
     </view>
 

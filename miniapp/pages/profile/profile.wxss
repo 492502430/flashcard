@@ -544,15 +544,9 @@
   height: 100%;
   border-radius: 50%;
 }
-
-.avatar-btn {
-  width: 140rpx; height: 140rpx; border-radius: 50%;
-  border: 4rpx solid rgba(255,255,255,0.3); padding: 0; margin: 0;
-  background: rgba(255,255,255,0.15); overflow: hidden;
-}
+.avatar-btn { background: transparent; padding: 0; border: none; }
 .avatar-btn::after { border: none; }
 .avatar-img { width: 100%; height: 100%; border-radius: 50%; }
-.avatar-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
 .nickname-input {
   margin-top: 24rpx; text-align: center;
   font-size: 32rpx; font-weight: 700; color: #FFFFFF;
