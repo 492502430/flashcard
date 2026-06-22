@@ -36,7 +36,6 @@ Page({
         userInitial: name[0] || "闪",
         avatarUrl: userInfo.avatarUrl || ""
       });
-    }      });
     }
 
     // Load deck stats
