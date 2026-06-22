@@ -1,4 +1,15 @@
 <!-- index.wxml — 首页 | 参考图重做 -->
+<!-- 首次授权 -->
+<view class="auth-overlay" wx:if="{{showAuth}}">
+  <view class="auth-card">
+    <view class="auth-icon">📖</view>
+    <text class="auth-title">闪卡记忆</text>
+    <text class="auth-desc">AI 驱动的智能记忆工具，需要获取你的微信昵称来展示个人信息</text>
+    <button class="auth-allow-btn" open-type="getUserInfo" bindgetuserinfo="onAuthGot">允许</button>
+    <text class="auth-skip" bindtap="skipAuth">暂不授权，跳过</text>
+  </view>
+</view>
+
 <view class="page home-page">
   <view class="app-top">
     <view>

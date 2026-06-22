@@ -27,6 +27,8 @@ Page({
 
   onShow() { this.loadData(); },
   onPullDownRefresh() { this.loadData(); wx.stopPullDownRefresh(); },
+    const userInfo = wx.getStorageSync("userInfo");
+    this.setData({ showAuth: !userInfo });
 
   loadData() {
     console.log('[index] loadData START, current values:', 
@@ -169,3 +171,32 @@ Page({
   clearSearch() { this.setData({ keyword: '', searched: false, searchResults: [] }); },
   preventTouchMove() {}
 });
+
+  onShow() {
+    this.loadData();
+    const userInfo = wx.getStorageSync("userInfo");
+    this.setData({ showAuth: !userInfo });
+    // Show auth overlay if first time
+    const userInfo = wx.getStorageSync('userInfo');
+    this.setData({ showAuth: !userInfo });
+  },
+
+  onAuthGot(e) {
+    const userInfo = e.detail.userInfo;
+    if (!userInfo) return;
+    // Save locally
+    wx.setStorageSync('userInfo', userInfo);
+    // Send to backend
+    wx.request({
+      url: app.globalData.apiBase + '/api/user/profile',
+      method: 'PUT',
+      header: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
+      data: { nickname: userInfo.nickName, avatar_url: userInfo.avatarUrl }
+    });
+    this.setData({ showAuth: false });
+  },
+
+  skipAuth() {
+    wx.setStorageSync('userInfo', { nickName: '闪卡用户' });
+    this.setData({ showAuth: false });
+  }

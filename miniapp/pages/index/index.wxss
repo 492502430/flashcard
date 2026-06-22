@@ -464,3 +464,51 @@
   text-align: center;
   color: #8A94A6;
 }
+
+.auth-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.auth-card {
+  width: 560rpx;
+  background: #FFFFFF;
+  border-radius: 32rpx;
+  padding: 60rpx 48rpx;
+  text-align: center;
+}
+.auth-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #1F2937;
+  margin-top: 24rpx;
+}
+.auth-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #6B7280;
+  margin: 20rpx 0 36rpx;
+  line-height: 1.6;
+}
+.auth-allow-btn {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background: linear-gradient(135deg, #7C3AED, #6D28D9);
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: 700;
+  border: none;
+}
+.auth-allow-btn::after { border: none; }
+.auth-skip {
+  display: block;
+  margin-top: 24rpx;
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
