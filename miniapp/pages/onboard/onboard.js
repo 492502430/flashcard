@@ -22,6 +22,12 @@ Page({
     ]
   },
 
+  onLoad(opts) {
+    if (opts && opts.invite_code) {
+      wx.setStorageSync('pendingInviteCode', decodeURIComponent(opts.invite_code));
+    }
+  },
+
   onSwiperChange(e) {
     this.setData({ current: e.detail.current });
   },

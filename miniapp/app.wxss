@@ -65,6 +65,27 @@ button:active {
   box-shadow: 0 10rpx 22rpx rgba(82, 65, 220, 0.24);
 }
 
+.btn-outline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 84rpx;
+  padding: 0 28rpx;
+  border-radius: 22rpx;
+  border: 1rpx solid var(--color-border);
+  background: #FFFFFF;
+  color: var(--color-text-primary);
+  font-size: 28rpx;
+  font-weight: 700;
+  box-shadow: var(--shadow-soft);
+  box-sizing: border-box;
+}
+
+.empty-state-title,
+.empty-state-desc {
+  display: block;
+}
+
 .bottom-spacer { height: 36rpx; }
 
 .fade-in {

@@ -118,10 +118,13 @@ Page({
     clearCount: 0,
     optimizeCount: 0,
     duplicateCount: 0,
+    lowQualityCount: 0,
+    documentCount: 0,
     qualityScore: 0,
     qualityScoreText: '--',
     qualityLabel: '暂无',
     deckTagLabel: '未设置',
+    activeTab: 'cards',
     activeFilter: 'all',
     filteredCards: [],
     documentGroups: [],
@@ -131,7 +134,10 @@ Page({
     editCardId: '',
     editQuestion: '',
     editAnswer: '',
-    editSaving: false
+    editSaving: false,
+    deckTitleDraft: '',
+    deckSaving: false,
+    editingDeckTitle: false
   },
 
   onLoad(opts) {
@@ -166,8 +172,9 @@ Page({
         const activeFilter = this.data.activeFilter || 'all';
         const filteredCards = this.filterCards(quality.enriched, activeFilter);
         const documentGroups = groupCardsByDocument(filteredCards);
+        const allDocumentGroups = groupCardsByDocument(quality.enriched);
 
-        this.setData({
+        const nextData = {
           deck,
           cards: quality.enriched,
           newCount,
@@ -178,6 +185,8 @@ Page({
           clearCount: quality.clearCount,
           optimizeCount: quality.optimizeCount,
           duplicateCount: quality.duplicateCount,
+          lowQualityCount: quality.optimizeCount + quality.duplicateCount,
+          documentCount: allDocumentGroups.length,
           qualityScore: quality.qualityScore,
           qualityScoreText: hasCards ? String(quality.qualityScore) : '--',
           qualityLabel: quality.qualityLabel,
@@ -185,7 +194,11 @@ Page({
           filteredCards,
           documentGroups,
           generating: !hasCards
-        });
+        };
+        if (!this.data.editingDeckTitle && !this.data.deckSaving) {
+          nextData.deckTitleDraft = deck.title || '';
+        }
+        this.setData(nextData);
         
         if (hasCards) this.stopPolling();
       }
@@ -227,6 +240,79 @@ Page({
     });
   },
 
+  setTab(e) {
+    const tab = e.currentTarget.dataset.tab || 'cards';
+    this.setData({ activeTab: tab });
+  },
+
+  onDeckTitleInput(e) {
+    this.setData({ deckTitleDraft: e.detail.value });
+  },
+
+  onDeckTitleFocus() {
+    this.setData({ editingDeckTitle: true });
+  },
+
+  onDeckTitleBlur() {
+    this.setData({ editingDeckTitle: false });
+  },
+
+  saveDeckTitle() {
+    const title = (this.data.deckTitleDraft || '').trim();
+    if (!title) {
+      wx.showToast({ title: '牌组名称不能为空', icon: 'none' });
+      return;
+    }
+    if (title === this.data.deck.title) {
+      wx.showToast({ title: '名称没有变化', icon: 'none' });
+      return;
+    }
+
+    this.setData({ deckSaving: true });
+    this.requestDeckRename(title, 'POST', app.globalData.apiBase + '/api/decks/' + this.deckId + '/rename');
+  },
+
+  requestDeckRename(title, method, url) {
+    wx.request({
+      url,
+      method,
+      header: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
+      },
+      data: { title },
+      success: (res) => {
+        if ((res.statusCode === 404 || res.statusCode === 405) && method === 'POST') {
+          this.requestDeckRename(title, 'PUT', app.globalData.apiBase + '/api/decks/' + this.deckId);
+          return;
+        }
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          const msg = (res.data && res.data.error) || ('保存失败 ' + res.statusCode);
+          wx.showToast({ title: msg, icon: 'none' });
+          this.setData({ deckSaving: false });
+          return;
+        }
+        const deck = { ...this.data.deck, ...(res.data || {}), title };
+        wx.showToast({ title: '已保存', icon: 'success' });
+        this.setData({
+          deck,
+          deckTitleDraft: deck.title || title,
+          deckSaving: false,
+          editingDeckTitle: false
+        });
+        this.loadDeck();
+      },
+      fail: () => {
+        if (method === 'POST') {
+          this.requestDeckRename(title, 'PUT', app.globalData.apiBase + '/api/decks/' + this.deckId);
+        } else {
+          wx.showToast({ title: '保存失败', icon: 'none' });
+          this.setData({ deckSaving: false });
+        }
+      }
+    });
+  },
+
   showLowQualityCards() {
     const hasOptimize = this.data.cards.some(card => card.qualityStatus === 'optimize');
     const hasDuplicate = this.data.cards.some(card => card.qualityStatus === 'duplicate');
@@ -251,6 +337,10 @@ Page({
     } else {
       wx.switchTab({ url: '/pages/index/index' });
     }
+  },
+
+  goHome() {
+    wx.switchTab({ url: '/pages/index/index' });
   },
 
   confirmDelete() {
@@ -425,7 +515,3 @@ Page({
     });
   }
 });
-
-  goHome() {
-    wx.switchTab({ url: '/pages/index/index' });
-  }

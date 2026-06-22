@@ -22,11 +22,12 @@
     <view class="flip-stage" bindtap="flipCard">
       <view class="flashcard-flip {{flipped ? 'is-flipped' : ''}}">
         <view class="flashcard card-face card-front">
-          <text class="concept-chip">概念理解</text>
-          <view class="qa">
-            <text class="question">问：{{card.question}}</text>
-            <view class="divider"></view>
-            <text class="answer placeholder">点击卡片查看答案</text>
+          <view class="card-face-head">
+            <text class="concept-chip">问题</text>
+            <text class="tap-hint">点击查看答案</text>
+          </view>
+          <view class="card-scroll">
+            <text class="question-only">{{card.question}}</text>
           </view>
           <view class="card-foot">
             <text>{{card.deck_title || '当前牌组'}}</text>
@@ -34,11 +35,12 @@
           </view>
         </view>
         <view class="flashcard card-face card-back">
-          <text class="concept-chip">参考答案</text>
-          <view class="qa">
-            <text class="question">问：{{card.question}}</text>
-            <view class="divider"></view>
-            <text class="answer">答：{{card.answer}}</text>
+          <view class="card-face-head">
+            <text class="concept-chip answer-chip">答案</text>
+            <text class="tap-hint">点击回到问题</text>
+          </view>
+          <view class="card-scroll answer-scroll">
+            <text class="answer-only">{{card.answer}}</text>
           </view>
           <view class="card-foot">
             <text>{{card.deck_title || '当前牌组'}}</text>
@@ -48,13 +50,13 @@
       </view>
     </view>
 
-    <text class="next-review">下次复习：4 天后（5月27日）</text>
+    <text class="next-review">{{flipped ? '根据记忆程度选择下次复习' : '先回忆答案，再点击卡片翻面'}}</text>
 
-    <view class="rating-grid">
-      <button class="rate-card rate-red" bindtap="rate" data-r="1"><text>1</text><view>忘记</view><view>＜1天</view></button>
-      <button class="rate-card rate-orange" bindtap="rate" data-r="2"><text>2</text><view>困难</view><view>1天</view></button>
-      <button class="rate-card rate-blue" bindtap="rate" data-r="3"><text>3</text><view>一般</view><view>3天</view></button>
-      <button class="rate-card rate-green" bindtap="rate" data-r="4"><text>4</text><view>容易</view><view>4天</view></button>
+    <view class="rating-grid {{flipped ? 'rating-grid-ready' : ''}}">
+      <button class="rate-card rate-red" bindtap="rate" data-r="1" disabled="{{!flipped}}"><text>1</text><view>忘记</view><view>＜1天</view></button>
+      <button class="rate-card rate-orange" bindtap="rate" data-r="2" disabled="{{!flipped}}"><text>2</text><view>困难</view><view>1天</view></button>
+      <button class="rate-card rate-blue" bindtap="rate" data-r="3" disabled="{{!flipped}}"><text>3</text><view>一般</view><view>3天</view></button>
+      <button class="rate-card rate-green" bindtap="rate" data-r="4" disabled="{{!flipped}}"><text>4</text><view>容易</view><view>4天</view></button>
     </view>
 
     <view class="feedback-panel">

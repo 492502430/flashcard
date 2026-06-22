@@ -5,7 +5,8 @@ App({
     apiBase: 'http://192.168.0.103:8088'
   },
 
-  onLaunch() {
+  onLaunch(options) {
+    this.captureInviteCode(options);
     const token = wx.getStorageSync('token');
     if (token) {
       this.globalData.token = token;
@@ -21,6 +22,17 @@ App({
     }
   },
 
+  onShow(options) {
+    this.captureInviteCode(options);
+  },
+
+  captureInviteCode(options) {
+    const inviteCode = options && options.query && options.query.invite_code;
+    if (inviteCode) {
+      wx.setStorageSync('pendingInviteCode', decodeURIComponent(inviteCode));
+    }
+  },
+
   login() {
     wx.login({
       success: (res) => {
@@ -28,10 +40,11 @@ App({
         const code = res.code || 'dev-fallback-' + Date.now();
         
         console.log('[app] POST to:', `${this.globalData.apiBase}/api/auth/login`);
+        const inviteCode = wx.getStorageSync('pendingInviteCode') || '';
         wx.request({
           url: `${this.globalData.apiBase}/api/auth/login`,
           method: 'POST',
-          data: { code: code },
+          data: { code: code, invite_code: inviteCode },
           success: (resp) => {
             console.log('[app] Login response status:', resp.statusCode);
             console.log('[app] Login response data:', JSON.stringify(resp.data).substring(0, 150));
@@ -57,10 +70,11 @@ App({
 
   fallbackLogin() {
     console.log('[app] Using fallback login...');
+    const inviteCode = wx.getStorageSync('pendingInviteCode') || '';
     wx.request({
       url: `${this.globalData.apiBase}/api/auth/login`,
       method: 'POST',
-      data: { code: 'dev-' + Date.now() },
+      data: { code: 'dev-' + Date.now(), invite_code: inviteCode },
       success: (resp) => {
         if (resp.data && resp.data.token) {
           this.globalData.token = resp.data.token;

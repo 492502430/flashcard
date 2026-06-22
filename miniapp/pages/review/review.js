@@ -57,6 +57,10 @@ Page({
   },
 
   rate(e) {
+    if (!this.data.flipped) {
+      wx.showToast({ title: '先点击卡片查看答案', icon: 'none' });
+      return;
+    }
     const rating = parseInt(e.currentTarget.dataset.r);
     const card = this.data.card;
     if (!card) return;

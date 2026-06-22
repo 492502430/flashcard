@@ -4,10 +4,11 @@
     <text class="header-title">我的牌组</text>
     <view class="header-actions">
       <view class="header-action tappable" bindtap="goTemplates">
-        <text class="header-action-text" style="color:var(--color-secondary);">模板库</text>
+        <view class="header-action-icon library-icon"></view>
+        <text class="header-action-text">模板库</text>
       </view>
-      <view class="header-action tappable" bindtap="goCreate">
-        <view class="geo-plus" style="width:22rpx;height:22rpx;color:#059669;"></view>
+      <view class="header-action primary tappable" bindtap="goCreate">
+        <view class="geo-plus header-plus"></view>
         <text class="header-action-text">新建</text>
       </view>
     </view>
@@ -35,14 +36,14 @@
     </view>
   </view>
 
-  <view class="empty-state fade-in" wx:else>
-    <view class="empty-state-geo">
-      <view class="geo-box-stack"><view class="geo-box"></view><view class="geo-box"></view><view class="geo-box"></view></view>
+  <view class="empty-card fade-in" wx:else>
+    <view class="empty-visual">
+      <view class="empty-card-stack"><view></view><view></view><view></view></view>
     </view>
     <text class="empty-state-title">还没有牌组</text>
-    <text class="empty-state-desc">创建你的第一个牌组<text style="display:block">AI 将为你自动生成闪卡</text></text>
+    <text class="empty-state-desc">创建你的第一个牌组，AI 会根据资料自动生成闪卡。</text>
     <button class="btn-outline" bindtap="goCreate">
-      <view class="geo-plus" style="width:22rpx;height:22rpx;margin-right:10rpx;"></view>
+      <view class="geo-plus empty-plus"></view>
       <text>创建第一个牌组</text>
     </button>
   </view>

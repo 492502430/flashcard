@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -39,20 +40,9 @@ func ParseToken(tokenStr string) (*Claims, error) {
 	return nil, jwt.ErrSignatureInvalid
 }
 
-// LoginRequest is the payload from WeChat mini-program wx.login.
 type LoginRequest struct {
-	Code string `json:"code"`
-}
-
-// LoginResponse returns JWT token and user info.
-type LoginResponse struct {
-	Token string   `json:"token"`
-	User  UserInfo `json:"user"`
-}
-
-type UserInfo struct {
-	ID       string `json:"id"`
-	Nickname string `json:"nickname"`
+	Code       string `json:"code"`
+	InviteCode string `json:"invite_code,omitempty"`
 }
 
 // WxLogin handles WeChat mini-program login.
@@ -63,8 +53,16 @@ func (h *Handler) WxLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: Call WeChat code2session API to get real openid
 	openid := req.Code
+
+	// Try real WeChat code2session if credentials configured
+	if h.WxAppID != "" && h.WxAppSecret != "" {
+		if realOpenid, _, err := h.Code2Session(req.Code); err == nil {
+			openid = realOpenid
+		} else {
+			log.Printf("WxLogin: code2session failed (%v), using code as openid", err)
+		}
+	}
 
 	var user struct {
 		ID         string
@@ -84,11 +82,15 @@ func (h *Handler) WxLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Generate invite code for new users (empty invite_code means first login)
 	if user.InviteCode == "" {
 		code := generateInviteCode()
 		h.DB.Exec(`UPDATE users SET invite_code = ? WHERE id = ?`, code, user.ID)
 		user.InviteCode = code
+	}
+
+	if req.InviteCode != "" && req.InviteCode != user.InviteCode {
+		h.DB.Exec(`UPDATE users SET invited_by = ? WHERE id = ? AND COALESCE(invited_by, '') = ''`,
+			req.InviteCode, user.ID)
 	}
 
 	token, err := GenerateToken(user.ID)
@@ -97,8 +99,12 @@ func (h *Handler) WxLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	writeJSON(w, 200, LoginResponse{
-		Token: token,
-		User: UserInfo{ID: user.ID, Nickname: user.Nickname},
+	writeJSON(w, 200, map[string]interface{}{
+		"token": token,
+		"user": map[string]interface{}{
+			"id":       user.ID,
+			"nickname": user.Nickname,
+		},
 	})
 }
+

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	_ "embed"
 	"net/http"
 	"strings"
 
@@ -26,17 +27,52 @@ func AdminAuth(password string) func(http.Handler) http.Handler {
 
 // AdminStatsResponse holds all dashboard metrics.
 type AdminStatsResponse struct {
-	UsersToday    int       `json:"users_today"`
-	TotalUsers    int       `json:"total_users"`
-	TotalDecks    int       `json:"total_decks"`
-	TotalCards    int       `json:"total_cards"`
-	TokensUsed    int       `json:"tokens_used"`
-	DAU           int       `json:"dau"`
-	DailyNewUsers []DayStat `json:"daily_new_users"`
+	UsersToday       int                `json:"users_today"`
+	TotalUsers       int                `json:"total_users"`
+	TotalDecks       int                `json:"total_decks"`
+	TotalCards       int                `json:"total_cards"`
+	TokensUsed       int                `json:"tokens_used"`
+	DAU              int                `json:"dau"`
+	ReviewsToday     int                `json:"reviews_today"`
+	FeedbackTotal    int                `json:"feedback_total"`
+	LowQualityCards  int                `json:"low_quality_cards"`
+	DailyNewUsers    []DayStat          `json:"daily_new_users"`
+	DailyReviews     []DayStat          `json:"daily_reviews"`
+	RecentUsers      []AdminUserRow     `json:"recent_users"`
+	RecentDecks      []AdminDeckRow     `json:"recent_decks"`
+	FeedbackByType   []AdminTypeCount   `json:"feedback_by_type"`
+	DecksBySource    []AdminTypeCount   `json:"decks_by_source"`
+	QualityBreakdown []AdminQualityItem `json:"quality_breakdown"`
 }
 
 type DayStat struct {
 	Date  string `json:"date"`
+	Count int    `json:"count"`
+}
+
+type AdminUserRow struct {
+	ID         string `json:"id"`
+	Nickname   string `json:"nickname"`
+	InviteCode string `json:"invite_code"`
+	TokensUsed int    `json:"tokens_used"`
+	CreatedAt  string `json:"created_at"`
+}
+
+type AdminDeckRow struct {
+	ID         string `json:"id"`
+	Title      string `json:"title"`
+	SourceName string `json:"source_name"`
+	CardCount  int    `json:"card_count"`
+	CreatedAt  string `json:"created_at"`
+}
+
+type AdminTypeCount struct {
+	Type  string `json:"type"`
+	Count int    `json:"count"`
+}
+
+type AdminQualityItem struct {
+	Label string `json:"label"`
 	Count int    `json:"count"`
 }
 
@@ -62,6 +98,21 @@ func (h *Handler) AdminStats(w http.ResponseWriter, r *http.Request) {
 	// Daily active users (users with review records today)
 	h.DB.Raw(`SELECT COUNT(DISTINCT user_id) FROM review_records WHERE created_at::date = CURRENT_DATE`).Scan(&resp.DAU)
 
+	// Reviews submitted today
+	h.DB.Raw(`SELECT COUNT(*) FROM review_records WHERE created_at::date = CURRENT_DATE`).Scan(&resp.ReviewsToday)
+
+	// Feedback volume
+	h.DB.Raw(`SELECT COUNT(*) FROM card_feedbacks`).Scan(&resp.FeedbackTotal)
+
+	// Approximate low-quality cards using the same practical thresholds as the miniapp.
+	h.DB.Raw(`
+		SELECT COUNT(*) FROM cards
+		WHERE question = '' OR answer = ''
+			OR LENGTH(question) > 90
+			OR LENGTH(answer) > 220
+			OR LENGTH(answer) < 6
+	`).Scan(&resp.LowQualityCards)
+
 	// Daily new users for past 7 days
 	h.DB.Raw(`
 		SELECT d::date::text AS date, COALESCE(COUNT(u.id), 0) AS count
@@ -71,12 +122,76 @@ func (h *Handler) AdminStats(w http.ResponseWriter, r *http.Request) {
 		ORDER BY date
 	`).Scan(&resp.DailyNewUsers)
 
+	// Daily review activity for past 7 days
+	h.DB.Raw(`
+		SELECT d::date::text AS date, COALESCE(COUNT(r.id), 0) AS count
+		FROM generate_series(CURRENT_DATE - INTERVAL '6 days', CURRENT_DATE, '1 day') d
+		LEFT JOIN review_records r ON r.created_at::date = d::date
+		GROUP BY d::date
+		ORDER BY date
+	`).Scan(&resp.DailyReviews)
+
+	h.DB.Raw(`
+		SELECT id, COALESCE(NULLIF(nickname, ''), '闪卡用户') AS nickname,
+			COALESCE(invite_code, '') AS invite_code,
+			COALESCE(tokens_used, 0) AS tokens_used,
+			created_at::text AS created_at
+		FROM users
+		ORDER BY created_at DESC
+		LIMIT 8
+	`).Scan(&resp.RecentUsers)
+
+	h.DB.Raw(`
+		SELECT id, title, COALESCE(source_name, '') AS source_name,
+			COALESCE(card_count, 0) AS card_count,
+			created_at::text AS created_at
+		FROM decks
+		ORDER BY created_at DESC
+		LIMIT 8
+	`).Scan(&resp.RecentDecks)
+
+	h.DB.Raw(`
+		SELECT type, COUNT(*) AS count
+		FROM card_feedbacks
+		GROUP BY type
+		ORDER BY count DESC
+	`).Scan(&resp.FeedbackByType)
+
+	h.DB.Raw(`
+		SELECT COALESCE(NULLIF(source, ''), 'text') AS type, COUNT(*) AS count
+		FROM decks
+		GROUP BY source
+		ORDER BY count DESC
+	`).Scan(&resp.DecksBySource)
+
 	if resp.DailyNewUsers == nil {
 		resp.DailyNewUsers = []DayStat{}
+	}
+	if resp.DailyReviews == nil {
+		resp.DailyReviews = []DayStat{}
+	}
+	if resp.RecentUsers == nil {
+		resp.RecentUsers = []AdminUserRow{}
+	}
+	if resp.RecentDecks == nil {
+		resp.RecentDecks = []AdminDeckRow{}
+	}
+	if resp.FeedbackByType == nil {
+		resp.FeedbackByType = []AdminTypeCount{}
+	}
+	if resp.DecksBySource == nil {
+		resp.DecksBySource = []AdminTypeCount{}
+	}
+	resp.QualityBreakdown = []AdminQualityItem{
+		{Label: "健康卡片", Count: resp.TotalCards - resp.LowQualityCards},
+		{Label: "待优化", Count: resp.LowQualityCards},
 	}
 
 	writeJSON(w, 200, resp)
 }
+
+//go:embed admin_dashboard.html
+var adminDashboardHTML string
 
 // adminHTMLTemplate has __ADMIN_TOKEN__ placeholder for the password.
 const adminHTMLTemplate = `<!DOCTYPE html>
@@ -220,7 +335,7 @@ load();
 // AdminPage serves the admin dashboard HTML directly.
 func (h *Handler) AdminPage(w http.ResponseWriter, r *http.Request) {
 	cfg := config.Load()
-	html := strings.ReplaceAll(adminHTMLTemplate, "__ADMIN_TOKEN__", cfg.AdminPassword)
+	html := strings.ReplaceAll(adminDashboardHTML, "__ADMIN_TOKEN__", cfg.AdminPassword)
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Write([]byte(html))
 }

@@ -13,7 +13,8 @@ Page({
     submitFailed: false,
     charPercent: 0,
     canGenerate: false,
-    cardCountLabel: '约 300 张',
+    cardCount: 100,
+    cardCountLabel: '100 张',
     difficultyLabel: '中等',
     directionLabel: '概念理解 + 应用',
     otherSettingLabel: '标签、备注等',
@@ -65,10 +66,14 @@ Page({
   },
 
   chooseCardCount() {
-    const options = ['约 100 张', '约 300 张', '约 500 张', '自动识别'];
+    const options = ['50 张', '100 张', '200 张', '300 张'];
+    const counts = [50, 100, 200, 300];
     wx.showActionSheet({
       itemList: options,
-      success: (res) => this.setData({ cardCountLabel: options[res.tapIndex] })
+      success: (res) => this.setData({
+        cardCountLabel: options[res.tapIndex],
+        cardCount: counts[res.tapIndex]
+      })
     });
   },
 
@@ -246,7 +251,8 @@ Page({
       data: {
         title: deckTitle,
         text: this.data.text,
-        source_name: this.data.fileName || deckTitle
+        source_name: this.data.fileName || deckTitle,
+        card_count: this.data.cardCount
       },
       success: (res) => {
         this.setData({ generating: false, submitFailed: false });

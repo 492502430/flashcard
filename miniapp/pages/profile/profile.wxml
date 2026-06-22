@@ -58,7 +58,7 @@
         <text class="achievement-title">{{item.title}}</text>
         <text class="achievement-desc">{{item.description}}</text>
         <view class="achievement-lock-overlay" wx:if="{{!item.earned}}">
-          <view class="geo-close ach-lock-icon" style="color:#CBD5E1;"></view>
+          <view class="geo-close ach-lock-icon"></view>
         </view>
       </view>
     </view>
@@ -101,17 +101,17 @@
     </view>
   </view>
 
-  <view class="menu-card" style="margin-top: 24rpx;">
-    <view class="menu-item tappable" bindtap="showInvite">
+  <view class="menu-card menu-card-spaced">
+    <button class="menu-item share-menu-item tappable" open-type="share">
       <view class="menu-icon-wrap menu-icon-cyan">
         <view class="menu-geo menu-geo-gift"></view>
       </view>
       <view class="menu-item-body">
         <text class="menu-item-title">邀请好友</text>
-        <text class="menu-item-desc">分享邀请码给好友</text>
+        <text class="menu-item-desc">{{inviteCode ? '邀请码 ' + inviteCode : '分享邀请码给好友'}}</text>
       </view>
       <view class="geo-chevron-right"></view>
-    </view>
+    </button>
 
     <view class="menu-item tappable" bindtap="exportData">
       <view class="menu-icon-wrap menu-icon-red">
@@ -147,6 +147,6 @@
     </view>
   </view>
 
-  <text class="version-text">闪卡记忆 v1.0.0</text>
+  <view class="version-pill">闪卡记忆 v1.0.0</view>
   <view class="bottom-spacer"></view>
 </view>

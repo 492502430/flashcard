@@ -6,7 +6,8 @@
   </view>
 
   <view class="template-note">
-    <text class="note-text">📌 以上为示例模板，覆盖核心高频知识点。如需完整学习资料，请点击底部「导入资料」上传你自己的文件，AI 为你定制专属闪卡。</text>
+    <view class="note-icon"></view>
+    <text class="note-text">示例模板覆盖核心高频知识点。完整资料可在首页导入，AI 会生成专属闪卡。</text>
   </view>
 
   <block wx:for="{{categories}}" wx:key="category">
@@ -45,9 +46,7 @@
   </block>
 
   <view class="empty-state fade-in" wx:if="{{templates.length === 0 && categories.length === 0}}">
-    <view class="empty-state-geo">
-      <view class="geo-box-stack"><view class="geo-box"></view><view class="geo-box"></view><view class="geo-box"></view></view>
-    </view>
+    <view class="template-loader"></view>
     <text class="empty-state-title">加载中...</text>
   </view>
 

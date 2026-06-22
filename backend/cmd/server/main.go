@@ -73,7 +73,7 @@ func main() {
 	db.Exec(`ALTER TABLE cards ADD COLUMN IF NOT EXISTS document_name TEXT DEFAULT ''`)
 	log.Println("Database migrated")
 
-	h := handler.New(db)
+	h := handler.New(db, cfg.WxAppID, cfg.WxAppSecret)
 	r := chi.NewRouter()
 	r.Use(chimw.Logger, chimw.Recoverer, middleware.RequestLog)
 
@@ -109,6 +109,8 @@ func main() {
 		r.Post("/api/decks", h.CreateDeck)
 		r.Get("/api/decks", h.ListDecks)
 		r.Get("/api/decks/{id}", h.GetDeck)
+		r.Put("/api/decks/{id}", h.UpdateDeck)
+		r.Post("/api/decks/{id}/rename", h.UpdateDeck)
 		r.Get("/api/decks/{id}/review", h.GetDeckReview)
 		r.Delete("/api/decks/{id}", h.DeleteDeck)
 		r.Delete("/api/cards/{id}", h.DeleteCard)

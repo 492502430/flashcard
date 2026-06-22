@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/492502430/flashcard/backend/internal/ai"
 	"github.com/go-chi/chi/v5"
@@ -16,6 +17,11 @@ type CreateDeckRequest struct {
 	Title      string `json:"title"`
 	Text       string `json:"text"`
 	SourceName string `json:"source_name"`
+	CardCount  int    `json:"card_count"`
+}
+
+type UpdateDeckRequest struct {
+	Title string `json:"title"`
 }
 
 // CreateDeck creates a new deck. If text is provided, AI generates cards.
@@ -52,17 +58,21 @@ func (h *Handler) CreateDeck(w http.ResponseWriter, r *http.Request) {
 		if sourceName == "" {
 			sourceName = req.Title
 		}
-		go h.generateCardsAsync(deck.ID, userID, req.Text, sourceName)
+		cardCount := req.CardCount
+		if cardCount <= 0 {
+			cardCount = 25
+		}
+		go h.generateCardsAsync(deck.ID, userID, req.Text, sourceName, cardCount)
 	}
 
 	writeJSON(w, 201, deck)
 }
 
 // generateCardsAsync calls the AI service and inserts cards into the deck.
-func (h *Handler) generateCardsAsync(deckID, userID, text, sourceName string) {
+func (h *Handler) generateCardsAsync(deckID, userID, text, sourceName string, cardCount int) {
 	aiClient := ai.NewClient("http://localhost:8001")
 
-	result, err := aiClient.GenerateCards(text, deckID)
+	result, err := aiClient.GenerateCards(text, deckID, cardCount)
 	if err != nil {
 		log.Printf("AI generation failed for deck %s: %v", deckID, err)
 		return
@@ -142,6 +152,57 @@ func (h *Handler) GetDeck(w http.ResponseWriter, r *http.Request) {
 	h.DB.Raw(`SELECT id, question, answer, state, tags, document_name FROM cards WHERE deck_id = ? ORDER BY created_at`, deckID).Scan(&cards)
 
 	writeJSON(w, 200, map[string]interface{}{"deck": deck, "cards": cards})
+}
+
+// UpdateDeck updates deck metadata owned by the current user.
+func (h *Handler) UpdateDeck(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value("user_id").(string)
+	deckID := chi.URLParam(r, "id")
+
+	var req UpdateDeckRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, 400, "invalid request body")
+		return
+	}
+
+	title := strings.TrimSpace(req.Title)
+	if title == "" {
+		writeError(w, 400, "title is required")
+		return
+	}
+	if len([]rune(title)) > 80 {
+		writeError(w, 400, "title is too long")
+		return
+	}
+
+	var deck struct {
+		ID         string `json:"id"`
+		Title      string `json:"title"`
+		CardCount  int    `json:"card_count"`
+		SourceName string `json:"source_name"`
+	}
+
+	result := h.DB.Exec(`
+		UPDATE decks
+		SET title = ?, updated_at = NOW()
+		WHERE id = ? AND user_id = ?
+	`, title, deckID, userID)
+	if result.Error != nil {
+		writeError(w, 500, "failed to update deck")
+		return
+	}
+	if result.RowsAffected == 0 {
+		writeError(w, 404, "deck not found")
+		return
+	}
+
+	h.DB.Raw(`
+		SELECT id, title, card_count, source_name
+		FROM decks
+		WHERE id = ? AND user_id = ?
+	`, deckID, userID).Scan(&deck)
+
+	writeJSON(w, 200, deck)
 }
 
 // DeleteDeck deletes a deck and its cards.

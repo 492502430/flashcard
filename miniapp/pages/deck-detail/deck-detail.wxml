@@ -27,11 +27,12 @@
   </view>
 
   <view class="tabs">
-    <text class="active">卡片列表</text>
-    <text>统计</text>
-    <text>设置</text>
+    <text class="{{activeTab === 'cards' ? 'active' : ''}}" data-tab="cards" bindtap="setTab">卡片列表</text>
+    <text class="{{activeTab === 'stats' ? 'active' : ''}}" data-tab="stats" bindtap="setTab">统计</text>
+    <text class="{{activeTab === 'settings' ? 'active' : ''}}" data-tab="settings" bindtap="setTab">设置</text>
   </view>
 
+  <block wx:if="{{activeTab === 'cards'}}">
   <view class="filters">
     <text class="{{activeFilter === 'all' ? 'filter-active' : ''}}" data-filter="all" bindtap="setFilter">全部 {{cards.length}}</text>
     <text class="{{activeFilter === 'good' ? 'filter-active' : ''}}" data-filter="good" bindtap="setFilter">优秀 {{clearCount}}</text>
@@ -63,8 +64,12 @@
           </view>
           <text class="quality-chip {{card.qualityClass}}">{{card.qualityLabel}}</text>
           <view class="card-actions">
-            <view class="action-edit tappable" bindtap="openEditModal" data-id="{{card.id}}" data-question="{{card.question}}" data-answer="{{card.answer}}">编辑</view>
-            <view class="action-delete tappable" bindtap="confirmDeleteCard" data-id="{{card.id}}">删除</view>
+            <view class="card-action-btn edit tappable" bindtap="openEditModal" data-id="{{card.id}}" data-question="{{card.question}}" data-answer="{{card.answer}}">
+              <view class="action-pencil"></view>
+            </view>
+            <view class="card-action-btn delete tappable" bindtap="confirmDeleteCard" data-id="{{card.id}}">
+              <view class="action-trash"></view>
+            </view>
           </view>
         </view>
       </view>
@@ -73,6 +78,27 @@
 
   <view class="empty-filter" wx:if="{{cards.length > 0 && documentGroups.length === 0}}">
     当前筛选下没有卡片
+  </view>
+  </block>
+
+  <view class="stats-panel" wx:elif="{{activeTab === 'stats'}}">
+    <view><text>{{qualityScoreText}}</text><text>卡片质量分</text></view>
+    <view><text>{{clearCount}}</text><text>优秀卡片</text></view>
+    <view><text>{{lowQualityCount}}</text><text>需处理</text></view>
+    <view><text>{{documentCount}}</text><text>文档分组</text></view>
+  </view>
+
+  <view class="settings-panel" wx:else>
+    <view class="setting-editor">
+      <text class="setting-label">牌组名称</text>
+      <view class="deck-title-editor">
+        <input value="{{deckTitleDraft}}" bindinput="onDeckTitleInput" bindfocus="onDeckTitleFocus" bindblur="onDeckTitleBlur" placeholder="输入牌组名称" maxlength="80"/>
+        <button bindtap="saveDeckTitle" disabled="{{deckSaving}}">{{deckSaving ? '保存中' : '保存'}}</button>
+      </view>
+    </view>
+    <view class="setting-line"><text>来源文档</text><text>{{deck.source_name || '未设置'}}</text></view>
+    <view class="setting-line"><text>主要标签</text><text>{{deckTagLabel}}</text></view>
+    <button class="danger-line" bindtap="confirmDelete">删除牌组</button>
   </view>
 
   <view class="generating-state" wx:if="{{cards.length === 0 && generating}}">
@@ -87,9 +113,9 @@
     <text class="empty-state-desc">这个牌组还没有可复习的卡片</text>
   </view>
 
-  <button class="bulk-btn" wx:if="{{cards.length > 0}}">批量管理卡片</button>
-  <button class="optimize-btn" wx:if="{{optimizeCount > 0 || duplicateCount > 0}}" bindtap="aiOptimizeCards">
-    ✦ AI 一键优化 {{optimizeCount + duplicateCount}} 张卡片
+  <button class="bulk-btn" wx:if="{{activeTab === 'cards' && cards.length > 0}}">批量管理卡片</button>
+  <button class="optimize-btn" wx:if="{{activeTab === 'cards' && lowQualityCount > 0}}" bindtap="aiOptimizeCards">
+    ✦ AI 一键优化 {{lowQualityCount}} 张卡片
   </button>
   <view class="bottom-spacer"></view>
 </view>

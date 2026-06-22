@@ -14,6 +14,19 @@ func (h *Handler) DeleteCard(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value("user_id").(string)
 	cardID := chi.URLParam(r, "id")
 
+	var deckID string
+	h.DB.Raw(`
+		SELECT cards.deck_id
+		FROM cards
+		JOIN decks ON cards.deck_id = decks.id
+		WHERE cards.id = ? AND decks.user_id = ?
+	`, cardID, userID).Scan(&deckID)
+
+	if deckID == "" {
+		writeError(w, 404, "card not found")
+		return
+	}
+
 	result := h.DB.Exec(`
 		DELETE FROM cards
 		USING decks
@@ -28,7 +41,7 @@ func (h *Handler) DeleteCard(w http.ResponseWriter, r *http.Request) {
 	// Decrement deck card_count
 	h.DB.Exec(`UPDATE decks SET card_count = GREATEST(card_count - 1, 0),
 		updated_at = NOW()
-		WHERE id IN (SELECT deck_id FROM cards WHERE id = ?)`, cardID)
+		WHERE id = ?`, deckID)
 
 	writeJSON(w, 200, map[string]string{"status": "deleted"})
 }
@@ -173,9 +186,9 @@ func (h *Handler) SubmitCardFeedback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	validTypes := map[string]bool{
-		"content_error":     true,
-		"answer_too_brief":  true,
-		"question_unclear":  true,
+		"content_error":    true,
+		"answer_too_brief": true,
+		"question_unclear": true,
 	}
 	if !validTypes[req.Type] {
 		writeError(w, 400, "invalid feedback type: must be content_error, answer_too_brief, or question_unclear")

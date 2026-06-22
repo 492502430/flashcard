@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>闪卡记忆管理后台</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+  background: #F6F7FB;
+  color: #111827;
+}
+button, input { font: inherit; }
+.app {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 244px 1fr;
+}
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 22px 18px;
+  background: #FFFFFF;
+  border-right: 1px solid #E7EAF2;
+}
+.brand {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #5B4BDB, #7C3AED);
+  color: #FFFFFF;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+}
+.brand strong { display: block; font-size: 16px; }
+.brand span { display: block; margin-top: 2px; font-size: 12px; color: #8A94A6; }
+.nav {
+  display: grid;
+  gap: 8px;
+}
+.nav button {
+  height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #4B5563;
+  text-align: left;
+  font-weight: 700;
+  cursor: pointer;
+}
+.nav button.active {
+  color: #5B4BDB;
+  background: #F0EFFF;
+}
+.sidebar-foot {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #F8FAFC;
+  border: 1px solid #EEF2F7;
+  font-size: 12px;
+  color: #64748B;
+  line-height: 1.5;
+}
+.main {
+  min-width: 0;
+  padding: 26px 30px 40px;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.title h1 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.2;
+}
+.title p {
+  margin: 8px 0 0;
+  color: #64748B;
+  font-size: 14px;
+}
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.search {
+  width: 260px;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid #E7EAF2;
+  border-radius: 14px;
+  background: #FFFFFF;
+  outline: none;
+}
+.refresh-btn {
+  height: 42px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 14px;
+  color: #FFFFFF;
+  background: linear-gradient(180deg, #6554F1, #4C3DDA);
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(82, 65, 220, 0.18);
+}
+.panel { display: none; }
+.panel.active { display: block; }
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.kpi {
+  min-height: 126px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #FFFFFF;
+  border: 1px solid #E7EAF2;
+  box-shadow: 0 8px 28px rgba(31, 41, 55, 0.06);
+}
+.kpi .label {
+  color: #64748B;
+  font-size: 13px;
+  font-weight: 700;
+}
+.kpi .value {
+  margin-top: 12px;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+.kpi .hint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #8A94A6;
+}
+.kpi.good .value { color: #059669; }
+.kpi.warn .value { color: #F59E0B; }
+.kpi.primary .value { color: #5B4BDB; }
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1.35fr 0.9fr;
+  gap: 18px;
+}
+.card {
+  background: #FFFFFF;
+  border: 1px solid #E7EAF2;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(31, 41, 55, 0.06);
+  overflow: hidden;
+}
+.card-head {
+  min-height: 58px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #F0F2F7;
+}
+.card-head h2 {
+  margin: 0;
+  font-size: 16px;
+}
+.card-head span {
+  color: #8A94A6;
+  font-size: 12px;
+}
+.chart {
+  height: 260px;
+  padding: 14px 18px 18px;
+}
+.bar-chart {
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  align-items: end;
+  gap: 10px;
+}
+.bar-wrap {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  gap: 8px;
+}
+.bar {
+  width: 100%;
+  max-width: 42px;
+  min-height: 6px;
+  border-radius: 10px 10px 4px 4px;
+  background: linear-gradient(180deg, #6D5DF2, #A78BFA);
+}
+.bar.review {
+  background: linear-gradient(180deg, #20B970, #86EFAC);
+}
+.bar-label {
+  font-size: 11px;
+  color: #8A94A6;
+}
+.quality-box {
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+}
+.quality-ring {
+  height: 150px;
+  border-radius: 20px;
+  background:
+    conic-gradient(#20B970 var(--score), #EEF2F7 0);
+  display: grid;
+  place-items: center;
+}
+.quality-ring div {
+  width: 106px;
+  height: 106px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.quality-ring strong { font-size: 26px; color: #059669; }
+.quality-ring span { display: block; color: #64748B; font-size: 12px; }
+.split-list {
+  display: grid;
+  gap: 10px;
+}
+.split-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 13px;
+}
+.meter {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: #EEF2F7;
+  overflow: hidden;
+}
+.meter i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #5B4BDB;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th {
+  text-align: left;
+  padding: 12px 18px;
+  color: #8A94A6;
+  font-size: 12px;
+  border-bottom: 1px solid #F0F2F7;
+}
+.table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid #F8FAFC;
+  font-size: 13px;
+  vertical-align: top;
+}
+.table tr:last-child td { border-bottom: 0; }
+.strong { font-weight: 800; color: #111827; }
+.muted { color: #8A94A6; }
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #F0EFFF;
+  color: #5B4BDB;
+  font-size: 12px;
+  font-weight: 800;
+}
+.pill.green {
+  background: #ECFDF5;
+  color: #059669;
+}
+.roadmap {
+  display: grid;
+  gap: 12px;
+}
+.roadmap-item {
+  padding: 16px;
+  border-radius: 16px;
+  background: #FFFFFF;
+  border: 1px solid #E7EAF2;
+}
+.roadmap-item strong { display: block; margin-bottom: 6px; }
+.roadmap-item p { margin: 0; color: #64748B; font-size: 13px; line-height: 1.6; }
+.empty {
+  padding: 30px;
+  color: #8A94A6;
+  text-align: center;
+}
+@media (max-width: 980px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; border-right: 0; border-bottom: 1px solid #E7EAF2; }
+  .sidebar-foot { position: static; margin-top: 18px; }
+  .nav { grid-template-columns: repeat(3, 1fr); }
+  .main { padding: 22px 18px 34px; }
+  .topbar { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .search { width: 100%; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .grid-2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">AI</div>
+      <div><strong>闪卡记忆后台</strong><span>AI 学习产品运营台</span></div>
+    </div>
+    <nav class="nav">
+      <button class="active" data-panel="overview">总览</button>
+      <button data-panel="quality">AI 质量</button>
+      <button data-panel="content">内容管理</button>
+      <button data-panel="users">用户增长</button>
+      <button data-panel="plan">产品规划</button>
+    </nav>
+    <div class="sidebar-foot">
+      产品原则：先保证生成质量和复习留存，再扩大模板库和邀请增长。
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="topbar">
+      <div class="title">
+        <h1 id="pageTitle">运营总览</h1>
+        <p id="pageSub">监控用户、牌组、AI 生成质量和复习活跃。</p>
+      </div>
+      <div class="top-actions">
+        <input id="search" class="search" placeholder="搜索用户、牌组或反馈类型">
+        <button class="refresh-btn" onclick="load()">刷新数据</button>
+      </div>
+    </section>
+
+    <section id="overview" class="panel active">
+      <div class="kpis" id="kpis"></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>近 7 日新增用户</h2><span id="updatedAt">Loading</span></div>
+          <div class="chart"><div class="bar-chart" id="userChart"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>AI 卡片质量</h2><span>按规则估算</span></div>
+          <div class="quality-box" id="qualityBox"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quality" class="panel">
+      <div class="kpis" id="qualityKpis"></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>近 7 日复习提交</h2><span>判断留存与学习强度</span></div>
+          <div class="chart"><div class="bar-chart" id="reviewChart"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>用户反馈类型</h2><span>生成质量问题入口</span></div>
+          <div id="feedbackList" class="quality-box"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="content" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>最近生成牌组</h2><span>用于追踪导入质量</span></div>
+          <table class="table">
+            <thead><tr><th>牌组</th><th>来源</th><th>卡片数</th><th>创建时间</th></tr></thead>
+            <tbody id="deckRows"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>牌组来源</h2><span>判断上传/模板占比</span></div>
+          <div id="sourceList" class="quality-box"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="users" class="panel">
+      <div class="card">
+        <div class="card-head"><h2>最近用户</h2><span>邀请码、Token 消耗、注册时间</span></div>
+        <table class="table">
+          <thead><tr><th>用户</th><th>邀请码</th><th>Token</th><th>注册时间</th></tr></thead>
+          <tbody id="userRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="plan" class="panel">
+      <div class="roadmap">
+        <div class="roadmap-item"><strong>1. AI 生成质量闭环</strong><p>为每张卡保存来源段落、生成理由和质量评分；后台聚合“答案过长、问题泛、重复疑似”等问题，形成可优化队列。</p></div>
+        <div class="roadmap-item"><strong>2. 模板库运营</strong><p>后台支持模板牌组上架、分类、封面、推荐位和导入转化统计，优先沉淀高频学习场景。</p></div>
+        <div class="roadmap-item"><strong>3. 用户增长与邀请</strong><p>跟踪邀请人数、被邀请用户留存和生成牌组数，判断分享是否真的带来学习行为。</p></div>
+        <div class="roadmap-item"><strong>4. 风控与成本</strong><p>监控 token 消耗、生成失败率、单用户异常导入量，后续可接入额度、会员和内容审核。</p></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+var TOKEN = "__ADMIN_TOKEN__";
+var state = null;
+var panelCopy = {
+  overview: ["运营总览", "监控用户、牌组、AI 生成质量和复习活跃。"],
+  quality: ["AI 质量", "把用户反馈和低质量卡片集中成可处理队列。"],
+  content: ["内容管理", "查看新生成牌组、来源分布和模板运营方向。"],
+  users: ["用户增长", "观察新用户、邀请码和 token 消耗。"],
+  plan: ["产品规划", "从管理后台视角梳理下一阶段产品能力。"]
+};
+
+function fmt(n) { return Number(n || 0).toLocaleString(); }
+function shortDate(s) { return s ? String(s).slice(0, 16).replace("T", " ") : "-"; }
+function pct(part, total) { return total ? Math.round(part / total * 100) : 0; }
+function escapeHtml(v) {
+  return String(v == null ? "" : v).replace(/[&<>"']/g, function(c) {
+    return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+  });
+}
+
+function renderKpis(d) {
+  var qualityRate = pct((d.total_cards || 0) - (d.low_quality_cards || 0), d.total_cards || 0);
+  document.getElementById("kpis").innerHTML =
+    card("今日新增", d.users_today, "新注册用户", "primary") +
+    card("总用户", d.total_users, "累计用户规模", "") +
+    card("总卡片", d.total_cards, "用户生成与模板卡片", "good") +
+    card("质量健康度", qualityRate + "%", "按卡片长度/完整度估算", qualityRate >= 80 ? "good" : "warn");
+  document.getElementById("qualityKpis").innerHTML =
+    card("今日复习", d.reviews_today, "用户完成的评分次数", "good") +
+    card("今日活跃", d.dau, "有复习记录的用户", "primary") +
+    card("反馈总量", d.feedback_total, "用户上报的卡片问题", "warn") +
+    card("待优化卡", d.low_quality_cards, "过长/过短/空内容", "warn");
+}
+
+function card(label, value, hint, tone) {
+  return '<div class="kpi ' + (tone || "") + '"><div class="label">' + label + '</div><div class="value">' + fmt(value).replace("NaN", value) + '</div><div class="hint">' + hint + '</div></div>';
+}
+
+function renderBars(id, rows, cls) {
+  var max = Math.max.apply(null, [1].concat((rows || []).map(function(r){ return r.count || 0; })));
+  document.getElementById(id).innerHTML = (rows || []).map(function(r) {
+    var h = Math.max(6, Math.round((r.count || 0) / max * 190));
+    return '<div class="bar-wrap"><div class="bar ' + (cls || "") + '" style="height:' + h + 'px"></div><div class="bar-label">' + escapeHtml(String(r.date || "").slice(5)) + '</div></div>';
+  }).join("");
+}
+
+function renderQuality(d) {
+  var healthy = Math.max(0, (d.total_cards || 0) - (d.low_quality_cards || 0));
+  var score = pct(healthy, d.total_cards || 0);
+  document.getElementById("qualityBox").innerHTML =
+    '<div class="quality-ring" style="--score:' + score + '%"><div><strong>' + score + '%</strong><span>健康卡片</span></div></div>' +
+    '<div class="split-list">' +
+    split("健康卡片", healthy, d.total_cards, "#20B970") +
+    split("待优化", d.low_quality_cards, d.total_cards, "#F59E0B") +
+    '</div>';
+}
+
+function split(label, count, total, color) {
+  return '<div class="split-row"><span>' + label + '</span><div class="meter"><i style="width:' + pct(count, total) + '%;background:' + color + '"></i></div><strong>' + fmt(count) + '</strong></div>';
+}
+
+function renderTypeList(id, rows, emptyText) {
+  var total = (rows || []).reduce(function(s, r){ return s + (r.count || 0); }, 0);
+  document.getElementById(id).innerHTML = rows && rows.length ? rows.map(function(r) {
+    return split(labelFor(r.type), r.count, total, "#5B4BDB");
+  }).join("") : '<div class="empty">' + emptyText + '</div>';
+}
+
+function labelFor(type) {
+  var map = {
+    content_error: "内容有误",
+    answer_too_brief: "答案太简略",
+    question_unclear: "问题不清晰",
+    template: "模板导入",
+    text: "文本导入"
+  };
+  return map[type] || type || "未分类";
+}
+
+function renderTables(d) {
+  document.getElementById("deckRows").innerHTML = d.recent_decks && d.recent_decks.length ? d.recent_decks.map(function(row) {
+    return '<tr><td><div class="strong">' + escapeHtml(row.title) + '</div><div class="muted">' + escapeHtml(row.id) + '</div></td><td>' + escapeHtml(row.source_name || "未设置") + '</td><td><span class="pill green">' + fmt(row.card_count) + ' 张</span></td><td class="muted">' + shortDate(row.created_at) + '</td></tr>';
+  }).join("") : '<tr><td colspan="4" class="empty">暂无牌组</td></tr>';
+
+  document.getElementById("userRows").innerHTML = d.recent_users && d.recent_users.length ? d.recent_users.map(function(row) {
+    return '<tr><td><div class="strong">' + escapeHtml(row.nickname) + '</div><div class="muted">' + escapeHtml(row.id) + '</div></td><td><span class="pill">' + escapeHtml(row.invite_code || "-") + '</span></td><td>' + fmt(row.tokens_used) + '</td><td class="muted">' + shortDate(row.created_at) + '</td></tr>';
+  }).join("") : '<tr><td colspan="4" class="empty">暂无用户</td></tr>';
+}
+
+function render(d) {
+  state = d;
+  renderKpis(d);
+  renderBars("userChart", d.daily_new_users || [], "");
+  renderBars("reviewChart", d.daily_reviews || [], "review");
+  renderQuality(d);
+  renderTypeList("feedbackList", d.feedback_by_type || [], "还没有用户质量反馈");
+  renderTypeList("sourceList", d.decks_by_source || [], "暂无牌组来源数据");
+  renderTables(d);
+  document.getElementById("updatedAt").textContent = "更新于 " + new Date().toLocaleTimeString();
+}
+
+async function load() {
+  var res = await fetch("/api/admin/stats", { headers: { "X-Admin-Token": TOKEN } });
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  render(await res.json());
+}
+
+document.querySelectorAll(".nav button").forEach(function(btn) {
+  btn.addEventListener("click", function() {
+    document.querySelectorAll(".nav button").forEach(function(b){ b.classList.remove("active"); });
+    document.querySelectorAll(".panel").forEach(function(p){ p.classList.remove("active"); });
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.panel).classList.add("active");
+    document.getElementById("pageTitle").textContent = panelCopy[btn.dataset.panel][0];
+    document.getElementById("pageSub").textContent = panelCopy[btn.dataset.panel][1];
+  });
+});
+
+document.getElementById("search").addEventListener("input", function(e) {
+  var q = e.target.value.trim().toLowerCase();
+  if (!state) return;
+  document.querySelectorAll("tbody tr").forEach(function(tr) {
+    tr.style.display = tr.textContent.toLowerCase().indexOf(q) >= 0 ? "" : "none";
+  });
+});
+
+load().catch(function(err) {
+  document.getElementById("kpis").innerHTML = '<div class="card empty">加载失败：' + escapeHtml(err.message) + '</div>';
+});
+setInterval(load, 30000);
+</script>
+</body>
+</html>

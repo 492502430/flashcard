@@ -49,8 +49,8 @@
       <view><text>新建牌组</text><text>空白牌组</text></view>
     </view>
     <view class="quick-action tappable" bindtap="startReview">
-      <view class="quick-icon quick-blue"><view class="plan-icon-text">FSRS</view></view>
-      <view><text>智能复习</text><text>开始今日复习</text></view>
+      <view class="quick-icon quick-blue"><view class="review-spark"></view></view>
+      <view><text>智能复习</text><text>今日复习</text></view>
     </view>
   </view>
 
@@ -70,7 +70,7 @@
         <text>{{item.card_count}} 卡</text>
       </view>
     </view>
-    <view class="recent-row muted" wx:if="{{readyDecks.length === 0}}">
+    <view class="recent-row muted tappable" wx:if="{{readyDecks.length === 0}}" bindtap="goCreate">
       <view class="file-badge pdf">AI</view>
       <view class="recent-main">
         <text class="recent-title">导入第一份资料</text>

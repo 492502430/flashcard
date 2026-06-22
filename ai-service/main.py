@@ -26,6 +26,7 @@ client = OpenAI(api_key=_load_key(), base_url="https://api.deepseek.com/v1")
 class GenerateRequest(BaseModel):
     text: str
     deck_id: str
+    card_count: int = 25
 
 class Card(BaseModel):
     q: str
@@ -37,13 +38,17 @@ class GenerateResponse(BaseModel):
     cards: list[Card]
     count: int
 
-PROMPT = """你是一个教育专家。请根据以下文本生成闪卡（问答题卡片）。
+PROMPT = """你是一个严谨的学习资料整理专家。请根据以下文本生成 {card_count} 张高质量闪卡（问答题卡片）。
 
 规则：
-1. 只提取文本中的核心知识点和关键概念，忽略铺垫和废话
-2. 每张卡一个问题，答案简洁但完整
-3. 一般生成 8-20 张卡片，质量优先，不要凑数
-4. 返回 JSON 数组：每项必须包含 q（问题）、a（答案）、tags（标签数组）三个字段，字段名必须是英文 q、a、tags
+1. 必须只依据原文内容生成，不要补充原文没有的信息，不要编造例子、数字、结论或定义。
+2. 优先选择真正值得记忆的重点：核心概念、定义、公式、步骤、条件、对比关系、原因结果、易混点、考试/工作高频点。
+3. 每张卡只考一个知识点；问题要具体，避免“介绍一下/谈谈/是什么内容”这类泛问题。
+4. 答案要简洁但足够完整，适合主动回忆；长答案请压缩成 2-4 个关键要点。
+5. 避免重复卡片；相近知识点要合并或改成对比题。
+6. 尽量接近用户要求的数量：目标是 {card_count} 张；如果原文有效信息不足，可以少量减少，但不要自行限制为 25 张。
+7. tags 应提取自原文主题或章节名，优先使用 1-3 个短标签。
+8. 返回 JSON 数组：每项必须包含 q（问题）、a（答案）、tags（标签数组）三个字段，字段名必须是英文 q、a、tags。
 
 文本：
 {text}
@@ -58,16 +63,17 @@ def health():
 def generate(req: GenerateRequest):
     if not req.text or len(req.text) < 50:
         raise HTTPException(400, f"text too short (min 50 chars, got {len(req.text)})")
+    card_count = max(5, min(req.card_count or 25, 300))
 
     try:
         response = client.chat.completions.create(
             model="deepseek-chat",
             messages=[
-                {"role": "system", "content": PROMPT},
+                {"role": "system", "content": PROMPT.format(card_count=card_count, text=req.text)},
                 {"role": "user", "content": req.text},
             ],
             temperature=0.3,
-            max_tokens=2000,
+            max_tokens=max(3000, min(12000, card_count * 120)),
         )
         content = response.choices[0].message.content
         cards = json.loads(content)

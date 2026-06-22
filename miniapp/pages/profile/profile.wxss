@@ -130,12 +130,22 @@
   overflow: hidden;
   box-shadow: var(--shadow-card);
 }
+.menu-card-spaced {
+  margin-top: 24rpx;
+}
 .menu-item {
   display: flex;
   align-items: center;
   padding: 28rpx;
   border-bottom: 1rpx solid #FAF5FF;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.share-menu-item {
+  width: 100%;
+  text-align: left;
+  border-radius: 0;
+  background: #FFFFFF;
+  line-height: 1.5;
 }
 .menu-item:last-child {
   border-bottom: none;
@@ -281,12 +291,16 @@
 }
 
 /* Version */
-.version-text {
-  display: block;
-  text-align: center;
+.version-pill {
+  width: 240rpx;
+  margin: 32rpx auto 0;
+  padding: 10rpx 22rpx;
+  border-radius: 999rpx;
+  background: rgba(255,255,255,0.72);
+  border: 1rpx solid var(--color-border);
+  color: var(--color-text-muted);
   font-size: 22rpx;
-  color: #CBD5E1;
-  margin-top: 40rpx;
+  line-height: 1.2;
 }
 
 /* ============================================
@@ -364,6 +378,7 @@
 .ach-lock-icon {
   width: 24rpx;
   height: 24rpx;
+  color: #CBD5E1;
 }
 
 /* Achievement geometric icons */

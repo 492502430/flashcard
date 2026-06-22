@@ -8,12 +8,16 @@ Page({
     totalCards: 0,
     reviewedTotal: 0,
     reviewReminder: false,
-    achievements: []
+    achievements: [],
+    inviteCode: '',
+    invitedCount: 0
   },
 
   onShow() {
     this.loadUserData();
     this.loadAchievements();
+    this.loadInviteInfo(false);
+    wx.showShareMenu({ withShareTicket: true, menus: ['shareAppMessage'] });
     // Load reminder preference
     const reviewReminder = wx.getStorageSync('reviewReminder') || false;
     this.setData({ reviewReminder });
@@ -138,55 +142,77 @@ Page({
     });
   },
 
-  showInvite() {
-    wx.showLoading({ title: '加载中...', mask: true });
+  loadInviteInfo(showErrors) {
     wx.request({
       url: app.globalData.apiBase + '/api/invite/my-code',
       header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
       success: (res) => {
-        wx.hideLoading();
         const inviteCode = (res.data && res.data.invite_code) || '';
         if (!inviteCode) {
-          wx.showToast({ title: '获取邀请码失败，请稍后重试', icon: 'none' });
+          if (showErrors) wx.showToast({ title: '获取邀请码失败，请稍后重试', icon: 'none' });
           return;
         }
 
-        // Wrap second request inside success of first — only fetch stats if we got the invite code
+        this.setData({ inviteCode });
         wx.request({
           url: app.globalData.apiBase + '/api/invite/stats',
           header: { Authorization: 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')) },
           success: (statsRes) => {
             const invitedCount = (statsRes.data && statsRes.data.invited_count) || 0;
-            const shareText = '来闪卡记忆一起高效学习吧！\n我的邀请码：' + inviteCode + '\n已邀请 ' + invitedCount + ' 位好友加入';
-
-            wx.showModal({
-              title: '邀请好友',
-              content: shareText,
-              confirmText: '复制邀请语',
-              cancelText: '关闭',
-              success: (modalRes) => {
-                if (modalRes.confirm) {
-                  wx.setClipboardData({
-                    data: shareText,
-                    success: () => {
-                      wx.showToast({ title: '已复制到剪贴板', icon: 'success' });
-                    }
-                  });
-                }
-              }
-            });
+            this.setData({ invitedCount });
           },
           fail: (err) => {
             console.error('加载邀请统计失败:', err);
-            wx.showToast({ title: '加载邀请统计失败: ' + (err.errMsg || '网络异常'), icon: 'none', duration: 2500 });
+            if (showErrors) wx.showToast({ title: '加载邀请统计失败: ' + (err.errMsg || '网络异常'), icon: 'none', duration: 2500 });
           }
         });
       },
       fail: (err) => {
-        wx.hideLoading();
         console.error('获取邀请码失败:', err);
-        wx.showToast({ title: '获取邀请码失败: ' + (err.errMsg || '网络异常，请检查网络后重试'), icon: 'none', duration: 2500 });
+        if (showErrors) wx.showToast({ title: '获取邀请码失败: ' + (err.errMsg || '网络异常，请检查网络后重试'), icon: 'none', duration: 2500 });
       }
     });
+  },
+
+  showInvite() {
+    const inviteCode = this.data.inviteCode;
+    if (!inviteCode) {
+      wx.showLoading({ title: '加载中...', mask: true });
+      this.loadInviteInfo(true);
+      setTimeout(() => wx.hideLoading(), 800);
+      return;
+    }
+
+    const shareText = '来闪卡记忆一起高效学习吧！\n我的邀请码：' + inviteCode + '\n已邀请 ' + this.data.invitedCount + ' 位好友加入';
+    wx.showActionSheet({
+      itemList: ['复制邀请语', '查看邀请码'],
+      success: (res) => {
+        if (res.tapIndex === 0) {
+          wx.setClipboardData({
+            data: shareText,
+            success: () => wx.showToast({ title: '已复制', icon: 'success' })
+          });
+        } else {
+          wx.showModal({
+            title: '我的邀请码',
+            content: inviteCode,
+            confirmText: '复制',
+            success: (modalRes) => {
+              if (modalRes.confirm) {
+                wx.setClipboardData({ data: inviteCode });
+              }
+            }
+          });
+        }
+      }
+    });
+  },
+
+  onShareAppMessage() {
+    const inviteCode = this.data.inviteCode || 'FLASH';
+    return {
+      title: '来闪卡记忆一起高效学习吧',
+      path: '/pages/onboard/onboard?invite_code=' + encodeURIComponent(inviteCode)
+    };
   }
 });

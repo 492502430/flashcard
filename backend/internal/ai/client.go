@@ -38,10 +38,11 @@ func NewClient(baseURL string) *Client {
 }
 
 // GenerateCards calls the AI service to generate flashcards from text.
-func (c *Client) GenerateCards(text, deckID string) (*GenerateResponse, error) {
-	body := map[string]string{
-		"text":    text,
-		"deck_id": deckID,
+func (c *Client) GenerateCards(text, deckID string, cardCount int) (*GenerateResponse, error) {
+	body := map[string]interface{}{
+		"text":       text,
+		"deck_id":    deckID,
+		"card_count": cardCount,
 	}
 	payload, _ := json.Marshal(body)
 
