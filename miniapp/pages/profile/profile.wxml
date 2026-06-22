@@ -58,7 +58,7 @@
     </view>
   </view>
 
-  <view class="menu-card">
+  <view class="menu-card" style="margin-top:24rpx">
     <button class="menu-item share-menu-item tappable" open-type="share">
       <view class="menu-icon-wrap menu-icon-cyan"><view class="menu-geo menu-geo-gift"></view></view>
       <view class="menu-item-body"><text class="menu-item-title">邀请好友</text><text class="menu-item-desc">{{inviteCode ? '邀请码 ' + inviteCode : '分享邀请码给好友'}}</text></view>
