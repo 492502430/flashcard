@@ -1,124 +1,43 @@
-<!-- profile.wxml — 个人中心 -->
 <view class="page">
   <view class="user-hero">
     <view class="user-hero-glow"></view>
-    <view class="user-avatar-wrap">
-      <button class="user-avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-        <image wx:if="{{avatarUrl}}" class="user-avatar-img" src="{{avatarUrl}}" mode="aspectFill"></image>
-        <text wx:else class="user-avatar-text">{{userInitial}}</text>
+    <view class="user-hero-content">
+      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill"/>
+        <view wx:else class="avatar-empty">
+          <view class="geo-camera"></view>
+        </view>
       </button>
-    </view>
-    <input class="user-name-input" type="nickname" placeholder="请输入昵称" value="{{nickname}}" bindblur="onNicknameBlur"/>
-    <view wx:if="{{nickname === '闪卡用户'}}" style="text-align:center;margin-top:12rpx;">
-      <text style="font-size:22rpx;color:#9CA3AF;">点击头像和昵称即可设置</text>
-    </view>
-
-    <view class="user-stats">
-      <view class="user-stat">
-        <text class="user-stat-num">{{totalDecks}}</text>
-        <text class="user-stat-label">牌组</text>
-      </view>
-      <view class="user-stat-divider"></view>
-      <view class="user-stat">
-        <text class="user-stat-num">{{totalCards}}</text>
-        <text class="user-stat-label">卡片</text>
-      </view>
-      <view class="user-stat-divider"></view>
-      <view class="user-stat">
-        <text class="user-stat-num">{{reviewedTotal}}</text>
-        <text class="user-stat-label">已复习</text>
-      </view>
+      <input class="nickname-input" type="nickname" placeholder="点击设置昵称" value="{{nickname}}" bindblur="onNicknameBlur"/>
     </view>
   </view>
 
-  <view class="achievements-card">
-    <view class="section-header">
-      <text class="section-title">成就徽章</text>
-    </view>
-    <view class="achievements-grid">
-      <view class="achievement-item {{item.earned ? 'achievement-earned' : 'achievement-locked'}}" wx:for="{{achievements}}" wx:key="key">
-        <view class="achievement-icon">
-          <view wx:if="{{item.icon === 'trophy'}}" class="ach-geo ach-trophy"></view>
-          <view wx:elif="{{item.icon === 'star'}}" class="ach-geo ach-star"></view>
-          <view wx:elif="{{item.icon === 'diamond'}}" class="ach-geo ach-diamond"></view>
-          <view wx:elif="{{item.icon === 'fire'}}" class="ach-geo ach-fire"></view>
-          <view wx:elif="{{item.icon === 'streak'}}" class="ach-geo ach-streak"></view>
-          <view wx:elif="{{item.icon === 'crown'}}" class="ach-geo ach-crown"></view>
-          <view wx:else class="ach-geo ach-star"></view>
-        </view>
-        <text class="achievement-title">{{item.title}}</text>
-        <text class="achievement-desc">{{item.description}}</text>
-        <view class="achievement-lock-overlay" wx:if="{{!item.earned}}">
-          <view class="geo-close ach-lock-icon" style="color:#CBD5E1;"></view>
-        </view>
-      </view>
-    </view>
+  <view class="user-stats">
+    <view class="user-stat"><text class="user-stat-num">{{totalDecks}}</text><text class="user-stat-label">牌组</text></view>
+    <view class="user-stat"><text class="user-stat-num">{{totalCards}}</text><text class="user-stat-label">卡片</text></view>
+    <view class="user-stat"><text class="user-stat-num">{{reviewedTotal}}</text><text class="user-stat-label">已复习</text></view>
   </view>
 
   <view class="menu-card">
-    <view class="menu-item">
-      <view class="menu-icon-wrap menu-icon-amber">
-        <view class="menu-geo menu-geo-bell-clock"></view>
-      </view>
-      <view class="menu-item-body">
-        <text class="menu-item-title">每日复习提醒</text>
-        <text class="menu-item-desc">{{reviewReminder ? '每天 20:00 提醒' : '定时推送复习通知'}}</text>
-      </view>
-      <switch class="menu-switch" checked="{{reviewReminder}}" bindchange="toggleReviewReminder" color="#7C3AED"/>
+    <view class="menu-item" wx:for="{{achievements}}" wx:key="key">
+      <text>{{item.icon || '🏆'}} {{item.earned ? item.title : '🔒 ' + item.title}}</text>
+      <text>{{item.description}}</text>
     </view>
-    <view class="menu-item tappable" bindtap="onMenuTap" data-action="subscribe">
-      <view class="menu-icon-wrap menu-icon-purple"><view class="menu-geo geo-diamond"></view></view>
-      <view class="menu-item-body">
-        <text class="menu-item-title">我的订阅</text>
-        <text class="menu-item-desc">管理订阅计划</text>
-      </view>
-      <view class="geo-chevron-right"></view>
+    <view class="menu-item tappable" bindtap="toggleReviewReminder">
+      <text>每日复习提醒</text>
+      <switch checked="{{reviewReminder}}" color="#7C3AED"/>
     </view>
-    <view class="menu-item tappable" bindtap="onMenuTap" data-action="history">
-      <view class="menu-icon-wrap menu-icon-green"><view class="menu-geo geo-bars"></view></view>
-      <view class="menu-item-body">
-        <text class="menu-item-title">学习记录</text>
-        <text class="menu-item-desc">查看复习历史</text>
-      </view>
-      <view class="geo-chevron-right"></view>
-    </view>
-  </view>
-
-  <view class="menu-card" style="margin-top: 24rpx;">
     <view class="menu-item tappable" bindtap="showInvite">
-      <view class="menu-icon-wrap menu-icon-cyan"><view class="menu-geo menu-geo-gift"></view></view>
-      <view class="menu-item-body">
-        <text class="menu-item-title">邀请好友</text>
-        <text class="menu-item-desc">分享邀请码给好友</text>
-      </view>
+      <text>邀请好友</text>
       <view class="geo-chevron-right"></view>
     </view>
     <view class="menu-item tappable" bindtap="exportData">
-      <view class="menu-icon-wrap menu-icon-red"><view class="menu-geo geo-download"></view></view>
-      <view class="menu-item-body">
-        <text class="menu-item-title">导出数据</text>
-        <text class="menu-item-desc">备份所有牌组和卡片</text>
-      </view>
+      <text>导出数据</text>
       <view class="geo-chevron-right"></view>
     </view>
     <view class="menu-item tappable" bindtap="onMenuTap" data-action="about">
-      <view class="menu-icon-wrap menu-icon-blue"><view class="menu-geo geo-info"></view></view>
-      <view class="menu-item-body">
-        <text class="menu-item-title">关于闪卡记忆</text>
-        <text class="menu-item-desc">v1.0.0</text>
-      </view>
-      <view class="geo-chevron-right"></view>
-    </view>
-    <view class="menu-item tappable" bindtap="onMenuTap" data-action="feedback">
-      <view class="menu-icon-wrap menu-icon-orange"><view class="menu-geo geo-chat"></view></view>
-      <view class="menu-item-body">
-        <text class="menu-item-title">意见反馈</text>
-        <text class="menu-item-desc">帮助我们改进</text>
-      </view>
+      <text>关于闪卡记忆</text>
       <view class="geo-chevron-right"></view>
     </view>
   </view>
-
-  <text class="version-text">闪卡记忆 v1.0.0</text>
-  <view class="bottom-spacer"></view>
 </view>
