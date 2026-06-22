@@ -487,9 +487,3 @@
   border: none;
   flex-shrink: 0;
 }
-.welcome-auth-btn::after { border: none; }
-  display: block;
-  margin-top: 24rpx;
-  font-size: 24rpx;
-  color: #9CA3AF;
-}
