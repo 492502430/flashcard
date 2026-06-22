@@ -12,7 +12,7 @@
       </view>
     </view>
     <text class="user-name">{{nickname}}</text>
-    <button class="auth-btn" wx:if="{{nickname === '闪卡用户'}}" bindtap="getUserProfile">获取微信头像昵称</button>
+    <button class="auth-btn" wx:if="{{nickname === '闪卡用户'}}" open-type="getUserInfo" bindgetuserinfo="onGetUserInfo">获取微信头像昵称</button>
 
     <!-- 统计 -->
     <view class="user-stats">
